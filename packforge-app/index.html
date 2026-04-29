@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pack Forge">
+<meta name="theme-color" content="#151820">
+<title>Pack Forge — Inventory System</title>
+
+<!-- Firebase v9 compat (CDN — no build step needed) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+:root{
+  --bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--surface3:#242840;
+  --border:#2a2f45;--border2:#333858;
+  --c-dragon:#e85d26;--c-dino:#2eb87a;--c-single:#7b5ea7;
+  --c-premium:#c49a2a;--c-gothic:#9b59b6;--c-seasonal:#e83a8a;
+  --c-alert:#e83a3a;--c-warn:#e8a020;
+  --text:#e8eaf0;--text-muted:#7a8098;--text-dim:#4a5068;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* LOADING SCREEN */
+#loadingScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .4s}
+#loadingScreen.hidden{opacity:0;pointer-events:none}
+.load-logo{font-family:'Exo 2',sans-serif;font-weight:900;font-size:28px;letter-spacing:2px;background:linear-gradient(135deg,var(--c-dragon),var(--c-premium));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.load-msg{font-size:13px;color:var(--text-muted)}
+.load-spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--c-dragon);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SYNC STATUS PILL */
+.sync-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;
+  transition:all .3s;
+  background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.3);color:var(--c-dino);
+}
+.sync-pill.saving{background:rgba(232,160,32,.1);border-color:rgba(232,160,32,.3);color:var(--c-warn)}
+.sync-pill.error{background:rgba(232,58,58,.1);border-color:rgba(232,58,58,.3);color:var(--c-alert)}
+.sync-pill.offline{background:rgba(122,128,152,.1);border-color:var(--border);color:var(--text-dim)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-pill.saving .sync-dot{animation:pulse .8s ease infinite}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.logo{font-family:'Exo 2',sans-serif;font-weight:900;font-size:20px;letter-spacing:1px;background:linear-gradient(135deg,var(--c-dragon),var(--c-premium));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hright{display:flex;gap:8px;align-items:center}
+.etsy-pill{background:rgba(241,100,30,.12);border:1px solid rgba(241,100,30,.35);color:#f1641e;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.etsy-pill:hover{background:rgba(241,100,30,.2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+.dot.on{background:var(--c-dino);box-shadow:0 0 6px var(--c-dino)}
+
+/* LAYOUT */
+.wrap{display:flex;height:calc(100vh - 50px);position:relative}
+
+/* SIDEBAR */
+.sidebar{width:215px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:14px 0;overflow-y:auto;overflow-x:hidden;transition:width .22s ease;position:relative;z-index:100}
+.sidebar.collapsed{width:46px;padding:14px 0}
+@media(max-width:600px){
+  .sidebar{position:fixed;top:50px;left:0;bottom:0;transform:translateX(0);transition:transform .22s ease;z-index:300;width:220px}
+  .sidebar.collapsed{transform:translateX(-100%);width:220px}
+  .sidebar-overlay{display:none;position:fixed;inset:0;top:50px;background:rgba(0,0,0,.55);z-index:290}
+  .sidebar-overlay.open{display:block}
+  .wrap{display:block}
+  .content{height:calc(100vh - 50px);padding:14px}
+}
+.sb-toggle{display:flex;align-items:center;justify-content:flex-end;padding:0 12px 10px;margin-bottom:4px;border-bottom:1px solid var(--border)}
+.sb-toggle-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px 6px;border-radius:5px;transition:.15s;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center}
+.sb-toggle-btn:hover{background:var(--surface2);color:var(--text)}
+.sidebar.collapsed .ns{opacity:0;height:0;overflow:hidden;padding:0;margin:0}
+.sidebar.collapsed .ni{padding:8px 0;justify-content:center;gap:0}
+.sidebar.collapsed .ni-label{display:none}
+.sidebar.collapsed .nbadge{position:absolute;right:4px;top:4px;font-size:8px;padding:1px 4px}
+.sidebar.collapsed .ni-tag{display:none}
+.sidebar.collapsed .sb-toggle{justify-content:center;padding:0 0 10px}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 15px;cursor:pointer;border-left:3px solid transparent;font-weight:600;font-size:13px;color:var(--text-muted);transition:.15s;user-select:none;position:relative;white-space:nowrap}
+.ni:hover{background:var(--surface2);color:var(--text)}
+.ni.active{border-left-color:var(--c-dragon);background:var(--surface2);color:var(--text)}
+.ni.active.cdino{border-left-color:var(--c-dino)}.ni.active.csingle{border-left-color:var(--c-single)}
+.ni.active.cpremium{border-left-color:var(--c-premium)}.ni.active.cgothic{border-left-color:var(--c-gothic)}
+.ni.active.cseasonal{border-left-color:var(--c-seasonal)}
+.ni-icon{flex-shrink:0;font-size:15px}
+.nbadge{margin-left:auto;background:var(--c-alert);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:20px}
+.ni-tag{margin-left:auto;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;letter-spacing:.5px}
+.tag-future{background:rgba(232,58,138,.15);color:var(--c-seasonal);border:1px solid rgba(232,58,138,.3)}
+.tag-solo{background:rgba(123,94,167,.15);color:var(--c-single);border:1px solid rgba(123,94,167,.3)}
+.ns{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-dim);padding:10px 15px 3px;text-transform:uppercase;transition:opacity .15s,height .15s}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:2px 6px;transition:.15s;line-height:1}
+.ham-btn:hover{color:var(--text)}
+@media(max-width:600px){.ham-btn{display:flex;align-items:center}}
+
+/* INVENTORY GROUPS */
+.inv-group{display:flex;flex-direction:column;gap:0}
+.inv-group-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;user-select:none;transition:.15s}
+.inv-group-header:hover{border-color:var(--border2);background:var(--surface3)}
+.inv-group-header.open{border-radius:9px 9px 0 0;border-bottom-color:transparent}
+.igh-icon{font-size:16px;flex-shrink:0}.igh-title{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;flex:1}
+.igh-count{font-size:11px;color:var(--text-muted);font-weight:600}
+.igh-alert{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(232,58,58,.15);color:var(--c-alert);border:1px solid rgba(232,58,58,.3)}
+.igh-warn{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(232,160,32,.12);color:var(--c-warn);border:1px solid rgba(232,160,32,.3)}
+.igh-chevron{font-size:12px;color:var(--text-dim);transition:transform .2s;flex-shrink:0}
+.igh-chevron.open{transform:rotate(180deg)}
+.inv-group-body{background:var(--surface2);border:1px solid var(--border);border-radius:0 0 9px 9px;padding:12px;display:none;margin-bottom:10px}
+.inv-group-body.open{display:block}
+.sort-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sort-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
+.sort-btn:hover{border-color:var(--border2);color:var(--text)}
+.sort-btn.active{background:rgba(232,93,38,.12);border-color:rgba(232,93,38,.3);color:var(--c-dragon)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:18px}
+.page{display:none;flex-direction:column;gap:18px}.page.active{display:flex}
+
+/* CARDS */
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:18px}
+.sh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sht{font-family:'Exo 2',sans-serif;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.7px}
+.pill-pack{background:rgba(232,93,38,.12);color:var(--c-dragon);border:1px solid rgba(232,93,38,.3)}
+.pill-dino{background:rgba(46,184,122,.12);color:var(--c-dino);border:1px solid rgba(46,184,122,.3)}
+.pill-solo{background:rgba(123,94,167,.12);color:var(--c-single);border:1px solid rgba(123,94,167,.3)}
+.pill-prem{background:rgba(196,154,42,.12);color:var(--c-premium);border:1px solid rgba(196,154,42,.3)}
+.astrip{background:linear-gradient(135deg,rgba(232,58,58,.1),rgba(232,160,32,.06));border:1px solid rgba(232,58,58,.3);border-radius:10px;padding:11px 15px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ast{font-family:'Exo 2',sans-serif;font-weight:700;font-size:12px;color:var(--c-alert);margin-right:5px}
+.ac{border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600}
+.ac.crit{background:rgba(232,58,58,.15);color:#ff7070;border:1px solid rgba(232,58,58,.3)}
+.ac.warn{background:rgba(232,160,32,.12);color:var(--c-warn);border:1px solid rgba(232,160,32,.3)}
+
+/* READY CARDS */
+.rrow{display:flex;gap:12px;flex-wrap:wrap}
+.rcard{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px 20px;flex:1;min-width:165px;position:relative;overflow:hidden;cursor:pointer;transition:.2s}
+.rcard:hover{border-color:var(--border2)}
+.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.rcl{font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px}
+.rcc{font-family:'Exo 2',sans-serif;font-weight:900;font-size:44px;line-height:1;margin-bottom:2px}
+.rcs{font-size:11px;color:var(--text-muted)}
+
+/* TIER CARDS */
+.trow{display:flex;gap:12px;flex-wrap:wrap}
+.tcard{flex:1;min-width:190px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;position:relative;overflow:hidden;transition:.2s}
+.tcard:hover{border-color:var(--border2)}
+.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.tname{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;margin-bottom:2px}
+.tsub{font-size:11px;color:var(--text-muted);margin-bottom:11px}
+.tpr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.tpl{font-size:11px;color:var(--text-muted);font-weight:600;min-width:82px}
+.priceinput{background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;padding:5px 9px;width:100px;outline:none}
+.priceinput:focus{border-color:var(--c-dino)}
+.eidsinput{background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:5px 9px;width:125px;outline:none}
+.eidsinput:focus{border-color:#f1641e}
+.tready{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;line-height:1;margin-bottom:1px}
+.treadyl{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.syncbtn{margin-top:9px;background:rgba(241,100,30,.1);border:1px solid rgba(241,100,30,.3);color:#f1641e;border-radius:6px;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s;width:100%;justify-content:center}
+.syncbtn:hover{background:rgba(241,100,30,.2)}
+.syncbtn.synced{background:rgba(46,184,122,.1);border-color:rgba(46,184,122,.3);color:var(--c-dino)}
+
+/* PRODUCT GRID & CARDS */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+.pcard{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;transition:.2s}
+.pcard.low{border-color:rgba(232,160,32,.45);background:rgba(232,160,32,.02)}
+.pcard.critical{border-color:rgba(232,58,58,.5);background:rgba(232,58,58,.03)}
+.pch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px;gap:7px}
+.pcn{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;line-height:1.2}
+.sb{font-size:10px;font-weight:700;letter-spacing:.7px;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:2px}
+.sb.ok{background:rgba(46,184,122,.15);color:var(--c-dino)}.sb.low{background:rgba(232,160,32,.15);color:var(--c-warn)}.sb.crit{background:rgba(232,58,58,.2);color:var(--c-alert)}
+.qrow{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.ql{font-size:11px;color:var(--text-muted);min-width:88px;font-weight:600}
+.qw{display:flex;align-items:center;background:var(--surface3);border:1px solid var(--border);border-radius:6px;overflow:hidden;flex:1}
+.qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:5px 9px;font-size:15px;line-height:1;transition:.15s}
+.qbtn:hover{background:var(--border);color:var(--text)}
+.qval{flex:1;background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:4px 0;width:44px;outline:none}
+.pbox{background:var(--surface3);border-radius:7px;padding:9px 11px;margin-top:5px}
+.pbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px}
+.pr{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.prn{font-size:11px;color:var(--text-muted);min-width:60px;font-weight:600;text-transform:capitalize}
+.barw{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.barf{height:100%;border-radius:3px;transition:width .3s}
+.prq{font-family:'Exo 2',sans-serif;font-weight:700;font-size:12px;min-width:22px;text-align:right}
+.prbtns{display:flex;gap:3px}
+.pb{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:4px;font-size:12px;padding:1px 7px;cursor:pointer;line-height:1.4;transition:.15s}
+.pb:hover{color:var(--text);border-color:var(--border2)}
+.asm{margin-top:6px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.asm strong{font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;color:var(--text)}
+.thr{display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.thl{font-size:11px;color:var(--text-dim);font-weight:600}
+.thi{background:var(--surface3);border:1px solid var(--border);border-radius:5px;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:3px 7px;width:52px;outline:none}
+.thi:focus{border-color:var(--c-warn);color:var(--text)}
+.varsec{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.varl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px}
+.varrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.vchip{display:flex;align-items:center;gap:4px;background:var(--surface3);border:1px solid var(--border);border-radius:20px;padding:3px 9px 3px 5px;font-size:11px;font-weight:600}
+.vswatch{width:11px;height:11px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
+.vremove{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 3px;transition:.15s}
+.vremove:hover{color:var(--c-alert)}
+.addbtn{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+.addbtn:hover{border-color:var(--border2);color:var(--text-muted)}
+.pc-chip{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px 2px 4px;font-size:11px;font-weight:600;cursor:default}
+.pc-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
+.pc-qty{font-family:'Exo 2',sans-serif;font-weight:700;font-size:11px;color:var(--text-muted)}
+.pc-remove{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 0 0 2px;line-height:1;transition:.15s}
+.pc-remove:hover{color:var(--c-alert)}
+.pc-add{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+.pc-add:hover{border-color:var(--border2);color:var(--text-muted)}
+
+/* SOLO CARDS */
+.solorow{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.solocard{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;transition:.2s}
+.solocard:hover{border-color:var(--border2)}
+.solocard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.solocard.low{border-color:rgba(232,160,32,.45)}.solocard.critical{border-color:rgba(232,58,58,.5)}
+.sc-name{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;margin-bottom:2px}
+.sc-sub{font-size:11px;color:var(--text-muted);margin-bottom:12px}
+.sc-price-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.sc-price-label{font-size:11px;color:var(--text-muted);font-weight:600;min-width:70px}
+.sc-range{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;color:var(--c-premium)}
+.sc-stock-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.sc-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.printer-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+.pb-h2c{background:rgba(196,154,42,.15);color:var(--c-premium);border:1px solid rgba(196,154,42,.3)}
+.pb-any{background:rgba(46,184,122,.12);color:var(--c-dino);border:1px solid rgba(46,184,122,.3)}
+
+/* TABLE */
+.tbw{background:var(--surface2);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{background:var(--surface3);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-muted);padding:10px 13px;text-align:left}
+td{padding:9px 13px;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:hover td{background:var(--surface3)}
+.etl{color:#f1641e;font-size:11px;font-weight:700}
+
+/* BUTTONS */
+.btn{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;padding:7px 15px;border-radius:7px;cursor:pointer;transition:.2s;border:none}
+.btn-p{background:var(--c-dragon);color:#fff}.btn-p:hover{opacity:.85}
+.btn-g{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)}.btn-g:hover{border-color:var(--border2);color:var(--text)}
+.bsm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;border-radius:5px;padding:4px 10px;cursor:pointer;transition:.2s;border:none}
+.bsm-g{background:var(--surface3);border:1px solid var(--border);color:var(--text-muted)}.bsm-g:hover{border-color:var(--border2);color:var(--text)}
+.bsm-r{background:rgba(232,58,58,.12);border:1px solid rgba(232,58,58,.3);color:var(--c-alert)}.bsm-r:hover{background:rgba(232,58,58,.22)}
+.addrow{background:var(--surface2);border:1px dashed var(--border);color:var(--text-dim);padding:9px;border-radius:8px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;transition:.2s;margin-top:9px}
+.addrow:hover{border-color:var(--c-dragon);color:var(--c-dragon)}
+
+/* MODAL */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:24px;width:560px;max-width:96vw;max-height:92vh;overflow-y:auto}
+.mt{font-family:'Exo 2',sans-serif;font-weight:700;font-size:17px;margin-bottom:16px}
+.fg{margin-bottom:11px}
+.fl{font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);margin-bottom:4px;display:block;text-transform:uppercase}
+.fi{background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;padding:8px 11px;width:100%;outline:none}
+.fi:focus{border-color:var(--c-dragon)}
+.fr2{display:flex;gap:10px}.fr2 .fg{flex:1}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+select.fi option{background:var(--surface2)}
+.cel{display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto;margin-top:4px}
+.cer{display:flex;align-items:center;gap:9px;background:var(--surface3);border-radius:7px;padding:8px 11px}
+.cen{flex:1;font-size:13px;font-weight:600}
+.ceq{background:var(--surface2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;padding:4px 7px;width:55px;outline:none;text-align:center}
+.ceq:focus{border-color:var(--c-dragon)}
+.cedel{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:17px;padding:0 3px;transition:.15s}
+.cedel:hover{color:var(--c-alert)}
+.ter{background:var(--surface3);border-radius:8px;padding:9px 11px;display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:7px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:10px}
+.ci{background:var(--surface3);border-radius:7px;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+.cin{font-size:12px;font-weight:600}.ciq{font-family:'Exo 2',sans-serif;font-weight:700;font-size:12px;color:var(--text-muted)}
+
+/* ALERTS */
+.aitem{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 15px;display:flex;align-items:center;gap:11px}
+.aico{font-size:19px;flex-shrink:0}.abody{flex:1}
+.abody strong{font-size:13px;font-weight:700;display:block;margin-bottom:2px}
+.abody span{font-size:11px;color:var(--text-muted)}
+.asev{font-size:10px;font-weight:700;letter-spacing:.7px;padding:2px 8px;border-radius:20px}
+.asev.crit{background:rgba(232,58,58,.2);color:var(--c-alert)}.asev.warn{background:rgba(232,160,32,.15);color:var(--c-warn)}
+.noal{text-align:center;padding:48px;color:var(--text-dim);font-size:13px}
+
+/* STRATEGY NOTES */
+.strategy-note{background:rgba(196,154,42,.06);border:1px solid rgba(196,154,42,.25);border-radius:10px;padding:14px 17px;font-size:12px;color:var(--text-muted);line-height:1.7}
+.strategy-note strong{color:var(--c-premium)}
+
+/* ETSY */
+.esteps{list-style:none;counter-reset:s}
+.esteps li{counter-increment:s;padding:10px 0 10px 40px;border-bottom:1px solid var(--border);font-size:13px;position:relative;line-height:1.5;color:var(--text-muted)}
+.esteps li:last-child{border-bottom:none}
+.esteps li::before{content:counter(s);position:absolute;left:0;top:50%;transform:translateY(-50%);width:25px;height:25px;background:#f1641e;border-radius:50%;line-height:25px;text-align:center;font-weight:700;font-size:12px;color:#fff}
+
+/* FILAMENT */
+.fcard{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;position:relative;overflow:hidden;transition:.2s}
+.fcard:hover{border-color:var(--border2)}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.fcard.low{border-color:rgba(232,160,32,.45);background:rgba(232,160,32,.02)}
+.f-swatch{width:36px;height:36px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);box-shadow:0 0 10px rgba(0,0,0,.4)}
+.f-name{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;line-height:1.2}
+.f-mfr{font-size:11px;color:var(--text-muted);margin-top:1px}
+.f-type{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:4px;display:inline-block;letter-spacing:.7px}
+.ft-pla{background:rgba(46,184,122,.12);color:var(--c-dino);border:1px solid rgba(46,184,122,.3)}
+.ft-petg{background:rgba(59,130,246,.12);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
+.ft-silk{background:rgba(196,154,42,.12);color:var(--c-premium);border:1px solid rgba(196,154,42,.3)}
+.ft-abs{background:rgba(155,89,182,.12);color:var(--c-gothic);border:1px solid rgba(155,89,182,.3)}
+.ft-tpu{background:rgba(232,58,138,.12);color:var(--c-seasonal);border:1px solid rgba(232,58,138,.3)}
+.ft-other{background:rgba(122,128,152,.12);color:var(--text-muted);border:1px solid var(--border)}
+.f-weight-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.f-weight-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.f-weight-bar{height:100%;border-radius:4px;transition:width .3s}
+.f-weight-input{background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;padding:4px 8px;width:78px;outline:none;text-align:center}
+.f-weight-input:focus{border-color:var(--c-dino)}
+.f-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.f-meta-chip{font-size:11px;color:var(--text-muted);background:var(--surface3);border-radius:5px;padding:3px 8px}
+
+/* MARGIN */
+.margin-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.margin-chip{background:var(--surface3);border-radius:7px;padding:7px 12px;font-size:12px}
+.margin-chip strong{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--c-dino)}
+.margin-chip span{color:var(--text-muted);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;margin-top:1px}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen">
+  <div class="load-logo">🐉 PACK FORGE</div>
+  <div class="load-spinner"></div>
+  <div class="load-msg" id="loadMsg">Connecting to database…</div>
+</div>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="ham-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+    <div class="logo">🐉 PACK FORGE</div>
+  </div>
+  <div class="hright">
+    <div class="sync-pill" id="syncPill">
+      <div class="sync-dot"></div>
+      <span id="syncTxt">Synced</span>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px">
+      <div class="dot" id="etsyDot"></div><span id="etsyTxt">Etsy: Not Connected</span>
+    </div>
+    <button class="etsy-pill" onclick="nav('etsy')">🛍 Etsy</button>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="wrap">
+<nav class="sidebar" id="sidebar">
+  <div class="sb-toggle">
+    <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Collapse">◀</button>
+  </div>
+  <div class="ns">Dashboard</div>
+  <div class="ni active" data-p="overview" onclick="navAndClose('overview')"><span class="ni-icon">📊</span><span class="ni-label">Overview</span></div>
+  <div class="ni" data-p="alerts" onclick="navAndClose('alerts')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span><span class="nbadge" id="abadge" style="display:none">0</span></div>
+  <div class="ns">Party Packs</div>
+  <div class="ni" data-p="classic" onclick="navAndClose('classic')"><span class="ni-icon">🪵</span><span class="ni-label">Classic Dragon Pack</span></div>
+  <div class="ni" data-p="standard" onclick="navAndClose('standard')"><span class="ni-icon">🐉</span><span class="ni-label">Standard Dragon Pack</span></div>
+  <div class="ni cpremium" data-p="premium" onclick="navAndClose('premium')"><span class="ni-icon">✨</span><span class="ni-label">Premium Dragon Pack</span></div>
+  <div class="ni cdino" data-p="dino" onclick="navAndClose('dino')"><span class="ni-icon">🦕</span><span class="ni-label">Dino Party Pack</span></div>
+  <div class="ns">Standalone Items</div>
+  <div class="ni csingle" data-p="solo-dragon" onclick="navAndClose('solo-dragon')"><span class="ni-icon">🐉</span><span class="ni-label">Solo Dragons <span class="ni-tag tag-solo">SOLO</span></span></div>
+  <div class="ni cgothic" data-p="ashbone" onclick="navAndClose('ashbone')"><span class="ni-icon">💀</span><span class="ni-label">Ashbone Dragon <span class="ni-tag tag-solo">SOLO</span></span></div>
+  <div class="ni cseasonal" data-p="halloween" onclick="navAndClose('halloween')"><span class="ni-icon">🎃</span><span class="ni-label">Halloween Pack <span class="ni-tag tag-future">Q3</span></span></div>
+  <div class="ns">Inventory</div>
+  <div class="ni" data-p="components" onclick="navAndClose('components')"><span class="ni-icon">🔧</span><span class="ni-label">All Components</span></div>
+  <div class="ni" data-p="other-components" onclick="navAndClose('other-components')"><span class="ni-icon">📦</span><span class="ni-label">Other Components</span></div>
+  <div class="ni" data-p="filament" onclick="navAndClose('filament')"><span class="ni-icon">🧵</span><span class="ni-label">Filament Stock</span></div>
+  <div class="ns">Settings</div>
+  <div class="ni" data-p="etsy" onclick="navAndClose('etsy')"><span class="ni-icon">🛍</span><span class="ni-label">Etsy Integration</span></div>
+  <div class="ni" data-p="packconfig" onclick="navAndClose('packconfig')"><span class="ni-icon">⚙</span><span class="ni-label">Pack Config</span></div>
+</nav>
+
+<div class="content" id="content">
+
+<!-- OVERVIEW -->
+<div class="page active" id="page-overview">
+  <div id="gstrip" style="display:none" class="astrip"></div>
+  <div class="sh"><div class="sht">Party Packs Ready to Ship</div></div>
+  <div class="rrow" id="readyRow"></div>
+  <div class="sh" style="margin-top:4px">
+    <div class="sht">Standalone Items Stock</div>
+    <div style="font-size:11px;color:var(--text-muted)">Individual listings · different buyers · launch same week as packs</div>
+  </div>
+  <div class="solorow" id="soloOverviewRow"></div>
+</div>
+
+<!-- CLASSIC DRAGON PACK -->
+<div class="page" id="page-classic">
+  <div class="sh">
+    <div class="sht">🪵 Classic Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('classic')">✏ Edit Pack</button>
+  </div>
+  <div class="strategy-note"><strong>Classic Dragon Pack</strong> — Wood Dragon (4-leg, single piece) + 10× Dragon Egg Clicker (head+egg) + 1× Flying Dragon Clicker (top+bottom). Entry-mid tier. All-printer compatible. <strong>$82 recommended</strong>.</div>
+  <div class="trow" id="classicTiers"></div>
+  <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="classicCG"></div></div>
+  <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
+  <div class="pgrid" id="classicGrid"></div>
+</div>
+
+<!-- STANDARD DRAGON PACK -->
+<div class="page" id="page-standard">
+  <div class="sh">
+    <div class="sht">🐉 Standard Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('standard')">✏ Edit Pack</button>
+  </div>
+  <div class="strategy-note"><strong>Standard Dragon Pack</strong> — Shadowcoil Mini 7.7" (single piece) + 10× Dragon Egg Clicker (head+egg) + 1× Flying Dragon Clicker (top+bottom). Entry tier. All-printer compatible. <strong>$72 recommended</strong>.</div>
+  <div class="trow" id="standardTiers"></div>
+  <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="standardCG"></div></div>
+  <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
+  <div class="pgrid" id="standardGrid"></div>
+</div>
+
+<!-- PREMIUM DRAGON PACK -->
+<div class="page" id="page-premium">
+  <div class="sh">
+    <div class="sht">✨ Premium Dragon Pack <span class="pill pill-prem">10-PACK · H2C</span></div>
+    <button class="btn btn-g" onclick="openEdit('premium')">✏ Edit Pack</button>
+  </div>
+  <div class="strategy-note"><strong>Premium Dragon Pack</strong> — Zephyros 247mm (9.7") + 10× Dragon Egg Clicker + 1× Flying Dragon Clicker. <span style="color:var(--c-premium)">H2C printer for Zephyros</span>. ~2.8 hrs/dragon, ~90g silk filament. <strong>$95–98 recommended · ~21% margin</strong>.</div>
+  <div class="trow" id="premiumTiers"></div>
+  <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="premiumCG"></div></div>
+  <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
+  <div class="pgrid" id="premiumGrid"></div>
+</div>
+
+<!-- DINO PACK -->
+<div class="page" id="page-dino">
+  <div class="sh">
+    <div class="sht">🦕 Dino Party Pack <span class="pill pill-dino">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('dino')">✏ Edit Pack</button>
+  </div>
+  <div class="strategy-note"><strong>Dino Party Pack</strong> — STLFLIX skeleton dinosaurs (5 species × 2) + 10× Dino Egg Clicker (head+egg) + 1× Flying Dino Clicker (top+bottom). <strong>$29.99–$39.99</strong>.</div>
+  <div class="trow" id="dinoTiers"></div>
+  <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="dinoCG"></div></div>
+  <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
+  <div class="pgrid" id="dinoGrid"></div>
+</div>
+
+<!-- SOLO DRAGONS -->
+<div class="page" id="page-solo-dragon">
+  <div class="sh">
+    <div class="sht">🐉 Solo Dragon Listings <span class="pill pill-solo">STANDALONE</span></div>
+    <button class="btn btn-g" onclick="openAddSolo('dragon')">+ Add Item</button>
+  </div>
+  <div class="strategy-note"><strong>Individual listings</strong> — launch same week as party packs. Different search terms, different buyers. Early single sales build your review count which lifts all listings. <strong>No assembly labor = stronger per-unit margin than party packs.</strong></div>
+  <div class="solorow" id="soloDragonRow"></div>
+  <button class="addrow" onclick="openAddSolo('dragon')">＋ Add Solo Dragon Listing</button>
+</div>
+
+<!-- ASHBONE -->
+<div class="page" id="page-ashbone">
+  <div class="sh">
+    <div class="sht">💀 Ashbone Skeleton Dragon <span class="pill" style="background:rgba(155,89,182,.12);color:var(--c-gothic);border:1px solid rgba(155,89,182,.3)">STANDALONE · GOTHIC</span></div>
+    <button class="btn btn-g" onclick="openAddSolo('gothic')">+ Add Item</button>
+  </div>
+  <div class="strategy-note"><strong>NOT a party favor.</strong> Target buyer: age 16–35. Search terms: <em>"gothic dragon decor," "skeleton dragon gift," "Halloween dragon."</em> <strong style="color:var(--c-seasonal)">🎃 Q3 Halloween 10-pack opportunity: Ashbone + skull clicker + skeleton keychain, $115–125, September launch.</strong></div>
+  <div class="solorow" id="ashboneRow"></div>
+  <button class="addrow" onclick="openAddSolo('gothic')">＋ Add Ashbone Listing</button>
+</div>
+
+<!-- HALLOWEEN -->
+<div class="page" id="page-halloween">
+  <div class="sh"><div class="sht">🎃 Halloween Pack <span class="pill" style="background:rgba(232,58,138,.12);color:var(--c-seasonal);border:1px solid rgba(232,58,138,.3)">SEASONAL · Q3</span></div></div>
+  <div class="card" style="border-color:rgba(232,58,138,.3);background:rgba(232,58,138,.03)">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--c-seasonal)">Future seasonal listing — plan for Q3 launch</div>
+    <div class="cgrid">
+      <div class="ci"><span class="cin">Ashbone Long (hero)</span><span class="ciq">1×</span></div>
+      <div class="ci"><span class="cin">Skull Clicker Fidget</span><span class="ciq">10×</span></div>
+      <div class="ci"><span class="cin">Skeleton Keychain</span><span class="ciq">10×</span></div>
+    </div>
+    <div class="margin-row">
+      <div class="margin-chip"><strong>$115–125</strong><span>Target Price</span></div>
+      <div class="margin-chip"><strong>Q3</strong><span>Launch Target</span></div>
+      <div class="margin-chip"><strong>6 wks</strong><span>Selling Window</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL COMPONENTS -->
+<div class="page" id="page-components">
+  <div class="sh">
+    <div class="sht">🔧 All Components</div>
+    <button class="btn btn-g" onclick="openAddComp()">+ Add Component</button>
+  </div>
+  <div class="sort-bar">
+    <span style="font-size:11px;color:var(--text-muted);font-weight:600">Group by:</span>
+    <button class="sort-btn active" id="grp-type" onclick="setGrouping('type')">Type</button>
+    <button class="sort-btn" id="grp-pack" onclick="setGrouping('pack')">Pack</button>
+    <button class="sort-btn" id="grp-status" onclick="setGrouping('status')">Status</button>
+    <button class="sort-btn" id="grp-flat" onclick="setGrouping('flat')">Flat List</button>
+  </div>
+  <div id="allCompGrid"></div>
+</div>
+
+<!-- OTHER COMPONENTS -->
+<div class="page" id="page-other-components">
+  <div class="sh">
+    <div class="sht">📦 Other Components</div>
+    <button class="btn btn-g" onclick="openAddOther()">+ Add Component</button>
+  </div>
+  <div style="font-size:12px;color:var(--text-muted);margin-top:-8px">Track keyboard clickers, packaging, accessories, and any other supplies not part of a pack composition.</div>
+  <div class="pgrid" id="otherCompGrid"></div>
+  <button class="addrow" onclick="openAddOther()">＋ Add Other Component</button>
+</div>
+
+<!-- FILAMENT -->
+<div class="page" id="page-filament">
+  <div class="sh">
+    <div class="sht">🧵 Filament Inventory</div>
+    <button class="btn btn-g" onclick="openAddFilament()">+ Add Spool</button>
+  </div>
+  <div id="filamentAlertStrip" style="display:none" class="astrip"></div>
+  <div class="pgrid" id="filamentGrid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))"></div>
+  <button class="addrow" onclick="openAddFilament()">＋ Add Filament Spool</button>
+</div>
+
+<!-- ALERTS -->
+<div class="page" id="page-alerts">
+  <div class="sh"><div class="sht">🔔 Active Alerts</div></div>
+  <div id="alertsList" style="display:flex;flex-direction:column;gap:8px"></div>
+</div>
+
+<!-- ETSY -->
+<div class="page" id="page-etsy">
+  <div class="sh"><div class="sht">🛍 Etsy Integration</div></div>
+  <div class="card">
+    <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="color:#f1641e">●</span> Connect via Etsy Open API v3</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:13px;line-height:1.6">Sync pack-ready counts, tier prices, and standalone item stock with your Etsy shop.</p>
+    <ol class="esteps">
+      <li>Visit <strong>etsy.com/developers</strong> and sign in as a seller.</li>
+      <li>Click <strong>"Create a New App"</strong> — name it "Pack Forge", redirect to <code>http://localhost</code>.</li>
+      <li>Copy your <strong>API Key String</strong> from the app dashboard.</li>
+      <li>Paste it below and click <strong>Connect</strong> to begin OAuth 2.0.</li>
+      <li>Use <strong>Sync to Etsy</strong> buttons on each tier / standalone card to push qty and price.</li>
+    </ol>
+    <div style="display:flex;gap:9px;margin-top:13px">
+      <input class="fi" id="etsyKey" type="password" placeholder="Paste Etsy API Key…" style="flex:1">
+      <button class="btn btn-p" onclick="connectEtsy()">Connect</button>
+    </div>
+  </div>
+  <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+    <div style="background:var(--surface3);border-radius:8px;padding:13px">
+      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dino)">↓ FROM ETSY</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">• Orders → decrement components<br>• Cancellations → restore stock<br>• Current listing quantities</div>
+    </div>
+    <div style="background:var(--surface3);border-radius:8px;padding:13px">
+      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dragon)">↑ TO ETSY</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">• Packs-ready → listing qty<br>• Tier price → listing price<br>• Solo item stock → listing qty<br>• Sold-out auto-flag at 0</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--text-dim)">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
+</div>
+
+<!-- PACK CONFIG -->
+<div class="page" id="page-packconfig">
+  <div class="sh">
+    <div class="sht">⚙ Pack Configuration</div>
+    <button class="btn btn-g" onclick="openNewPack()">+ New Pack Type</button>
+  </div>
+  <div id="packConfigList" style="display:flex;flex-direction:column;gap:13px"></div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /wrap -->
+
+<!-- MODALS -->
+<div class="mbg" id="variantModal">
+<div class="modal" style="width:380px">
+  <div class="mt">Add Color Variant</div>
+  <input type="hidden" id="av-key">
+  <div class="fg"><label class="fl">Variant Name</label><input class="fi" id="av-name" placeholder="e.g. Red, Galaxy Blue"></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Color</label><input class="fi" id="av-color" type="color" value="#e85d26"></div>
+    <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="av-qty" type="number" value="0" min="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Etsy Listing ID (optional)</label><input class="fi" id="av-etsy" placeholder="1234567890"></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" onclick="saveVariant()">Add Variant</button></div>
+</div></div>
+
+<div class="mbg" id="partColorModal">
+<div class="modal" style="width:440px">
+  <div class="mt" id="pcModalTitle">Add Color Combination</div>
+  <input type="hidden" id="pc-key"><input type="hidden" id="pc-part">
+  <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.6" id="pcModalDesc"></p>
+  <div class="fr2">
+    <div class="fg"><label class="fl" id="pcPart1Label">Part 1 Color</label><input class="fi" id="pc-name1" placeholder="e.g. Natural, Red, Teal"></div>
+    <div class="fg" style="max-width:80px"><label class="fl">Color</label><input class="fi" id="pc-color1" type="color" value="#c8b06a"></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl" id="pcPart2Label">Part 2 Color</label><input class="fi" id="pc-name2" placeholder="e.g. Black, Purple, Orange"></div>
+    <div class="fg" style="max-width:80px"><label class="fl">Color</label><input class="fi" id="pc-color2" type="color" value="#222222"></div>
+  </div>
+  <div class="fg"><label class="fl">Qty of this combination</label><input class="fi" id="pc-qty" type="number" value="0" min="0"></div>
+  <div class="fg"><label class="fl">Etsy Listing ID (optional)</label><input class="fi" id="pc-etsy" placeholder="1234567890"></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('partColorModal')">Cancel</button><button class="btn btn-p" onclick="savePartColor()">Add Combination</button></div>
+</div></div>
+
+<div class="mbg" id="otherCompModal">
+<div class="modal" style="width:440px">
+  <div class="mt" id="otherCompTitle">Add Other Component</div>
+  <input type="hidden" id="oc-id">
+  <div class="fg"><label class="fl">Component Name</label><input class="fi" id="oc-name" placeholder="e.g. Keyboard Clicker, Bubble Mailer"></div>
+  <div class="fg"><label class="fl">Category</label><select class="fi" id="oc-cat"><option>Clicker</option><option>Packaging</option><option>Accessory</option><option>Hardware</option><option>Other</option></select></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">In Stock</label><input class="fi" id="oc-qty" type="number" value="0" min="0"></div>
+    <div class="fg"><label class="fl">Alert Threshold</label><input class="fi" id="oc-thr" type="number" value="10" min="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Unit</label><input class="fi" id="oc-unit" value="pcs"></div>
+  <div class="fg"><label class="fl">Notes (optional)</label><input class="fi" id="oc-notes" placeholder="e.g. Source: Amazon"></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('otherCompModal')">Cancel</button><button class="btn btn-p" onclick="saveOtherComp()">Save</button></div>
+</div></div>
+
+<div class="mbg" id="filamentModal">
+<div class="modal" style="width:480px">
+  <div class="mt" id="filamentModalTitle">Add Filament Spool</div>
+  <input type="hidden" id="fl-id">
+  <div class="fr2">
+    <div class="fg"><label class="fl">Manufacturer / Brand</label><input class="fi" id="fl-mfr" placeholder="e.g. Bambu Lab, Hatchbox, eSUN"></div>
+    <div class="fg"><label class="fl">Filament Type</label><select class="fi" id="fl-type"><option>PLA</option><option>PLA+</option><option>Silk PLA</option><option>PETG</option><option>ABS</option><option>TPU</option><option>ASA</option><option>Other</option></select></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Color Name</label><input class="fi" id="fl-colorname" placeholder="e.g. Galaxy Black, Silk Gold"></div>
+    <div class="fg" style="max-width:90px"><label class="fl">Color Swatch</label><input class="fi" id="fl-color" type="color" value="#e85d26"></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Spool Size (g)</label><select class="fi" id="fl-spoolsize"><option value="250">250g</option><option value="500">500g</option><option value="1000" selected>1000g (1kg)</option><option value="2000">2000g (2kg)</option><option value="3000">3000g (3kg)</option><option value="custom">Custom</option></select></div>
+    <div class="fg" id="fl-customWrap" style="display:none"><label class="fl">Custom (g)</label><input class="fi" id="fl-customsize" type="number" min="1" value="750"></div>
+    <div class="fg"><label class="fl">Spools</label><input class="fi" id="fl-spools" type="number" min="1" value="1"></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Remaining on Current Spool (g)</label><input class="fi" id="fl-remaining" type="number" min="0" value="1000"></div>
+    <div class="fg"><label class="fl">Low Alert (g)</label><input class="fi" id="fl-alert" type="number" min="0" value="200"></div>
+  </div>
+  <div class="fg"><label class="fl">Diameter</label><select class="fi" id="fl-dia"><option value="1.75">1.75mm</option><option value="2.85">2.85mm</option></select></div>
+  <div class="fg"><label class="fl">Notes (optional)</label><input class="fi" id="fl-notes" placeholder="e.g. Used for dragon egg clickers"></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('filamentModal')">Cancel</button><button class="btn btn-p" onclick="saveFilament()">Save Spool</button></div>
+</div></div>
+
+<div class="mbg" id="soloModal">
+<div class="modal">
+  <div class="mt" id="soloModalTitle">Add Standalone Item</div>
+  <input type="hidden" id="so-id"><input type="hidden" id="so-cat">
+  <div class="fr2">
+    <div class="fg"><label class="fl">Item Name</label><input class="fi" id="so-name"></div>
+    <div class="fg" style="max-width:110px"><label class="fl">Size</label><input class="fi" id="so-size" placeholder="e.g. 9.7&quot;"></div>
+  </div>
+  <div class="fg"><label class="fl">Subtitle</label><input class="fi" id="so-sub"></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Price Low ($)</label><input class="fi" id="so-plo" type="number" step="0.01" min="0" value="0"></div>
+    <div class="fg"><label class="fl">Price High ($)</label><input class="fi" id="so-phi" type="number" step="0.01" min="0" value="0"></div>
+    <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="so-qty" type="number" min="0" value="0"></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Etsy Listing ID</label><input class="fi" id="so-etsy"></div>
+    <div class="fg"><label class="fl">Accent Color</label><input class="fi" id="so-color" type="color" value="#e85d26"></div>
+  </div>
+  <div class="fg"><label class="fl">Printer Required</label><select class="fi" id="so-printer"><option value="any">Any printer</option><option value="h2c">H2C only</option></select></div>
+  <div class="fg"><label class="fl">Key Search Terms (comma-separated)</label><input class="fi" id="so-tags"></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('soloModal')">Cancel</button><button class="btn btn-p" onclick="saveSolo()">Save</button></div>
+</div></div>
+
+<div class="mbg" id="addCompModal">
+<div class="modal" style="width:420px">
+  <div class="mt">Add Component</div>
+  <div class="fg"><label class="fl">Component Name</label><input class="fi" id="nc-name"></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="nc-qty" type="number" value="0" min="0"></div>
+    <div class="fg"><label class="fl">Alert Threshold</label><input class="fi" id="nc-thr" type="number" value="10" min="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Two-Part Product?</label><select class="fi" id="nc-2p"><option value="no">No — single piece</option><option value="yes">Yes — track parts separately</option></select></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('addCompModal')">Cancel</button><button class="btn btn-p" onclick="saveNewComp()">Add</button></div>
+</div></div>
+
+<div class="mbg" id="editModal">
+<div class="modal">
+  <div class="mt" id="editModalTitle">Edit Pack</div>
+  <input type="hidden" id="ep-key">
+  <div class="fr2">
+    <div class="fg"><label class="fl">Pack Name</label><input class="fi" id="ep-name"></div>
+    <div class="fg" style="max-width:75px"><label class="fl">Emoji</label><input class="fi" id="ep-emoji" maxlength="4" style="font-size:20px;text-align:center;padding:6px"></div>
+    <div class="fg" style="max-width:80px"><label class="fl">Pack Size</label><input class="fi" id="ep-size" type="number" min="1"></div>
+  </div>
+  <div style="font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px">Price Tiers</div>
+  <div id="epTierList"></div>
+  <button class="addrow" onclick="addTierRow()" style="margin-bottom:14px">＋ Add Price Tier</button>
+  <div style="font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px">Components (qty per pack)</div>
+  <div class="cel" id="epCompList"></div>
+  <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+    <input class="fi" id="ep-cn" placeholder="Component name…" style="flex:1;min-width:140px">
+    <input class="fi" id="ep-cq" type="number" value="1" min="1" style="width:60px;text-align:center">
+    <label style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;flex-shrink:0;cursor:pointer"><input type="checkbox" id="ep-c2p" style="cursor:pointer"> 2-part</label>
+    <button class="btn btn-g" onclick="addComp()">Add</button>
+  </div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('editModal')">Cancel</button><button class="btn btn-p" onclick="saveEdit()">Save Changes</button></div>
+</div></div>
+
+<div class="mbg" id="newPackModal">
+<div class="modal" style="width:420px">
+  <div class="mt">New Pack Type</div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Pack Name</label><input class="fi" id="np-name"></div>
+    <div class="fg" style="max-width:75px"><label class="fl">Emoji</label><input class="fi" id="np-emoji" value="📦" maxlength="4" style="font-size:20px;text-align:center;padding:6px"></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Pack Size</label><input class="fi" id="np-size" type="number" value="10" min="1"></div>
+    <div class="fg"><label class="fl">Accent Color</label><input class="fi" id="np-color" type="color" value="#a855f7"></div>
+  </div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('newPackModal')">Cancel</button><button class="btn btn-p" onclick="saveNewPack()">Create</button></div>
+</div></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// FIREBASE CONFIG
+// Follow SETUP.md to get your config and paste it here.
+// ══════════════════════════════════════════════════════════════
+// ► PASTE YOUR FIREBASE CONFIG HERE
+const firebaseConfig = {apiKey: "AIzaSyD6mKGOOqo-mHgxj_HJpt8xG-aFX8GrZQU",
+  authDomain: "packforge-bb736.firebaseapp.com",
+  projectId: "packforge-bb736",
+  storageBucket: "packforge-bb736.firebasestorage.app",
+  messagingSenderId: "698990375295",
+  appId: "1:698990375295:web:ecf996ff060cea0a09ea4a" };
+
+// ══════════════════════════════════════════════════════════════
+// FIREBASE INIT
+// ══════════════════════════════════════════════════════════════
+let db, auth;
+let firebaseReady = false;
+
+function initFirebase() {
+  try {
+    if (firebaseConfig.REPLACE_ME) {
+      // No config yet — run in local mode
+      console.warn('PackForge: Running in LOCAL mode (no Firebase config). Data will not persist.');
+      setSync('local');
+      hideLoading('Running in local demo mode — data will not save');
+      bootApp();
+      return;
+    }
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    auth = firebase.auth();
+
+    // Enable offline persistence (works offline, syncs when back online)
+    db.enablePersistence({ synchronizeTabs: true })
+      .catch(err => console.warn('Persistence unavailable:', err.code));
+
+    auth.signInAnonymously()
+      .then(() => {
+        firebaseReady = true;
+        setSync('synced');
+        loadFromFirestore();
+      })
+      .catch(err => {
+        console.error('Auth failed:', err);
+        setSync('error');
+        hideLoading('Auth failed — check Firebase config');
+        bootApp();
+      });
+  } catch(e) {
+    console.error('Firebase init error:', e);
+    setSync('local');
+    hideLoading('Running in local mode');
+    bootApp();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SYNC STATUS UI
+// ══════════════════════════════════════════════════════════════
+function setSync(state, text) {
+  const pill = document.getElementById('syncPill');
+  const txt = document.getElementById('syncTxt');
+  pill.className = 'sync-pill ' + (state === 'saving' ? 'saving' : state === 'error' ? 'error' : state === 'local' ? 'offline' : '');
+  txt.textContent = text || (state === 'saving' ? 'Saving…' : state === 'error' ? 'Error' : state === 'local' ? 'Local Only' : '✓ Synced');
+}
+
+let saveTimer = null;
+function setSaving() {
+  setSync('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => setSync('synced'), 1500);
+}
+
+function hideLoading(msg) {
+  if (msg) document.getElementById('loadMsg').textContent = msg;
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('hidden');
+  }, msg && msg.includes('local') ? 1200 : 400);
+}
+
+// ══════════════════════════════════════════════════════════════
+// DEFAULT DATA (used on first run or local mode)
+// ══════════════════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  packs: {
+    classic: {
+      name:'Classic Dragon Pack', size:10, emoji:'🪵', color:'#c49a2a',
+      tiers:[{ id:'c1', name:'Classic Dragon Pack', subtitle:'Wood Dragon 4-leg articulated', price:82, etsyId:'', synced:false }],
+      composition:{
+        wood_dragon:          { label:'Wood Dragon (4-leg)',        qty:1,  twopart:false },
+        dragon_egg_clicker:   { label:'Dragon Egg Clicker',         qty:10, twopart:true  },
+        flying_dragon_clicker:{ label:'Flying Dragon Clicker',      qty:1,  twopart:true  },
+      }
+    },
+    standard: {
+      name:'Standard Dragon Pack', size:10, emoji:'🐉', color:'#e85d26',
+      tiers:[{ id:'s1', name:'Standard Dragon Pack', subtitle:'Shadowcoil Mini 7.7"', price:72, etsyId:'', synced:false }],
+      composition:{
+        shadowcoil_mini:      { label:'Shadowcoil Mini (7.7")',     qty:1,  twopart:false },
+        dragon_egg_clicker:   { label:'Dragon Egg Clicker',         qty:10, twopart:true  },
+        flying_dragon_clicker:{ label:'Flying Dragon Clicker',      qty:1,  twopart:true  },
+      }
+    },
+    premium: {
+      name:'Premium Dragon Pack', size:10, emoji:'✨', color:'#c49a2a',
+      tiers:[{ id:'p1', name:'Premium Dragon Pack', subtitle:'Zephyros 247mm (9.7") — H2C multicolor', price:96.99, etsyId:'', synced:false }],
+      composition:{
+        zephyros_247:         { label:'Zephyros Dragon 247mm',      qty:1,  twopart:false },
+        dragon_egg_clicker:   { label:'Dragon Egg Clicker',         qty:10, twopart:true  },
+        flying_dragon_clicker:{ label:'Flying Dragon Clicker',      qty:1,  twopart:true  },
+      }
+    },
+    dino: {
+      name:'Dino Party Pack', size:10, emoji:'🦕', color:'#2eb87a',
+      tiers:[
+        { id:'d1', name:'Dino Pack Standard', subtitle:'STLFLIX skeleton series', price:29.99, etsyId:'', synced:false },
+        { id:'d2', name:'Dino Pack Deluxe',   subtitle:'Premium painted finish',  price:39.99, etsyId:'', synced:false },
+      ],
+      composition:{
+        dino_egg_clicker:     { label:'Dino Egg Clicker',     qty:10, twopart:true  },
+        flying_dino_clicker:  { label:'Flying Dino Clicker',  qty:1,  twopart:true  },
+        trex_skeleton:        { label:'T-Rex Skeleton',        qty:2,  twopart:false },
+        raptor_skeleton:      { label:'Raptor Skeleton',       qty:2,  twopart:false },
+        triceratops_skeleton: { label:'Triceratops Skeleton',  qty:2,  twopart:false },
+        stego_skeleton:       { label:'Stegosaurus Skeleton',  qty:2,  twopart:false },
+        ankylo_skeleton:      { label:'Ankylosaurus Skeleton', qty:2,  twopart:false },
+      }
+    }
+  },
+  inventory: {
+    wood_dragon:          { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    shadowcoil_mini:      { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    zephyros_247:         { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    dragon_egg_clicker:   { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
+    flying_dragon_clicker:{ qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
+    dino_egg_clicker:     { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
+    flying_dino_clicker:  { qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
+    trex_skeleton:        { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    raptor_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    triceratops_skeleton: { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    stego_skeleton:       { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    ankylo_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+  },
+  soloItems: {
+    dragon: [
+      { id:1, cat:'dragon', name:'Zephyros 247mm Dragon',  size:'9.7"',  sub:'Articulated · silk multicolor · gift or collector', priceLo:32, priceHi:38, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'articulated dragon gift, large dragon fidget', variants:[], synced:false },
+      { id:2, cat:'dragon', name:'Zephyros 328mm Dragon',  size:'12.9"', sub:'Full-size display piece · H2C only',                priceLo:62, priceHi:72, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'full size dragon, desk dragon display', variants:[], synced:false },
+      { id:3, cat:'dragon', name:'Zephyros 370mm Dragon',  size:'14.6"', sub:'Showcase / premium gift · H2C only',                priceLo:85, priceHi:95, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'giant articulated dragon, display dragon', variants:[], synced:false },
+    ],
+    gothic: [
+      { id:4, cat:'gothic', name:'Ashbone Skeleton Dragon', size:'Long', sub:'White bone + gold horns/teeth · gothic/collector',  priceLo:75, priceHi:88, qty:0, etsyId:'', color:'#9b59b6', printer:'any', tags:'skeleton dragon, gothic dragon decor, Halloween dragon', variants:[], synced:false },
+    ]
+  },
+  otherComponents: [
+    { id:1, name:'Keyboard Clicker',    cat:'Clicker',   qty:0, threshold:10, unit:'pcs',  notes:'Cherry MX style' },
+    { id:2, name:'Bubble Mailer 6x9"',  cat:'Packaging', qty:0, threshold:20, unit:'bags', notes:'' },
+    { id:3, name:'Thank You Cards',     cat:'Accessory', qty:0, threshold:25, unit:'pcs',  notes:'Business card size' },
+  ],
+  filament: [
+    { id:1, mfr:'Bambu Lab', type:'Silk PLA', colorName:'Silk Gold',   color:'#d4af37', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Dragon egg clickers' },
+    { id:2, mfr:'Hatchbox',  type:'PLA',      colorName:'Natural',     color:'#c8b06a', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Default for most prints' },
+    { id:3, mfr:'eSUN',      type:'Silk PLA', colorName:'Silk Blue',   color:'#3b82f6', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Zephyros dragon' },
+    { id:4, mfr:'eSUN',      type:'PLA+',     colorName:'Teal',        color:'#2eb8b8', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Dino egg clickers' },
+  ],
+  meta: { nextSoloId: 5, nextOtherId: 4, nextFilamentId: 5 }
+};
+
+// ══════════════════════════════════════════════════════════════
+// STATE — loaded from Firestore or defaults
+// ══════════════════════════════════════════════════════════════
+let S = {
+  etsy: { connected: false },
+  packs: {},
+  inventory: {},
+  soloItems: { dragon: [], gothic: [] },
+  otherComponents: [],
+  filament: [],
+  nextSoloId: 5,
+  nextOtherId: 4,
+  nextFilamentId: 5
+};
+
+// ══════════════════════════════════════════════════════════════
+// FIRESTORE LOAD / SAVE
+// ══════════════════════════════════════════════════════════════
+const COL = 'packforge';
+
+async function loadFromFirestore() {
+  document.getElementById('loadMsg').textContent = 'Loading your inventory…';
+  try {
+    const docs = ['packs','inventory','soloItems','otherComponents','filament','meta'];
+    const results = await Promise.all(docs.map(d => db.collection(COL).doc(d).get()));
+
+    const [packsDoc, invDoc, soloDoc, otherDoc, filmDoc, metaDoc] = results;
+
+    S.packs          = packsDoc.exists    ? packsDoc.data()    : JSON.parse(JSON.stringify(DEFAULT_DATA.packs));
+    S.inventory      = invDoc.exists      ? invDoc.data()      : JSON.parse(JSON.stringify(DEFAULT_DATA.inventory));
+    S.soloItems      = soloDoc.exists     ? soloDoc.data()     : JSON.parse(JSON.stringify(DEFAULT_DATA.soloItems));
+    S.otherComponents= otherDoc.exists    ? otherDoc.data().list : JSON.parse(JSON.stringify(DEFAULT_DATA.otherComponents));
+    S.filament       = filmDoc.exists     ? filmDoc.data().list  : JSON.parse(JSON.stringify(DEFAULT_DATA.filament));
+    if (metaDoc.exists) {
+      const m = metaDoc.data();
+      S.nextSoloId      = m.nextSoloId      || 5;
+      S.nextOtherId     = m.nextOtherId     || 4;
+      S.nextFilamentId  = m.nextFilamentId  || 5;
+    }
+
+    // If first run, write defaults to Firestore so future loads work
+    if (!packsDoc.exists) await writeAll();
+
+    hideLoading();
+    bootApp();
+  } catch(e) {
+    console.error('Firestore load failed:', e);
+    setSync('error', 'Load failed');
+    // Fall back to defaults
+    S = { etsy:{connected:false}, ...JSON.parse(JSON.stringify(DEFAULT_DATA)),
+          nextSoloId:DEFAULT_DATA.meta.nextSoloId,
+          nextOtherId:DEFAULT_DATA.meta.nextOtherId,
+          nextFilamentId:DEFAULT_DATA.meta.nextFilamentId };
+    hideLoading('Loaded defaults (database error)');
+    bootApp();
+  }
+}
+
+// Write a single document
+async function writeDoc(docName, data) {
+  if (!firebaseReady) return;
+  setSaving();
+  try {
+    await db.collection(COL).doc(docName).set(data);
+  } catch(e) {
+    console.error('Write failed:', docName, e);
+    setSync('error');
+  }
+}
+
+// Write all documents (used on first run)
+async function writeAll() {
+  if (!firebaseReady) return;
+  setSaving();
+  try {
+    const batch = db.batch();
+    const col = db.collection(COL);
+    batch.set(col.doc('packs'),           S.packs);
+    batch.set(col.doc('inventory'),       S.inventory);
+    batch.set(col.doc('soloItems'),       S.soloItems);
+    batch.set(col.doc('otherComponents'), { list: S.otherComponents });
+    batch.set(col.doc('filament'),        { list: S.filament });
+    batch.set(col.doc('meta'),            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId });
+    await batch.commit();
+  } catch(e) {
+    console.error('Batch write failed:', e);
+    setSync('error');
+  }
+}
+
+// Targeted saves — called after each mutation
+function saveInventory()       { writeDoc('inventory',       S.inventory); }
+function savePacks()           { writeDoc('packs',           S.packs); }
+function saveSoloItems()       { writeDoc('soloItems',       S.soloItems); }
+function saveOtherComponents() { writeDoc('otherComponents', { list: S.otherComponents }); }
+function saveFilamentData()    { writeDoc('filament',        { list: S.filament }); }
+function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId }); }
+
+// ══════════════════════════════════════════════════════════════
+// BOOT APP — called after data is loaded
+// ══════════════════════════════════════════════════════════════
+function bootApp() {
+  refreshAll();
+  renderPackConfig();
+  document.getElementById('fl-spoolsize').addEventListener('change', function(){
+    document.getElementById('fl-customWrap').style.display = this.value === 'custom' ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// SIDEBAR TOGGLE
+// ══════════════════════════════════════════════════════════════
+let sidebarCollapsed = false;
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebarOverlay');
+  const isMobile=window.innerWidth<=600;
+  sidebarCollapsed=!sidebarCollapsed;
+  if(isMobile){
+    sb.classList.toggle('collapsed', sidebarCollapsed);
+    overlay.classList.toggle('open', !sidebarCollapsed);
+    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? '☰' : '✕';
+  } else {
+    sb.classList.toggle('collapsed', sidebarCollapsed);
+    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? '▶' : '◀';
+  }
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  sidebarCollapsed=true;
+}
+function navAndClose(id){ nav(id); if(window.innerWidth<=600) closeSidebar(); }
+
+// ══════════════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════════════
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>{ if(n.dataset.p===id) n.classList.add('active'); });
+}
+
+// ══════════════════════════════════════════════════════════════
+// CALCULATIONS
+// ══════════════════════════════════════════════════════════════
+function packsReady(pk){
+  let min=Infinity;
+  for(const[k,def] of Object.entries(S.packs[pk].composition)){
+    const inv=S.inventory[k];
+    if(!inv){ min=0; continue; }
+    min=Math.min(min, Math.floor(inv.qty/def.qty));
+  }
+  return min===Infinity?0:min;
+}
+function compStatus(key){
+  const inv=S.inventory[key];
+  if(!inv||inv.qty===0) return 'crit';
+  if(inv.qty<inv.threshold) return 'low';
+  return 'ok';
+}
+function asmbl(key){
+  const inv=S.inventory[key];
+  if(!inv) return 0;
+  if(inv.twopart&&inv.parts&&Object.keys(inv.parts).length) return Math.min(...Object.values(inv.parts));
+  return inv.qty;
+}
+
+const CLICKER_KEYS=['dragon_egg_clicker','dino_egg_clicker','flying_dragon_clicker','flying_dino_clicker'];
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — TIERS
+// ══════════════════════════════════════════════════════════════
+function renderTiers(pk, cid){
+  const pack=S.packs[pk], ready=packsReady(pk), col=pack.color;
+  const el=document.getElementById(cid);
+  if(!el) return;
+  el.innerHTML=pack.tiers.map((t,i)=>`
+    <div class="tcard">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${col},transparent)"></div>
+      <div class="tname">${t.name}</div>
+      <div class="tsub">${t.subtitle}</div>
+      <div class="tpr"><span class="tpl">Pack Price</span>
+        <div style="display:flex;align-items:center;gap:3px">
+          <span style="color:var(--text-muted);font-size:13px;font-weight:700">$</span>
+          <input class="priceinput" type="number" step="0.01" min="0" value="${t.price.toFixed(2)}"
+            onchange="setTP('${pk}',${i},this.value)" style="border-color:${col}55">
+        </div>
+      </div>
+      <div class="tpr"><span class="tpl">Etsy Listing ID</span>
+        <input class="eidsinput" type="text" value="${t.etsyId}" placeholder="—" onchange="setTE('${pk}',${i},this.value)">
+      </div>
+      <div class="tready" style="color:${col}">${ready}</div>
+      <div class="treadyl">packs ready to ship</div>
+      <button class="syncbtn${t.synced?' synced':''}" onclick="syncTier('${pk}',${i})">
+        ${t.synced?'✓ Synced to Etsy':'↑ Sync to Etsy'}
+      </button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — COMPONENT CARD
+// ══════════════════════════════════════════════════════════════
+function renderCard(key, label, col){
+  const inv=S.inventory[key]; if(!inv) return '';
+  const st=compStatus(key);
+  const cls=st==='crit'?'critical':st==='low'?'low':'';
+  const bc=st==='crit'?'crit':st==='low'?'low':'ok';
+  const bt=st==='crit'?'CRITICAL':st==='low'?'LOW':'OK';
+  col=col||'#e85d26';
+  const isClicker=CLICKER_KEYS.includes(key);
+
+  let partsHtml='';
+  if(inv.twopart&&inv.parts&&Object.keys(inv.parts).length){
+    partsHtml=`<div class="pbox"><div class="pbl">⚙ Parts Printed</div>${
+      Object.entries(inv.parts).map(([pname,pq])=>{
+        const pct=Math.min(100,(pq/Math.max(inv.qty*1.5,1))*100);
+        const pcColors=isClicker&&inv.partColors&&inv.partColors[pname]
+          ?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;margin-left:68px">
+              ${(inv.partColors[pname]||[]).map((c,ci)=>`
+                <span class="pc-chip" title="${c.name}: ${c.qty} raw parts">
+                  <div class="pc-swatch" style="background:${c.color}"></div>
+                  <span>${c.name}</span><span class="pc-qty" style="margin-left:3px">(${c.qty})</span>
+                  <button class="pc-remove" onclick="rmPartColor('${key}','${pname}',${ci})">×</button>
+                </span>`).join('')}
+              <button class="pc-add" onclick="openPartColor('${key}','${pname}')">+ color</button>
+            </div>`:''
+        return `<div>
+          <div class="pr">
+            <span class="prn">${pname}</span>
+            <div class="barw"><div class="barf" style="width:${pct}%;background:${col}"></div></div>
+            <span class="prq">${pq}</span>
+            <div class="prbtns">
+              <button class="pb" onclick="adjPart('${key}','${pname}',1)">+</button>
+              <button class="pb" onclick="adjPart('${key}','${pname}',-1)">−</button>
+              <input class="qval" type="number" min="0" value="${pq}" style="width:40px;font-size:12px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;padding:2px 4px;margin-left:2px" oninput="setPart('${key}','${pname}',this.value)">
+            </div>
+          </div>${pcColors}
+        </div>`;
+      }).join('')}
+      <div class="asm" style="margin-top:8px">Assembled: <strong>${asmbl(key)}</strong> complete units</div>
+    </div>`;
+  }
+
+  let colorHtml='';
+  if(isClicker&&inv.combos){
+    const partNames=Object.keys(inv.parts||{});
+    const p1=partNames[0]||'part1', p2=partNames[1]||'part2';
+    colorHtml=`<div class="varsec">
+      <div class="varl">Color Combos (${p1} / ${p2})</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+        ${(inv.combos||[]).map((c,ci)=>{
+          const c1=c[p1+'Color']||c.eggColor||c.topColor||'#888';
+          const c2=c[p2+'Color']||c.headColor||c.bottomColor||'#888';
+          const n1=c[p1]||c.egg||c.top||'?';
+          const n2=c[p2]||c.head||c.bottom||'?';
+          return `<div style="display:flex;align-items:center;gap:8px;background:var(--surface3);border-radius:7px;padding:6px 10px">
+            <div style="display:flex;align-items:center;gap:4px;flex:1">
+              <div class="vswatch" style="background:${c1};width:13px;height:13px"></div>
+              <span style="font-size:12px;font-weight:600">${n1}</span>
+              <span style="color:var(--text-dim);font-size:11px">+</span>
+              <div class="vswatch" style="background:${c2};width:13px;height:13px"></div>
+              <span style="font-size:12px;font-weight:600">${n2}</span>
+            </div>
+            <div class="qw" style="max-width:100px">
+              <button class="qbtn" onclick="adjCombo('${key}',${ci},-1)" style="padding:3px 7px;font-size:13px">−</button>
+              <input class="qval" style="font-size:13px" type="number" min="0" value="${c.qty}" oninput="setCombo('${key}',${ci},this.value)">
+              <button class="qbtn" onclick="adjCombo('${key}',${ci},1)" style="padding:3px 7px;font-size:13px">+</button>
+            </div>
+            <button class="pc-remove" onclick="rmCombo('${key}',${ci})" style="font-size:16px">×</button>
+          </div>`;
+        }).join('')}
+      </div>
+      <button class="addbtn" style="margin-top:6px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openPartColor('${key}','')">+ Add Color Combo</button>
+    </div>`;
+  } else {
+    colorHtml=`<div class="varsec"><div class="varl">Color Variants</div>
+      <div class="varrow">
+        ${(inv.variants||[]).map((v,vi)=>`
+          <span class="vchip">
+            <div class="vswatch" style="background:${v.color}"></div>${v.name} (${v.qty})
+            <button class="vremove" onclick="rmVar('${key}',${vi})">×</button>
+          </span>`).join('')}
+        <button class="addbtn" onclick="openVar('${key}')">+ color</button>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="pcard ${cls}" id="pc-${key}">
+    <div class="pch"><div class="pcn">${label}</div><span class="sb ${bc}">${bt}</span></div>
+    <div class="qrow">
+      <span class="ql">Complete Units</span>
+      <div class="qw">
+        <button class="qbtn" onclick="adjQ('${key}',-1)">−</button>
+        <input class="qval" type="number" min="0" value="${inv.qty}" oninput="setQ('${key}',this.value)">
+        <button class="qbtn" onclick="adjQ('${key}',1)">+</button>
+      </div>
+    </div>
+    ${partsHtml}${colorHtml}
+    <div class="thr">
+      <span class="thl">⚠ Alert below</span>
+      <input class="thi" type="number" min="0" value="${inv.threshold}" onchange="setThr('${key}',this.value)">
+      <span style="font-size:10px;color:var(--text-dim)">units</span>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — SOLO CARD
+// ══════════════════════════════════════════════════════════════
+function renderSoloCard(item){
+  const low=item.qty<3, crit=item.qty===0;
+  const cls=crit?'critical':low?'low':'';
+  const col=item.color||'#e85d26';
+  const printerBadge=item.printer==='h2c'
+    ?'<span class="printer-badge pb-h2c">H2C Only</span>'
+    :'<span class="printer-badge pb-any">Any Printer</span>';
+  const varChips=(item.variants||[]).map((v,vi)=>`
+    <span class="vchip"><div class="vswatch" style="background:${v.color}"></div>${v.name}(${v.qty})
+      <button class="vremove" onclick="rmSoloVar('${item.cat}',${item.id},${vi})">×</button>
+    </span>`).join('');
+  return `<div class="solocard ${cls}">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${col},transparent)"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px">
+      <div class="sc-name">${item.name}</div>${printerBadge}
+    </div>
+    <div class="sc-sub">${item.size} · ${item.sub}</div>
+    <div class="sc-price-row"><span class="sc-price-label">Price Range</span><span class="sc-range" style="color:${col}">$${item.priceLo}–$${item.priceHi}</span></div>
+    <div class="sc-price-row"><span class="sc-price-label">Etsy ID</span>
+      <input class="eidsinput" type="text" value="${item.etsyId}" placeholder="—" onchange="setSoloEtsy('${item.cat}',${item.id},this.value)" style="width:120px">
+    </div>
+    <div class="sc-stock-row">
+      <span class="sc-price-label">In Stock</span>
+      <div class="qw" style="max-width:130px">
+        <button class="qbtn" onclick="adjSolo('${item.cat}',${item.id},-1)">−</button>
+        <input class="qval" type="number" min="0" value="${item.qty}" oninput="setSoloQty('${item.cat}',${item.id},this.value)">
+        <button class="qbtn" onclick="adjSolo('${item.cat}',${item.id},1)">+</button>
+      </div>
+      ${crit?'<span class="sb crit" style="margin-left:6px">SOLD OUT</span>':low?'<span class="sb low" style="margin-left:6px">LOW</span>':''}
+    </div>
+    ${item.tags?`<div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5">🔍 ${item.tags}</div>`:''}
+    <div class="varsec" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+      <div class="varl">Color Variants</div>
+      <div class="varrow">${varChips}<button class="addbtn" onclick="openVar('__solo__${item.cat}__${item.id}')">+ color</button></div>
+    </div>
+    <div class="sc-actions">
+      <button class="syncbtn${item.synced?' synced':''}" onclick="syncSolo('${item.cat}',${item.id})" style="margin-top:0">${item.synced?'✓ Synced':'↑ Sync to Etsy'}</button>
+      <button class="bsm bsm-g" onclick="openEditSolo('${item.cat}',${item.id})">✏ Edit</button>
+      <button class="bsm bsm-r" onclick="rmSolo('${item.cat}',${item.id})">✕</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — GROUPED COMPONENTS
+// ══════════════════════════════════════════════════════════════
+let currentGrouping='type';
+function setGrouping(g){
+  currentGrouping=g;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('grp-'+g); if(el) el.classList.add('active');
+  renderAllComps();
+}
+const COMP_GROUPS_TYPE=[
+  {id:'dragons',        label:'Dragons',        icon:'🐉', color:'#e85d26', keys:['wood_dragon','shadowcoil_mini','zephyros_247']},
+  {id:'dragon_clickers',label:'Dragon Clickers',icon:'🥚', color:'#e85d26', keys:['dragon_egg_clicker','flying_dragon_clicker']},
+  {id:'dino_skeletons', label:'Dino Skeletons', icon:'🦴', color:'#2eb87a', keys:['trex_skeleton','raptor_skeleton','triceratops_skeleton','stego_skeleton','ankylo_skeleton']},
+  {id:'dino_clickers',  label:'Dino Clickers',  icon:'🥚', color:'#2eb87a', keys:['dino_egg_clicker','flying_dino_clicker']},
+];
+function getGroupBadge(keys){
+  let hasCrit=false,hasWarn=false;
+  keys.forEach(k=>{const s=compStatus(k);if(s==='crit')hasCrit=true;else if(s==='low')hasWarn=true;});
+  if(hasCrit) return '<span class="igh-alert">⚠ CRITICAL</span>';
+  if(hasWarn) return '<span class="igh-warn">⚠ LOW</span>';
+  return '';
+}
+function renderGroup(group, open=true){
+  const keys=group.keys.filter(k=>S.inventory[k]); if(!keys.length) return '';
+  const badge=getGroupBadge(keys);
+  function getLabel(k){ for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; } return k.replace(/_/g,' '); }
+  return `<div class="inv-group">
+    <div class="inv-group-header${open?' open':''}" onclick="toggleGroup('${group.id}')">
+      <span class="igh-icon">${group.icon}</span>
+      <span class="igh-title" style="color:${group.color}">${group.label}</span>
+      <span class="igh-count">${keys.length} item${keys.length!==1?'s':''}</span>
+      ${badge}<span class="igh-chevron${open?' open':''}">▼</span>
+    </div>
+    <div class="inv-group-body${open?' open':''}" id="gbody-${group.id}">
+      <div class="pgrid">${keys.map(k=>renderCard(k,getLabel(k),group.color)).join('')}</div>
+    </div>
+  </div>`;
+}
+function toggleGroup(id){
+  const hdr=document.querySelector(`[onclick="toggleGroup('${id}')"]`);
+  const body=document.getElementById('gbody-'+id);
+  if(!hdr||!body) return;
+  const open=!body.classList.contains('open');
+  body.classList.toggle('open',open); hdr.classList.toggle('open',open);
+  hdr.querySelector('.igh-chevron').classList.toggle('open',open);
+}
+function renderAllComps(){
+  const container=document.getElementById('allCompGrid');
+  container.style.display='flex'; container.style.flexDirection='column'; container.style.gap='10px';
+  function getLabel(k){ for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; } return k.replace(/_/g,' '); }
+  function getCol(k){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return '#e85d26'; }
+
+  if(currentGrouping==='flat'){
+    const allKeys=[...new Set(Object.values(S.packs).flatMap(p=>Object.keys(p.composition)))];
+    container.innerHTML=`<div class="pgrid">${allKeys.map(k=>renderCard(k,getLabel(k),getCol(k))).join('')}</div>`;
+    return;
+  }
+  if(currentGrouping==='type'){
+    container.innerHTML=COMP_GROUPS_TYPE.map(g=>renderGroup(g,true)).join(''); return;
+  }
+  if(currentGrouping==='pack'){
+    container.innerHTML=Object.entries(S.packs).map(([pk,pack])=>{
+      const keys=Object.keys(pack.composition).filter(k=>S.inventory[k]);
+      return renderGroup({id:'pack_'+pk,label:pack.name,icon:pack.emoji,color:pack.color,keys},true);
+    }).join(''); return;
+  }
+  if(currentGrouping==='status'){
+    const allKeys=[...new Set(Object.values(S.packs).flatMap(p=>Object.keys(p.composition)))];
+    const crits=allKeys.filter(k=>compStatus(k)==='crit');
+    const lows=allKeys.filter(k=>compStatus(k)==='low');
+    const oks=allKeys.filter(k=>compStatus(k)==='ok');
+    let html='';
+    if(crits.length) html+=renderGroup({id:'s_crit',label:'Critical — Out of Stock',icon:'🚨',color:'var(--c-alert)',keys:crits},true);
+    if(lows.length)  html+=renderGroup({id:'s_low', label:'Low Stock — Restock Soon',icon:'⚠', color:'var(--c-warn)', keys:lows}, true);
+    if(oks.length)   html+=renderGroup({id:'s_ok',  label:'In Stock',               icon:'✅',color:'var(--c-dino)', keys:oks},  false);
+    container.innerHTML=html||'<div style="color:var(--text-dim);padding:20px;font-size:13px">No components found.</div>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER — PAGES
+// ══════════════════════════════════════════════════════════════
+function renderOverview(){
+  const packDefs=[{key:'classic',label:'Classic Dragon Pack'},{key:'standard',label:'Standard Dragon Pack'},{key:'premium',label:'Premium Dragon Pack'},{key:'dino',label:'Dino Party Pack'}];
+  document.getElementById('readyRow').innerHTML=packDefs.map(({key,label})=>{
+    const pack=S.packs[key]; if(!pack) return '';
+    const r=packsReady(key);
+    return `<div class="rcard" onclick="nav('${key}')" style="position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${pack.color},transparent)"></div>
+      <div class="rcl">${pack.emoji} ${label}</div>
+      <div class="rcc" style="color:${pack.color}">${r}</div>
+      <div class="rcs">$${pack.tiers[0].price.toFixed(0)}${pack.tiers.length>1?'–$'+pack.tiers[pack.tiers.length-1].price.toFixed(0):''} · click to manage</div>
+    </div>`;
+  }).join('');
+  const allSolo=[...(S.soloItems.dragon||[]),...(S.soloItems.gothic||[])];
+  document.getElementById('soloOverviewRow').innerHTML=allSolo.map(i=>renderSoloCard(i)).join('');
+}
+function renderPackPage(pk){
+  const pack=S.packs[pk]; if(!pack) return;
+  renderTiers(pk,pk+'Tiers');
+  const cg=document.getElementById(pk+'CG'); if(cg) cg.innerHTML=Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}×${v.twopart?'<span style="font-size:9px;color:var(--text-dim);margin-left:2px">[2p]</span>':''}</span></div>`).join('');
+  const gg=document.getElementById(pk+'Grid'); if(gg) gg.innerHTML=Object.entries(pack.composition).map(([k,v])=>renderCard(k,v.label,pack.color)).join('');
+}
+function renderSoloDragonPage(){ const el=document.getElementById('soloDragonRow'); if(el) el.innerHTML=(S.soloItems.dragon||[]).map(i=>renderSoloCard(i)).join(''); }
+function renderAshbonePage(){ const el=document.getElementById('ashboneRow'); if(el) el.innerHTML=(S.soloItems.gothic||[]).map(i=>renderSoloCard(i)).join(''); }
+
+function renderOtherComps(){
+  const grid=document.getElementById('otherCompGrid');
+  if(!S.otherComponents.length){ grid.innerHTML=`<div style="color:var(--text-dim);font-size:13px;grid-column:1/-1;padding:20px">No other components yet.</div>`; return; }
+  grid.innerHTML=S.otherComponents.map(oc=>{
+    const low=oc.qty<oc.threshold,crit=oc.qty===0;
+    const cls=crit?'critical':low?'low':'';
+    const bc=crit?'crit':low?'low':'ok';
+    const catColor={Clicker:'var(--c-dragon)',Packaging:'var(--c-dino)',Accessory:'var(--c-single)',Hardware:'var(--c-premium)',Other:'var(--text-muted)'}[oc.cat]||'var(--text-muted)';
+    return `<div class="pcard ${cls}">
+      <div class="pch"><div><div class="pcn">${oc.name}</div><div style="font-size:11px;font-weight:700;color:${catColor};margin-top:2px">${oc.cat}</div></div><span class="sb ${bc}">${crit?'CRITICAL':low?'LOW':'OK'}</span></div>
+      <div class="qrow"><span class="ql">In Stock</span>
+        <div class="qw"><button class="qbtn" onclick="adjOther(${oc.id},-1)">−</button><input class="qval" type="number" min="0" value="${oc.qty}" oninput="setOther(${oc.id},this.value)"><button class="qbtn" onclick="adjOther(${oc.id},1)">+</button></div>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:4px">${oc.unit}</span>
+      </div>
+      ${oc.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:5px">📝 ${oc.notes}</div>`:''}
+      <div class="thr"><span class="thl">⚠ Alert below</span><input class="thi" type="number" min="0" value="${oc.threshold}" onchange="setOtherThr(${oc.id},this.value)"><span style="font-size:10px;color:var(--text-dim)">${oc.unit}</span>
+        <button class="bsm bsm-g" style="margin-left:auto" onclick="openEditOther(${oc.id})">✏</button>
+        <button class="bsm bsm-r" onclick="rmOther(${oc.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const FILAMENT_TYPE_CLASS={PLA:'ft-pla','PLA+':'ft-pla','Silk PLA':'ft-silk',PETG:'ft-petg',ABS:'ft-abs',TPU:'ft-tpu',ASA:'ft-abs',Other:'ft-other'};
+function renderFilament(){
+  const grid=document.getElementById('filamentGrid');
+  const strip=document.getElementById('filamentAlertStrip');
+  if(!S.filament.length){ grid.innerHTML=`<div style="color:var(--text-dim);font-size:13px;grid-column:1/-1;padding:20px">No filament spools tracked yet.</div>`; strip.style.display='none'; return; }
+  const lowSpools=S.filament.filter(f=>f.remaining<f.alertAt);
+  strip.style.display=lowSpools.length?'flex':'none';
+  if(lowSpools.length) strip.innerHTML=`<span class="ast">⚠ LOW FILAMENT</span>`+lowSpools.map(f=>`<span class="ac warn">${f.mfr} ${f.colorName} — ${f.remaining}g left</span>`).join('');
+  grid.innerHTML=S.filament.map(f=>{
+    const pct=Math.min(100,(f.remaining/f.spoolSize)*100);
+    const low=f.remaining<f.alertAt;
+    const barColor=low?'var(--c-warn)':f.color;
+    const typeClass=FILAMENT_TYPE_CLASS[f.type]||'ft-other';
+    return `<div class="fcard ${low?'low':''}">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${f.color},transparent)"></div>
+      <div style="display:flex;align-items:flex-start;gap:11px;margin-bottom:10px">
+        <div class="f-swatch" style="background:${f.color}"></div>
+        <div style="flex:1"><div class="f-name">${f.colorName}</div><div class="f-mfr">${f.mfr}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px"><span class="f-type ${typeClass}">${f.type}</span><span class="f-type ft-other">${f.dia}mm</span></div>
+        </div>
+        <div style="display:flex;gap:4px"><button class="bsm bsm-g" onclick="openEditFilament(${f.id})">✏</button><button class="bsm bsm-r" onclick="rmFilament(${f.id})">✕</button></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px">Current spool remaining (g)</div>
+      <div class="f-weight-row">
+        <div class="f-weight-bar-wrap"><div class="f-weight-bar" style="width:${pct}%;background:${barColor}"></div></div>
+        <input class="f-weight-input" type="number" min="0" max="${f.spoolSize}" value="${f.remaining}" onchange="setFilamentRemaining(${f.id},this.value)">
+        <span style="font-size:11px;color:var(--text-muted)">/ ${f.spoolSize}g</span>
+      </div>
+      ${low?`<div style="font-size:11px;color:var(--c-warn);font-weight:700;margin-top:4px">⚠ Low — reorder soon</div>`:''}
+      <div class="f-meta" style="margin-top:9px">
+        <span class="f-meta-chip">📦 ${f.spools} spool${f.spools!==1?'s':''}</span>
+        <span class="f-meta-chip">Total: ${f.spools*f.spoolSize}g</span>
+        <span class="f-meta-chip">Alert at: ${f.alertAt}g</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+        <span style="font-size:11px;color:var(--text-muted)">Spools in stock:</span>
+        <button class="pb" onclick="adjFilamentSpools(${f.id},-1)">−</button>
+        <span style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;min-width:20px;text-align:center">${f.spools}</span>
+        <button class="pb" onclick="adjFilamentSpools(${f.id},1)">+</button>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:3px">+1 resets remaining to ${f.spoolSize}g</span>
+      </div>
+      ${f.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:7px;line-height:1.5">📝 ${f.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderAlerts(){
+  const al=[];
+  for(const[key,inv] of Object.entries(S.inventory)){
+    let label=key; for(const p of Object.values(S.packs)){if(p.composition[key]){label=p.composition[key].label;break;}}
+    if(inv.qty===0) al.push({sev:'crit',icon:'🚨',title:`OUT OF STOCK: ${label}`,sub:'Zero units — packs with this component cannot be fulfilled.'});
+    else if(inv.qty<inv.threshold) al.push({sev:'warn',icon:'⚠',title:`LOW STOCK: ${label}`,sub:`${inv.qty} units remaining (threshold: ${inv.threshold}).`});
+    if(inv.twopart&&inv.parts) for(const[pk2,pq] of Object.entries(inv.parts))
+      if(pq<inv.qty) al.push({sev:'warn',icon:'🔧',title:`PARTS IMBALANCE: ${label} — ${pk2}`,sub:`${pq} printed, ${inv.qty} needed. Print ${inv.qty-pq} more.`});
+  }
+  for(const[pk,pack] of Object.entries(S.packs))
+    if(packsReady(pk)===0) al.push({sev:'crit',icon:'📦',title:`CANNOT SHIP: ${pack.name}`,sub:'Insufficient components.'});
+  [...(S.soloItems.dragon||[]),...(S.soloItems.gothic||[])].forEach(p=>{
+    if(p.qty===0) al.push({sev:'crit',icon:'🛍',title:`SOLD OUT: ${p.name}`,sub:'No individual units available.'});
+    else if(p.qty<3) al.push({sev:'warn',icon:'⚠',title:`LOW SOLO STOCK: ${p.name}`,sub:`Only ${p.qty} left.`});
+  });
+  S.filament.forEach(f=>{ if(f.remaining<f.alertAt) al.push({sev:'warn',icon:'🧵',title:`LOW FILAMENT: ${f.mfr} ${f.colorName}`,sub:`${f.remaining}g remaining.`}); });
+  S.otherComponents.forEach(oc=>{ if(oc.qty<oc.threshold) al.push({sev:oc.qty===0?'crit':'warn',icon:'📦',title:`${oc.qty===0?'OUT OF STOCK':'LOW'}: ${oc.name}`,sub:`${oc.qty} ${oc.unit} remaining.`}); });
+
+  const badge=document.getElementById('abadge');
+  badge.style.display=al.length?'':'none'; badge.textContent=al.length;
+  const strip=document.getElementById('gstrip');
+  if(al.length){
+    strip.style.display='flex';
+    const crits=al.filter(a=>a.sev==='crit'), warns=al.filter(a=>a.sev==='warn');
+    strip.innerHTML=`<span class="ast">🔔 ${al.length} ALERT${al.length>1?'S':''}</span>`+crits.slice(0,3).map(a=>`<span class="ac crit">${a.title}</span>`).join('')+warns.slice(0,3).map(a=>`<span class="ac warn">${a.title}</span>`).join('')+(al.length>6?`<span class="ac warn">+${al.length-6} more</span>`:'');
+  } else strip.style.display='none';
+  document.getElementById('alertsList').innerHTML=al.length
+    ?al.map(a=>`<div class="aitem"><div class="aico">${a.icon}</div><div class="abody"><strong>${a.title}</strong><span>${a.sub}</span></div><span class="asev ${a.sev}">${a.sev==='crit'?'CRITICAL':'WARNING'}</span></div>`).join('')
+    :`<div class="noal"><div style="font-size:34px;margin-bottom:9px">✅</div>All clear — no alerts.</div>`;
+}
+
+function renderPackConfig(){
+  const el=document.getElementById('packConfigList'); if(!el) return;
+  el.innerHTML=Object.entries(S.packs).map(([pk,pack])=>`
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+        <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px">${pack.emoji} ${pack.name} <span style="font-size:11px;color:var(--text-dim)">(size ${pack.size})</span></div>
+        <button class="btn btn-g" onclick="openEdit('${pk}')">✏ Edit Pack</button>
+      </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">Price Tiers</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:11px">
+        ${pack.tiers.map(t=>`<div style="background:var(--surface3);border-radius:7px;padding:8px 12px;min-width:155px">
+          <div style="font-weight:700;font-size:13px">${t.name}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${t.subtitle}</div>
+          <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:18px;color:${pack.color};margin-top:3px">$${t.price.toFixed(2)}</div>
+          ${t.etsyId?`<div style="font-size:10px;color:#f1641e;margin-top:2px">🛍 ${t.etsyId}</div>`:''}
+        </div>`).join('')}
+      </div>
+      <div class="cgrid">${Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}×${v.twopart?'<span style="font-size:9px;color:var(--text-dim)"> [2p]</span>':''}</span></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// MUTATIONS — INVENTORY (each one saves to Firestore)
+// ══════════════════════════════════════════════════════════════
+function adjQ(key,d){ const inv=S.inventory[key]; if(!inv) return; inv.qty=Math.max(0,inv.qty+d); saveInventory(); refreshAll(); }
+function setQ(key,v){ const inv=S.inventory[key]; if(!inv) return; inv.qty=Math.max(0,parseInt(v)||0); saveInventory(); refreshAll(); }
+function adjPart(key,pname,d){
+  const inv=S.inventory[key]; if(!inv||!inv.parts) return;
+  const prev=asmbl(key);
+  inv.parts[pname]=Math.max(0,(inv.parts[pname]||0)+d);
+  const newAsm=Math.min(...Object.values(inv.parts));
+  inv.qty=newAsm;
+  if(newAsm>prev&&CLICKER_KEYS.includes(key)&&inv.partColors){
+    const inc=newAsm-prev;
+    for(const[pn,colorList] of Object.entries(inv.partColors)){
+      let rem=inc;
+      for(const c of (colorList||[])){if(rem<=0)break;const take=Math.min(c.qty,rem);c.qty=Math.max(0,c.qty-take);rem-=take;}
+    }
+  }
+  saveInventory(); refreshAll();
+}
+function setPart(key,pname,v){
+  const inv=S.inventory[key]; if(!inv||!inv.parts) return;
+  inv.parts[pname]=Math.max(0,parseInt(v)||0);
+  inv.qty=Math.min(...Object.values(inv.parts));
+  saveInventory(); refreshAll();
+}
+function setThr(key,v){ if(S.inventory[key]){S.inventory[key].threshold=Math.max(0,parseInt(v)||0); saveInventory(); renderAlerts();} }
+
+function adjCombo(key,ci,d){
+  const inv=S.inventory[key]; if(!inv||!inv.combos) return;
+  inv.combos[ci].qty=Math.max(0,inv.combos[ci].qty+d);
+  inv.qty=inv.combos.reduce((s,c)=>s+c.qty,0);
+  saveInventory(); refreshAll();
+}
+function setCombo(key,ci,v){
+  const inv=S.inventory[key]; if(!inv||!inv.combos) return;
+  inv.combos[ci].qty=Math.max(0,parseInt(v)||0);
+  inv.qty=inv.combos.reduce((s,c)=>s+c.qty,0);
+  saveInventory(); refreshAll();
+}
+function rmCombo(key,ci){
+  const inv=S.inventory[key]; if(!inv||!inv.combos) return;
+  inv.combos.splice(ci,1);
+  inv.qty=inv.combos.reduce((s,c)=>s+c.qty,0);
+  saveInventory(); refreshAll();
+}
+function rmPartColor(key,pname,ci){
+  const inv=S.inventory[key]; if(!inv||!inv.partColors||!inv.partColors[pname]) return;
+  inv.partColors[pname].splice(ci,1);
+  saveInventory(); refreshAll();
+}
+
+let _pcKey='',_pcPart='';
+function openPartColor(key,pname){
+  _pcKey=key; _pcPart=pname;
+  const inv=S.inventory[key]; if(!inv) return;
+  const partNames=Object.keys(inv.parts||{});
+  const p1=partNames[0]||'part1',p2=partNames[1]||'part2';
+  const labels={egg:'Egg (base)',head:'Head (top)',top:'Top',bottom:'Bottom'};
+  document.getElementById('pc-key').value=key;
+  document.getElementById('pc-part').value=pname;
+  document.getElementById('pcModalTitle').textContent='Add Color Combination';
+  document.getElementById('pcModalDesc').textContent='Select a color for each part. This combination will be tracked separately.';
+  document.getElementById('pcPart1Label').textContent=(labels[p1]||p1)+' Color';
+  document.getElementById('pcPart2Label').textContent=(labels[p2]||p2)+' Color';
+  document.getElementById('pc-qty').value=0;
+  document.getElementById('pc-etsy').value='';
+  document.getElementById('partColorModal').classList.add('open');
+}
+function savePartColor(){
+  const key=document.getElementById('pc-key').value;
+  const inv=S.inventory[key]; if(!inv) return;
+  const partNames=Object.keys(inv.parts||{});
+  const p1=partNames[0]||'part1',p2=partNames[1]||'part2';
+  const name1=document.getElementById('pc-name1').value.trim()||'Color 1';
+  const name2=document.getElementById('pc-name2').value.trim()||'Color 2';
+  const color1=document.getElementById('pc-color1').value;
+  const color2=document.getElementById('pc-color2').value;
+  const qty=parseInt(document.getElementById('pc-qty').value)||0;
+  const etsyId=document.getElementById('pc-etsy').value.trim();
+  if(!inv.combos) inv.combos=[];
+  const combo={qty,etsyId};
+  combo[p1]=name1; combo[p1+'Color']=color1;
+  combo[p2]=name2; combo[p2+'Color']=color2;
+  inv.combos.push(combo);
+  inv.qty=inv.combos.reduce((s,c)=>s+c.qty,0);
+  if(!inv.partColors) inv.partColors={};
+  for(const[pn,pc,pname] of [[p1,color1,name1],[p2,color2,name2]]){
+    if(!inv.partColors[pn]) inv.partColors[pn]=[];
+    if(!inv.partColors[pn].find(x=>x.name===pname)) inv.partColors[pn].push({name:pname,color:pc,qty:0,etsyId:''});
+  }
+  saveInventory(); closeModal('partColorModal'); refreshAll();
+}
+
+// PACK MUTATIONS
+function setTP(pk,i,v){ S.packs[pk].tiers[i].price=parseFloat(v)||0; S.packs[pk].tiers[i].synced=false; savePacks(); renderTiers(pk,pk+'Tiers'); renderPackConfig(); renderOverview(); }
+function setTE(pk,i,v){ S.packs[pk].tiers[i].etsyId=v; savePacks(); renderPackConfig(); }
+function syncTier(pk,i){
+  if(!S.etsy.connected){alert('Connect Etsy first — see Etsy Integration in sidebar.');return;}
+  S.packs[pk].tiers[i].synced=true; savePacks();
+  const t=S.packs[pk].tiers[i];
+  alert(`✅ Synced "${t.name}" to Etsy${t.etsyId?' listing '+t.etsyId:''}.\nQty: ${packsReady(pk)} packs · Price: $${t.price.toFixed(2)}`);
+  renderTiers(pk,pk+'Tiers');
+}
+
+// SOLO MUTATIONS
+function getSoloList(cat){return S.soloItems[cat]||[];}
+function findSolo(cat,id){return getSoloList(cat).find(x=>x.id===id);}
+function adjSolo(cat,id,d){const x=findSolo(cat,id);if(x){x.qty=Math.max(0,x.qty+d);saveSoloItems();refreshAll();}}
+function setSoloQty(cat,id,v){const x=findSolo(cat,id);if(x){x.qty=Math.max(0,parseInt(v)||0);saveSoloItems();renderAlerts();}}
+function setSoloEtsy(cat,id,v){const x=findSolo(cat,id);if(x){x.etsyId=v;saveSoloItems();}}
+function syncSolo(cat,id){
+  if(!S.etsy.connected){alert('Connect Etsy first.');return;}
+  const x=findSolo(cat,id);if(!x)return;
+  x.synced=true; saveSoloItems();
+  alert(`✅ Synced "${x.name}" to Etsy${x.etsyId?' listing '+x.etsyId:''}.\nStock: ${x.qty} · Price: $${x.priceLo}–$${x.priceHi}`);
+  refreshAll();
+}
+function rmSolo(cat,id){S.soloItems[cat]=S.soloItems[cat].filter(x=>x.id!==id);saveSoloItems();refreshAll();}
+function rmSoloVar(cat,id,vi){const x=findSolo(cat,id);if(x){x.variants.splice(vi,1);saveSoloItems();refreshAll();}}
+
+// VARIANTS
+function openVar(key){document.getElementById('av-key').value=key;document.getElementById('av-name').value='';document.getElementById('av-qty').value=0;document.getElementById('av-etsy').value='';document.getElementById('variantModal').classList.add('open');}
+function saveVariant(){
+  const key=document.getElementById('av-key').value;
+  const v={name:document.getElementById('av-name').value.trim()||'Unnamed',color:document.getElementById('av-color').value,qty:parseInt(document.getElementById('av-qty').value)||0,etsyId:document.getElementById('av-etsy').value.trim()};
+  if(key.startsWith('__solo__')){
+    const parts=key.split('__');const cat=parts[2];const id=parseInt(parts[3]);
+    const x=findSolo(cat,id);if(x){x.variants=x.variants||[];x.variants.push(v);}
+    saveSoloItems();
+  } else {
+    if(!S.inventory[key]) return;
+    S.inventory[key].variants=S.inventory[key].variants||[];
+    S.inventory[key].variants.push(v);
+    saveInventory();
+  }
+  closeModal('variantModal'); refreshAll();
+}
+function rmVar(key,vi){S.inventory[key].variants.splice(vi,1);saveInventory();refreshAll();}
+
+// OTHER COMPONENTS
+function adjOther(id,d){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,o.qty+d);saveOtherComponents();renderOtherComps();renderAlerts();}}
+function setOther(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
+function setOtherThr(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.threshold=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
+function rmOther(id){S.otherComponents=S.otherComponents.filter(x=>x.id!==id);saveOtherComponents();renderOtherComps();renderAlerts();}
+function openAddOther(){openEditOther(null);}
+function openEditOther(id){
+  const o=id?S.otherComponents.find(x=>x.id===id):null;
+  document.getElementById('otherCompTitle').textContent=o?'Edit Component':'Add Other Component';
+  document.getElementById('oc-id').value=o?o.id:'';
+  document.getElementById('oc-name').value=o?o.name:'';
+  document.getElementById('oc-cat').value=o?o.cat:'Clicker';
+  document.getElementById('oc-qty').value=o?o.qty:0;
+  document.getElementById('oc-thr').value=o?o.threshold:10;
+  document.getElementById('oc-unit').value=o?o.unit:'pcs';
+  document.getElementById('oc-notes').value=o?o.notes:'';
+  document.getElementById('otherCompModal').classList.add('open');
+}
+function saveOtherComp(){
+  const idStr=document.getElementById('oc-id').value;
+  const data={name:document.getElementById('oc-name').value.trim()||'Component',cat:document.getElementById('oc-cat').value,qty:parseInt(document.getElementById('oc-qty').value)||0,threshold:parseInt(document.getElementById('oc-thr').value)||10,unit:document.getElementById('oc-unit').value||'pcs',notes:document.getElementById('oc-notes').value.trim()};
+  if(idStr){const o=S.otherComponents.find(x=>x.id===parseInt(idStr));if(o)Object.assign(o,data);}
+  else S.otherComponents.push({id:S.nextOtherId++,...data});
+  saveOtherComponents(); saveMeta(); closeModal('otherCompModal'); renderOtherComps(); renderAlerts();
+}
+
+// FILAMENT
+function setFilamentRemaining(id,v){const f=S.filament.find(x=>x.id===id);if(!f)return;f.remaining=Math.max(0,Math.min(f.spoolSize,parseInt(v)||0));saveFilamentData();renderFilament();renderAlerts();}
+function adjFilamentSpools(id,d){const f=S.filament.find(x=>x.id===id);if(!f)return;f.spools=Math.max(0,f.spools+d);if(d>0)f.remaining=f.spoolSize;saveFilamentData();renderFilament();renderAlerts();}
+function rmFilament(id){S.filament=S.filament.filter(x=>x.id!==id);saveFilamentData();renderFilament();renderAlerts();}
+function openAddFilament(){openEditFilament(null);}
+function openEditFilament(id){
+  const f=id?S.filament.find(x=>x.id===id):null;
+  document.getElementById('filamentModalTitle').textContent=f?'Edit Spool':'Add Filament Spool';
+  document.getElementById('fl-id').value=f?f.id:'';
+  document.getElementById('fl-mfr').value=f?f.mfr:'';
+  document.getElementById('fl-type').value=f?f.type:'PLA';
+  document.getElementById('fl-colorname').value=f?f.colorName:'';
+  document.getElementById('fl-color').value=f?f.color:'#e85d26';
+  document.getElementById('fl-spoolsize').value=f?String(f.spoolSize):'1000';
+  document.getElementById('fl-customWrap').style.display='none';
+  document.getElementById('fl-spools').value=f?f.spools:1;
+  document.getElementById('fl-remaining').value=f?f.remaining:1000;
+  document.getElementById('fl-alert').value=f?f.alertAt:200;
+  document.getElementById('fl-dia').value=f?f.dia:'1.75';
+  document.getElementById('fl-notes').value=f?f.notes:'';
+  document.getElementById('filamentModal').classList.add('open');
+}
+function saveFilament(){
+  const idStr=document.getElementById('fl-id').value;
+  const spoolVal=document.getElementById('fl-spoolsize').value;
+  const spoolSize=spoolVal==='custom'?(parseInt(document.getElementById('fl-customsize').value)||1000):parseInt(spoolVal)||1000;
+  const data={mfr:document.getElementById('fl-mfr').value.trim()||'Unknown',type:document.getElementById('fl-type').value,colorName:document.getElementById('fl-colorname').value.trim()||'Color',color:document.getElementById('fl-color').value,spoolSize,spools:parseInt(document.getElementById('fl-spools').value)||1,remaining:parseInt(document.getElementById('fl-remaining').value)||spoolSize,alertAt:parseInt(document.getElementById('fl-alert').value)||200,dia:document.getElementById('fl-dia').value,notes:document.getElementById('fl-notes').value.trim()};
+  if(idStr){const f=S.filament.find(x=>x.id===parseInt(idStr));if(f)Object.assign(f,data);}
+  else S.filament.push({id:S.nextFilamentId++,...data});
+  saveFilamentData(); saveMeta(); closeModal('filamentModal'); renderFilament(); renderAlerts();
+}
+
+// SOLO ADD/EDIT
+let _editSoloCat=null;
+function openAddSolo(cat){openEditSolo(cat,null);}
+function openEditSolo(cat,id){
+  _editSoloCat=cat;
+  const x=id?findSolo(cat,id):null;
+  document.getElementById('soloModalTitle').textContent=x?'Edit Standalone Item':'Add Standalone Item';
+  document.getElementById('so-id').value=x?x.id:'';
+  document.getElementById('so-cat').value=cat;
+  document.getElementById('so-name').value=x?x.name:'';
+  document.getElementById('so-sub').value=x?x.sub:'';
+  document.getElementById('so-size').value=x?x.size:'';
+  document.getElementById('so-plo').value=x?x.priceLo:0;
+  document.getElementById('so-phi').value=x?x.priceHi:0;
+  document.getElementById('so-qty').value=x?x.qty:0;
+  document.getElementById('so-etsy').value=x?x.etsyId:'';
+  document.getElementById('so-printer').value=x?x.printer:'any';
+  document.getElementById('so-color').value=x?x.color:'#e85d26';
+  document.getElementById('so-tags').value=x?x.tags:'';
+  document.getElementById('soloModal').classList.add('open');
+}
+function saveSolo(){
+  const cat=document.getElementById('so-cat').value;
+  const idStr=document.getElementById('so-id').value;
+  const data={cat,name:document.getElementById('so-name').value.trim()||'Item',sub:document.getElementById('so-sub').value.trim(),size:document.getElementById('so-size').value.trim(),priceLo:parseFloat(document.getElementById('so-plo').value)||0,priceHi:parseFloat(document.getElementById('so-phi').value)||0,qty:parseInt(document.getElementById('so-qty').value)||0,etsyId:document.getElementById('so-etsy').value.trim(),color:document.getElementById('so-color').value,printer:document.getElementById('so-printer').value,tags:document.getElementById('so-tags').value.trim(),synced:false};
+  if(!S.soloItems[cat]) S.soloItems[cat]=[];
+  if(idStr){const x=findSolo(cat,parseInt(idStr));if(x)Object.assign(x,data);}
+  else{S.soloItems[cat].push({id:S.nextSoloId++,...data,variants:[]});saveMeta();}
+  saveSoloItems(); closeModal('soloModal'); refreshAll();
+}
+
+// PACK EDIT
+function openEdit(pk){
+  const pack=S.packs[pk];
+  document.getElementById('ep-key').value=pk;
+  document.getElementById('editModalTitle').textContent=`✏ Edit: ${pack.name}`;
+  document.getElementById('ep-name').value=pack.name;
+  document.getElementById('ep-size').value=pack.size;
+  document.getElementById('ep-emoji').value=pack.emoji;
+  renderETiers(pk); renderEComps(pk);
+  document.getElementById('editModal').classList.add('open');
+}
+function renderETiers(pk){
+  document.getElementById('epTierList').innerHTML=S.packs[pk].tiers.map((t,i)=>`
+    <div class="ter">
+      <input class="fi" value="${t.name}" placeholder="Tier name" style="flex:2;min-width:110px;padding:6px 9px" oninput="S.packs['${pk}'].tiers[${i}].name=this.value">
+      <input class="fi" value="${t.subtitle}" placeholder="Subtitle" style="flex:2;min-width:100px;padding:6px 9px;font-size:12px" oninput="S.packs['${pk}'].tiers[${i}].subtitle=this.value">
+      <div style="display:flex;align-items:center;gap:3px;flex-shrink:0">
+        <span style="color:var(--text-muted);font-size:13px;font-weight:700">$</span>
+        <input class="fi" type="number" step="0.01" value="${t.price.toFixed(2)}" style="width:75px;padding:6px 7px;font-family:'Exo 2',sans-serif;font-weight:700" oninput="S.packs['${pk}'].tiers[${i}].price=parseFloat(this.value)||0">
+      </div>
+      <input class="fi" value="${t.etsyId}" placeholder="Etsy ID" style="width:95px;padding:6px 8px;font-size:12px" oninput="S.packs['${pk}'].tiers[${i}].etsyId=this.value">
+      <button class="cedel" onclick="delTier('${pk}',${i})">×</button>
+    </div>`).join('');
+}
+function renderEComps(pk){
+  document.getElementById('epCompList').innerHTML=Object.entries(S.packs[pk].composition).map(([k,v])=>`
+    <div class="cer">
+      <span class="cen">${v.label} <span style="font-size:10px;color:var(--text-dim)">[${k}]</span></span>
+      ${v.twopart?'<span style="font-size:10px;color:var(--c-warn);background:rgba(232,160,32,.12);padding:1px 6px;border-radius:10px">2-part</span>':''}
+      <span style="font-size:11px;color:var(--text-muted);flex-shrink:0">qty:</span>
+      <input class="ceq" type="number" min="1" value="${v.qty}" onchange="S.packs['${pk}'].composition['${k}'].qty=parseInt(this.value)||1">
+      <button class="cedel" onclick="delComp('${pk}','${k}')">×</button>
+    </div>`).join('');
+}
+function addTierRow(){const pk=document.getElementById('ep-key').value;S.packs[pk].tiers.push({id:'t'+Date.now(),name:'New Tier',subtitle:'',price:0,etsyId:'',synced:false});renderETiers(pk);}
+function delTier(pk,i){S.packs[pk].tiers.splice(i,1);renderETiers(pk);}
+function delComp(pk,k){delete S.packs[pk].composition[k];renderEComps(pk);}
+function addComp(){
+  const pk=document.getElementById('ep-key').value;
+  const name=document.getElementById('ep-cn').value.trim(); if(!name) return;
+  const qty=parseInt(document.getElementById('ep-cq').value)||1;
+  const twopart=document.getElementById('ep-c2p').checked;
+  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  S.packs[pk].composition[key]={label:name,qty,twopart};
+  if(!S.inventory[key]) S.inventory[key]={qty:0,threshold:10,twopart,parts:twopart?{}:{},variants:[],combos:[],partColors:{}};
+  document.getElementById('ep-cn').value='';
+  document.getElementById('ep-cq').value=1;
+  document.getElementById('ep-c2p').checked=false;
+  renderEComps(pk);
+}
+function saveEdit(){
+  const pk=document.getElementById('ep-key').value;
+  S.packs[pk].name=document.getElementById('ep-name').value.trim()||S.packs[pk].name;
+  S.packs[pk].size=parseInt(document.getElementById('ep-size').value)||10;
+  S.packs[pk].emoji=document.getElementById('ep-emoji').value||S.packs[pk].emoji;
+  savePacks(); closeModal('editModal'); refreshAll(); renderPackConfig();
+}
+
+// NEW PACK
+function openNewPack(){document.getElementById('np-name').value='';document.getElementById('newPackModal').classList.add('open');}
+function saveNewPack(){
+  const name=document.getElementById('np-name').value.trim();if(!name){alert('Enter a name');return;}
+  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const color=document.getElementById('np-color').value;
+  const emoji=document.getElementById('np-emoji').value||'📦';
+  S.packs[key]={name,size:parseInt(document.getElementById('np-size').value)||10,emoji,color,tiers:[{id:'t'+Date.now(),name:'Standard',subtitle:'',price:0,etsyId:'',synced:false}],composition:{}};
+  savePacks();
+  const ni=document.createElement('div');
+  ni.className='ni';ni.dataset.p=key;ni.innerHTML=`<span class="ni-icon">${emoji}</span><span class="ni-label">${name}</span>`;
+  ni.onclick=()=>{nav(key);};
+  document.getElementById('sidebar').querySelector('.ns:last-of-type').before(ni);
+  const pg=document.createElement('div');
+  pg.className='page';pg.id='page-'+key;
+  pg.innerHTML=`<div class="sh"><div class="sht">${emoji} ${name}</div><button class="btn btn-g" onclick="openEdit('${key}')">✏ Edit Pack</button></div>
+    <div class="trow" id="${key}Tiers"></div>
+    <div class="card" style="padding:14px"><div class="cgrid" id="${key}CG"></div></div>
+    <div class="pgrid" id="${key}Grid"></div>`;
+  document.getElementById('content').appendChild(pg);
+  closeModal('newPackModal');renderPackConfig();nav(key);setTimeout(()=>renderTiers(key,key+'Tiers'),50);
+}
+
+// NEW COMPONENT
+function openAddComp(){document.getElementById('nc-name').value='';document.getElementById('nc-qty').value=0;document.getElementById('addCompModal').classList.add('open');}
+function saveNewComp(){
+  const name=document.getElementById('nc-name').value.trim();if(!name)return;
+  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const twopart=document.getElementById('nc-2p').value==='yes';
+  S.inventory[key]={qty:parseInt(document.getElementById('nc-qty').value)||0,threshold:parseInt(document.getElementById('nc-thr').value)||10,twopart,parts:twopart?{}:{},variants:[],combos:[],partColors:{}};
+  saveInventory();closeModal('addCompModal');renderAllComps();renderAlerts();
+}
+
+// ETSY
+function connectEtsy(){
+  if(!document.getElementById('etsyKey').value.trim()){alert('Paste your Etsy API Key first.');return;}
+  S.etsy.connected=true;
+  document.getElementById('etsyDot').classList.add('on');
+  document.getElementById('etsyTxt').textContent='Etsy: Connected';
+  alert('✅ API key saved!\n\nComplete OAuth 2.0 via the Etsy Developer Portal:\n1. Open your app on etsy.com/developers\n2. Click "Authorize" and approve access\n3. Etsy redirects back — access token stored\n\nYou can now use Sync buttons on tier and solo item cards.');
+}
+
+// MODALS
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mbg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
+
+// FULL REFRESH
+function refreshAll(){
+  renderOverview();
+  renderPackPage('classic');renderPackPage('standard');renderPackPage('premium');renderPackPage('dino');
+  renderSoloDragonPage();renderAshbonePage();
+  renderAllComps();renderOtherComps();renderFilament();
+  renderAlerts();
+}
+
+// ── KICK OFF ──────────────────────────────────────────────────
+initFirebase();
+</script>
+</body>
+</html>
