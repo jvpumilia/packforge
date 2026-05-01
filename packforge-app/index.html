@@ -1051,11 +1051,15 @@ function bootApp() {
   for(const [key, inv] of Object.entries(S.inventory)){
     if(!CLICKER_KEYS.includes(key)) ensureMisc(inv);
   }
-  // Always save inventory on boot so Misc persists to Firestore
-  // Small delay to ensure Firebase auth is fully settled
-  setTimeout(() => saveInventory(), 800);
+  // Render immediately so Misc shows up right away
   refreshAll();
   renderPackConfig();
+  // Then save to Firestore so Misc persists (delay lets auth settle)
+  setTimeout(() => {
+    saveInventory();
+    // Re-render after save to confirm state
+    refreshAll();
+  }, 1200);
   document.getElementById('fl-spoolsize').addEventListener('change', function(){
     document.getElementById('fl-customWrap').style.display = this.value === 'custom' ? '' : 'none';
   });
@@ -1230,8 +1234,9 @@ function renderCard(key, label, col){
       <button class="addbtn" style="margin-top:6px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openPartColor('${key}','')">+ Add Color Combo</button>
     </div>`;
   } else {
+    // Always ensure Misc exists before rendering, even if not yet saved
+    if(!isClicker) ensureMisc(inv);
     const variants = inv.variants || [];
-    // Ensure Misc variant always exists as the last item
     const hasMisc = variants.some(v => v.name === 'Misc');
     const varTotal = variants.reduce((s,v)=>s+v.qty,0);
     colorHtml=`<div class="varsec">
