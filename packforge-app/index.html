@@ -1234,16 +1234,21 @@ function renderCard(key, label, col){
       <button class="addbtn" style="margin-top:6px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openPartColor('${key}','')">+ Add Color Combo</button>
     </div>`;
   } else {
-    // Always ensure Misc exists before rendering, even if not yet saved
-    if(!isClicker) ensureMisc(inv);
-    const variants = inv.variants || [];
-    const hasMisc = variants.some(v => v.name === 'Misc');
-    const varTotal = variants.reduce((s,v)=>s+v.qty,0);
+    } else {
+    const storedVariants = (inv.variants || []).filter(v => v.name !== 'Misc');
+    const storedMisc = (inv.variants || []).find(v => v.name === 'Misc');
+    const miscQty = storedMisc ? storedMisc.qty : 0;
+    const displayVariants = [
+      ...storedVariants,
+      {name:'Misc', color:'#4a5068', qty:miscQty, etsyId:''}
+    ];
+    inv.variants = displayVariants;
+    const varTotal = displayVariants.reduce((s,v)=>s+v.qty, 0);
     colorHtml=`<div class="varsec">
       <div class="varl">Color Variants</div>
       <div style="display:flex;flex-direction:column;gap:0;margin-top:5px">
-        ${variants.map((v,vi)=>`
-          <div class="vrow${v.name==='Misc'?' vrow-misc-row':''}">
+        ${displayVariants.map((v,vi)=>`
+          <div class="vrow">
             <div class="vrow-swatch" style="background:${v.color}"></div>
             <span class="vrow-name${v.name==='Misc'?' vrow-misc':''}">${v.name}</span>
             <div class="vrow-qw">
@@ -1254,7 +1259,7 @@ function renderCard(key, label, col){
             ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditVar('${key}',${vi})" title="Edit">✏</button>`:''}
             ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmVar('${key}',${vi})" title="Remove">×</button>`:''}
           </div>`).join('')}
-        ${!hasMisc?`<div style="font-size:10px;color:var(--text-dim);padding:2px 4px">Misc row auto-appears on next save</div>`:''}
+        
       </div>
       <div class="var-total-row">
         <span class="var-total-lbl">Total across variants</span>
@@ -1264,7 +1269,7 @@ function renderCard(key, label, col){
     </div>`;
   }
 
-  const hasVariants = !isClicker && (inv.variants||[]).length > 0;
+ const hasVariants = !isClicker;
   return `<div class="pcard ${cls}" id="pc-${key}">
     <div class="pch"><div class="pcn">${label}</div><span class="sb ${bc}">${bt}</span></div>
     <div class="qrow">
