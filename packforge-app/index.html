@@ -1047,17 +1047,13 @@ function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nex
 // BOOT APP — called after data is loaded
 // ══════════════════════════════════════════════════════════════
 function bootApp() {
-  // Ensure every non-clicker inventory item has a Misc variant
-  // and save back to Firestore if any were missing
-  let miscAdded = false;
+  // Add Misc variant to every non-clicker inventory item
   for(const [key, inv] of Object.entries(S.inventory)){
-    if(!CLICKER_KEYS.includes(key)){
-      const before = (inv.variants||[]).length;
-      ensureMisc(inv);
-      if((inv.variants||[]).length > before) miscAdded = true;
-    }
+    if(!CLICKER_KEYS.includes(key)) ensureMisc(inv);
   }
-  if(miscAdded) saveInventory();
+  // Always save inventory on boot so Misc persists to Firestore
+  // Small delay to ensure Firebase auth is fully settled
+  setTimeout(() => saveInventory(), 800);
   refreshAll();
   renderPackConfig();
   document.getElementById('fl-spoolsize').addEventListener('change', function(){
@@ -1692,7 +1688,7 @@ function rmSoloVar(cat,id,vi){const x=findSolo(cat,id);if(x){x.variants.splice(v
 // VARIANTS
 // Ensure every non-clicker inventory item has a Misc variant
 function ensureMisc(inv){
-  if(!inv||CLICKER_KEYS.some(k=>S.inventory[k]===inv)) return;
+  if(!inv) return;
   if(!inv.variants) inv.variants=[];
   if(!inv.variants.find(v=>v.name==='Misc'))
     inv.variants.push({name:'Misc',color:'#4a5068',qty:0,etsyId:''});
