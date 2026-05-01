@@ -99,6 +99,49 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .ham-btn:hover{color:var(--text)}
 @media(max-width:600px){.ham-btn{display:flex;align-items:center}}
 
+/* MOBILE FONT SIZES */
+@media(max-width:600px){
+  body{font-size:17px}
+  .pcn{font-size:16px!important}
+  .ql{font-size:13px!important;min-width:96px!important}
+  .qval{font-size:16px!important}
+  .qbtn{font-size:18px!important;padding:6px 12px!important}
+  .pbl{font-size:12px!important}
+  .prn{font-size:13px!important;min-width:70px!important}
+  .prq{font-size:14px!important}
+  .thl{font-size:13px!important}
+  .thi{font-size:14px!important;width:62px!important}
+  .varl{font-size:12px!important}
+  .vchip,.vrow-name{font-size:13px!important}
+  .vrow-qty{font-size:15px!important}
+  .pb{font-size:14px!important;padding:3px 10px!important}
+  .sb{font-size:12px!important;padding:3px 9px!important}
+  .asm strong{font-size:16px!important}
+  .sht{font-size:19px!important}
+  .tname{font-size:16px!important}
+  .tsub{font-size:13px!important}
+  .priceinput{font-size:17px!important}
+  .treadyl{font-size:12px!important}
+  .tready{font-size:32px!important}
+  .strategy-note{font-size:14px!important}
+  .rcl{font-size:12px!important}
+  .rcc{font-size:52px!important}
+  .rcs{font-size:13px!important}
+  .btn{font-size:15px!important;padding:9px 18px!important}
+  .bsm{font-size:13px!important;padding:6px 13px!important}
+  .sc-name{font-size:17px!important}
+  .sc-sub{font-size:13px!important}
+  .igh-title{font-size:16px!important}
+  .igh-count{font-size:13px!important}
+  .sort-btn{font-size:13px!important;padding:6px 14px!important}
+  .addrow{font-size:15px!important}
+  .f-name{font-size:16px!important}
+  .f-mfr{font-size:13px!important}
+  .f-weight-input{font-size:15px!important;width:88px!important}
+  .f-meta-chip{font-size:13px!important}
+  .content{padding:14px 12px!important;gap:14px!important}
+}
+
 /* INVENTORY GROUPS */
 .inv-group{display:flex;flex-direction:column;gap:0}
 .inv-group-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;user-select:none;transition:.15s}
@@ -204,6 +247,23 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .vremove:hover{color:var(--c-alert)}
 .addbtn{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
 .addbtn:hover{border-color:var(--border2);color:var(--text-muted)}
+
+/* EDITABLE VARIANT ROWS */
+.vrow{display:flex;align-items:center;gap:7px;background:var(--surface3);border-radius:7px;padding:6px 9px;margin-bottom:5px}
+.vrow-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)}
+.vrow-name{flex:1;font-size:12px;font-weight:700;color:var(--text)}
+.vrow-misc{color:var(--text-dim);font-style:italic}
+.vrow-qw{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.vrow-qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:14px;line-height:1;transition:.15s}
+.vrow-qbtn:hover{background:var(--border);color:var(--text)}
+.vrow-qty{background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:3px 0;width:38px;outline:none}
+.vrow-edit{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 3px;transition:.15s}
+.vrow-edit:hover{color:var(--text)}
+.vrow-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 2px;transition:.15s}
+.vrow-del:hover{color:var(--c-alert)}
+.var-total-row{display:flex;align-items:center;justify-content:space-between;margin-top:4px;padding-top:6px;border-top:1px solid var(--border)}
+.var-total-lbl{font-size:11px;color:var(--text-muted);font-weight:600}
+.var-total-val{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
 .pc-chip{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px 2px 4px;font-size:11px;font-weight:600;cursor:default}
 .pc-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
 .pc-qty{font-family:'Exo 2',sans-serif;font-weight:700;font-size:11px;color:var(--text-muted)}
@@ -570,15 +630,16 @@ select.fi option{background:var(--surface2)}
 <!-- MODALS -->
 <div class="mbg" id="variantModal">
 <div class="modal" style="width:380px">
-  <div class="mt">Add Color Variant</div>
+  <div class="mt" id="varModalTitle">Add Color Variant</div>
   <input type="hidden" id="av-key">
+  <input type="hidden" id="av-vi">
   <div class="fg"><label class="fl">Variant Name</label><input class="fi" id="av-name" placeholder="e.g. Red, Galaxy Blue"></div>
   <div class="fr2">
     <div class="fg"><label class="fl">Color</label><input class="fi" id="av-color" type="color" value="#e85d26"></div>
     <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="av-qty" type="number" value="0" min="0"></div>
   </div>
   <div class="fg"><label class="fl">Etsy Listing ID (optional)</label><input class="fi" id="av-etsy" placeholder="1234567890"></div>
-  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" onclick="saveVariant()">Add Variant</button></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" id="av-save-btn" onclick="saveVariant()">Add Variant</button></div>
 </div></div>
 
 <div class="mbg" id="partColorModal">
@@ -982,6 +1043,10 @@ function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nex
 // BOOT APP — called after data is loaded
 // ══════════════════════════════════════════════════════════════
 function bootApp() {
+  // Ensure every non-clicker inventory item has a Misc variant
+  for(const [key, inv] of Object.entries(S.inventory)){
+    if(!CLICKER_KEYS.includes(key)) ensureMisc(inv);
+  }
   refreshAll();
   renderPackConfig();
   document.getElementById('fl-spoolsize').addEventListener('change', function(){
@@ -1158,27 +1223,46 @@ function renderCard(key, label, col){
       <button class="addbtn" style="margin-top:6px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openPartColor('${key}','')">+ Add Color Combo</button>
     </div>`;
   } else {
-    colorHtml=`<div class="varsec"><div class="varl">Color Variants</div>
-      <div class="varrow">
-        ${(inv.variants||[]).map((v,vi)=>`
-          <span class="vchip">
-            <div class="vswatch" style="background:${v.color}"></div>${v.name} (${v.qty})
-            <button class="vremove" onclick="rmVar('${key}',${vi})">×</button>
-          </span>`).join('')}
-        <button class="addbtn" onclick="openVar('${key}')">+ color</button>
+    const variants = inv.variants || [];
+    // Ensure Misc variant always exists as the last item
+    const hasMisc = variants.some(v => v.name === 'Misc');
+    const varTotal = variants.reduce((s,v)=>s+v.qty,0);
+    colorHtml=`<div class="varsec">
+      <div class="varl">Color Variants</div>
+      <div style="display:flex;flex-direction:column;gap:0;margin-top:5px">
+        ${variants.map((v,vi)=>`
+          <div class="vrow${v.name==='Misc'?' vrow-misc-row':''}">
+            <div class="vrow-swatch" style="background:${v.color}"></div>
+            <span class="vrow-name${v.name==='Misc'?' vrow-misc':''}">${v.name}</span>
+            <div class="vrow-qw">
+              <button class="vrow-qbtn" onclick="adjVar('${key}',${vi},-1)">−</button>
+              <input class="vrow-qty" type="number" min="0" value="${v.qty}" oninput="setVar('${key}',${vi},this.value)">
+              <button class="vrow-qbtn" onclick="adjVar('${key}',${vi},1)">+</button>
+            </div>
+            ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditVar('${key}',${vi})" title="Edit">✏</button>`:''}
+            ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmVar('${key}',${vi})" title="Remove">×</button>`:''}
+          </div>`).join('')}
+        ${!hasMisc?`<div style="font-size:10px;color:var(--text-dim);padding:2px 4px">Misc row auto-appears on next save</div>`:''}
       </div>
+      <div class="var-total-row">
+        <span class="var-total-lbl">Total across variants</span>
+        <span class="var-total-val">${varTotal}</span>
+      </div>
+      <button class="addbtn" style="margin-top:7px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openVar('${key}')">+ Add Color Variant</button>
     </div>`;
   }
 
+  const hasVariants = !isClicker && (inv.variants||[]).length > 0;
   return `<div class="pcard ${cls}" id="pc-${key}">
     <div class="pch"><div class="pcn">${label}</div><span class="sb ${bc}">${bt}</span></div>
     <div class="qrow">
-      <span class="ql">Complete Units</span>
-      <div class="qw">
+      <span class="ql">${hasVariants?'Total Units':'Complete Units'}</span>
+      <div class="qw" style="${hasVariants?'opacity:.6;pointer-events:none':''}">
         <button class="qbtn" onclick="adjQ('${key}',-1)">−</button>
-        <input class="qval" type="number" min="0" value="${inv.qty}" oninput="setQ('${key}',this.value)">
+        <input class="qval" type="number" min="0" value="${inv.qty}" oninput="setQ('${key}',this.value)" ${hasVariants?'readonly':''}>
         <button class="qbtn" onclick="adjQ('${key}',1)">+</button>
       </div>
+      ${hasVariants?`<span style="font-size:10px;color:var(--text-dim);margin-left:6px">auto from variants</span>`:''}
     </div>
     ${partsHtml}${colorHtml}
     <div class="thr">
@@ -1200,9 +1284,17 @@ function renderSoloCard(item){
     ?'<span class="printer-badge pb-h2c">H2C Only</span>'
     :'<span class="printer-badge pb-any">Any Printer</span>';
   const varChips=(item.variants||[]).map((v,vi)=>`
-    <span class="vchip"><div class="vswatch" style="background:${v.color}"></div>${v.name}(${v.qty})
-      <button class="vremove" onclick="rmSoloVar('${item.cat}',${item.id},${vi})">×</button>
-    </span>`).join('');
+    <div class="vrow">
+      <div class="vrow-swatch" style="background:${v.color}"></div>
+      <span class="vrow-name${v.name==='Misc'?' vrow-misc':''}">${v.name}</span>
+      <div class="vrow-qw">
+        <button class="vrow-qbtn" onclick="adjSoloVar('${item.cat}',${item.id},${vi},-1)">−</button>
+        <input class="vrow-qty" type="number" min="0" value="${v.qty}" oninput="setSoloVar('${item.cat}',${item.id},${vi},this.value)">
+        <button class="vrow-qbtn" onclick="adjSoloVar('${item.cat}',${item.id},${vi},1)">+</button>
+      </div>
+      ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditSoloVar('${item.cat}',${item.id},${vi})" title="Edit">✏</button>`:''}
+      ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmSoloVar('${item.cat}',${item.id},${vi})" title="Remove">×</button>`:''}
+    </div>`).join('');
   return `<div class="solocard ${cls}">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${col},transparent)"></div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px">
@@ -1225,7 +1317,9 @@ function renderSoloCard(item){
     ${item.tags?`<div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5">🔍 ${item.tags}</div>`:''}
     <div class="varsec" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
       <div class="varl">Color Variants</div>
-      <div class="varrow">${varChips}<button class="addbtn" onclick="openVar('__solo__${item.cat}__${item.id}')">+ color</button></div>
+      <div style="display:flex;flex-direction:column;gap:0;margin-top:5px">${varChips}</div>
+      ${(item.variants||[]).length>0?`<div class="var-total-row"><span class="var-total-lbl">Total across variants</span><span class="var-total-val">${(item.variants||[]).reduce((s,v)=>s+v.qty,0)}</span></div>`:''}
+      <button class="addbtn" style="margin-top:7px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openVar('__solo__${item.cat}__${item.id}')">+ Add Color Variant</button>
     </div>
     <div class="sc-actions">
       <button class="syncbtn${item.synced?' synced':''}" onclick="syncSolo('${item.cat}',${item.id})" style="margin-top:0">${item.synced?'✓ Synced':'↑ Sync to Etsy'}</button>
@@ -1585,25 +1679,125 @@ function rmSolo(cat,id){S.soloItems[cat]=S.soloItems[cat].filter(x=>x.id!==id);s
 function rmSoloVar(cat,id,vi){const x=findSolo(cat,id);if(x){x.variants.splice(vi,1);saveSoloItems();refreshAll();}}
 
 // VARIANTS
-function openVar(key){document.getElementById('av-key').value=key;document.getElementById('av-name').value='';document.getElementById('av-qty').value=0;document.getElementById('av-etsy').value='';document.getElementById('variantModal').classList.add('open');}
+// Ensure every non-clicker inventory item has a Misc variant
+function ensureMisc(inv){
+  if(!inv||CLICKER_KEYS.some(k=>S.inventory[k]===inv)) return;
+  if(!inv.variants) inv.variants=[];
+  if(!inv.variants.find(v=>v.name==='Misc'))
+    inv.variants.push({name:'Misc',color:'#4a5068',qty:0,etsyId:''});
+}
+
+// Recalc total qty from variants for non-clicker items
+function syncVarTotal(key){
+  const inv=S.inventory[key]; if(!inv||!inv.variants||CLICKER_KEYS.includes(key)) return;
+  inv.qty=inv.variants.reduce((s,v)=>s+v.qty,0);
+}
+
+function adjVar(key,vi,d){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  inv.variants[vi].qty=Math.max(0,inv.variants[vi].qty+d);
+  syncVarTotal(key); saveInventory(); refreshAll();
+}
+function setVar(key,vi,v){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  inv.variants[vi].qty=Math.max(0,parseInt(v)||0);
+  syncVarTotal(key); saveInventory(); refreshAll();
+}
+function rmVar(key,vi){
+  const inv=S.inventory[key]; if(!inv) return;
+  inv.variants.splice(vi,1);
+  syncVarTotal(key); saveInventory(); refreshAll();
+}
+
+function openVar(key){
+  document.getElementById('av-key').value=key;
+  document.getElementById('av-vi').value='';
+  document.getElementById('varModalTitle').textContent='Add Color Variant';
+  document.getElementById('av-save-btn').textContent='Add Variant';
+  document.getElementById('av-name').value='';
+  document.getElementById('av-qty').value=0;
+  document.getElementById('av-etsy').value='';
+  document.getElementById('av-color').value='#e85d26';
+  document.getElementById('variantModal').classList.add('open');
+}
+function openEditVar(key,vi){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  const v=inv.variants[vi];
+  document.getElementById('av-key').value=key;
+  document.getElementById('av-vi').value=vi;
+  document.getElementById('varModalTitle').textContent='Edit Color Variant';
+  document.getElementById('av-save-btn').textContent='Save Changes';
+  document.getElementById('av-name').value=v.name;
+  document.getElementById('av-color').value=v.color;
+  document.getElementById('av-qty').value=v.qty;
+  document.getElementById('av-etsy').value=v.etsyId||'';
+  document.getElementById('variantModal').classList.add('open');
+}
+function openEditSoloVar(cat,id,vi){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  const v=x.variants[vi];
+  document.getElementById('av-key').value=`__solo__${cat}__${id}`;
+  document.getElementById('av-vi').value=vi;
+  document.getElementById('varModalTitle').textContent='Edit Color Variant';
+  document.getElementById('av-save-btn').textContent='Save Changes';
+  document.getElementById('av-name').value=v.name;
+  document.getElementById('av-color').value=v.color;
+  document.getElementById('av-qty').value=v.qty;
+  document.getElementById('av-etsy').value=v.etsyId||'';
+  document.getElementById('variantModal').classList.add('open');
+}
 function saveVariant(){
   const key=document.getElementById('av-key').value;
-  const v={name:document.getElementById('av-name').value.trim()||'Unnamed',color:document.getElementById('av-color').value,qty:parseInt(document.getElementById('av-qty').value)||0,etsyId:document.getElementById('av-etsy').value.trim()};
+  const viStr=document.getElementById('av-vi').value;
+  const v={
+    name:document.getElementById('av-name').value.trim()||'Unnamed',
+    color:document.getElementById('av-color').value,
+    qty:parseInt(document.getElementById('av-qty').value)||0,
+    etsyId:document.getElementById('av-etsy').value.trim()
+  };
   if(key.startsWith('__solo__')){
     const parts=key.split('__');const cat=parts[2];const id=parseInt(parts[3]);
-    const x=findSolo(cat,id);if(x){x.variants=x.variants||[];x.variants.push(v);}
+    const x=findSolo(cat,id);
+    if(x){
+      x.variants=x.variants||[];
+      if(viStr!==''){x.variants[parseInt(viStr)]=v;}
+      else x.variants.push(v);
+    }
     saveSoloItems();
   } else {
     if(!S.inventory[key]) return;
     S.inventory[key].variants=S.inventory[key].variants||[];
-    S.inventory[key].variants.push(v);
+    if(viStr!==''){
+      S.inventory[key].variants[parseInt(viStr)]=v;
+    } else {
+      // Insert before Misc
+      const miscIdx=S.inventory[key].variants.findIndex(x=>x.name==='Misc');
+      if(miscIdx>=0) S.inventory[key].variants.splice(miscIdx,0,v);
+      else S.inventory[key].variants.push(v);
+    }
+    syncVarTotal(key);
     saveInventory();
   }
   closeModal('variantModal'); refreshAll();
 }
-function rmVar(key,vi){S.inventory[key].variants.splice(vi,1);saveInventory();refreshAll();}
 
-// OTHER COMPONENTS
+// Solo variant adj/set
+function adjSoloVar(cat,id,vi,d){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  x.variants[vi].qty=Math.max(0,x.variants[vi].qty+d);
+  x.qty=x.variants.reduce((s,v)=>s+v.qty,0);
+  saveSoloItems(); refreshAll();
+}
+function setSoloVar(cat,id,vi,v){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  x.variants[vi].qty=Math.max(0,parseInt(v)||0);
+  x.qty=x.variants.reduce((s,v)=>s+v.qty,0);
+  saveSoloItems(); refreshAll();
+}
+function rmSoloVar(cat,id,vi){
+  const x=findSolo(cat,id);
+  if(x){x.variants.splice(vi,1);x.qty=x.variants.reduce((s,v)=>s+v.qty,0);saveSoloItems();refreshAll();}
+}
 function adjOther(id,d){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,o.qty+d);saveOtherComponents();renderOtherComps();renderAlerts();}}
 function setOther(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
 function setOtherThr(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.threshold=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
@@ -1780,6 +1974,7 @@ function saveNewComp(){
   const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
   const twopart=document.getElementById('nc-2p').value==='yes';
   S.inventory[key]={qty:parseInt(document.getElementById('nc-qty').value)||0,threshold:parseInt(document.getElementById('nc-thr').value)||10,twopart,parts:twopart?{}:{},variants:[],combos:[],partColors:{}};
+  if(!twopart&&!CLICKER_KEYS.includes(key)) ensureMisc(S.inventory[key]);
   saveInventory();closeModal('addCompModal');renderAllComps();renderAlerts();
 }
 
