@@ -204,6 +204,23 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .vremove:hover{color:var(--c-alert)}
 .addbtn{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
 .addbtn:hover{border-color:var(--border2);color:var(--text-muted)}
+
+/* EDITABLE VARIANT ROWS */
+.vrow{display:flex;align-items:center;gap:7px;background:var(--surface3);border-radius:7px;padding:6px 9px;margin-bottom:5px}
+.vrow-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)}
+.vrow-name{flex:1;font-size:12px;font-weight:700;color:var(--text)}
+.vrow-misc{color:var(--text-dim);font-style:italic}
+.vrow-qw{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.vrow-qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:14px;line-height:1;transition:.15s}
+.vrow-qbtn:hover{background:var(--border);color:var(--text)}
+.vrow-qty{background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:3px 0;width:38px;outline:none}
+.vrow-edit{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 3px;transition:.15s}
+.vrow-edit:hover{color:var(--text)}
+.vrow-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 2px;transition:.15s}
+.vrow-del:hover{color:var(--c-alert)}
+.var-total-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.var-total-lbl{font-size:11px;color:var(--text-muted);font-weight:600}
+.var-total-val{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
 .pc-chip{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px 2px 4px;font-size:11px;font-weight:600;cursor:default}
 .pc-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
 .pc-qty{font-family:'Exo 2',sans-serif;font-weight:700;font-size:11px;color:var(--text-muted)}
@@ -570,15 +587,16 @@ select.fi option{background:var(--surface2)}
 <!-- MODALS -->
 <div class="mbg" id="variantModal">
 <div class="modal" style="width:380px">
-  <div class="mt">Add Color Variant</div>
+  <div class="mt" id="varModalTitle">Add Color Variant</div>
   <input type="hidden" id="av-key">
+  <input type="hidden" id="av-vi">
   <div class="fg"><label class="fl">Variant Name</label><input class="fi" id="av-name" placeholder="e.g. Red, Galaxy Blue"></div>
   <div class="fr2">
     <div class="fg"><label class="fl">Color</label><input class="fi" id="av-color" type="color" value="#e85d26"></div>
     <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="av-qty" type="number" value="0" min="0"></div>
   </div>
   <div class="fg"><label class="fl">Etsy Listing ID (optional)</label><input class="fi" id="av-etsy" placeholder="1234567890"></div>
-  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" onclick="saveVariant()">Add Variant</button></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" id="av-save-btn" onclick="saveVariant()">Add Variant</button></div>
 </div></div>
 
 <div class="mbg" id="partColorModal">
@@ -1616,23 +1634,102 @@ function rmSolo(cat,id){S.soloItems[cat]=S.soloItems[cat].filter(x=>x.id!==id);s
 function rmSoloVar(cat,id,vi){const x=findSolo(cat,id);if(x){x.variants.splice(vi,1);saveSoloItems();refreshAll();}}
 
 // VARIANTS
-function openVar(key){document.getElementById('av-key').value=key;document.getElementById('av-name').value='';document.getElementById('av-qty').value=0;document.getElementById('av-etsy').value='';document.getElementById('variantModal').classList.add('open');}
+function adjVar(key,vi,d){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  inv.variants[vi].qty=Math.max(0,(inv.variants[vi].qty||0)+d);
+  inv.qty=inv.variants.reduce((s,v)=>s+(v.qty||0),0);
+  saveInventory(); refreshAll();
+}
+function setVar(key,vi,v){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  inv.variants[vi].qty=Math.max(0,parseInt(v)||0);
+  inv.qty=inv.variants.reduce((s,v)=>s+(v.qty||0),0);
+  saveInventory(); refreshAll();
+}
+function rmVar(key,vi){
+  const inv=S.inventory[key]; if(!inv) return;
+  inv.variants.splice(vi,1);
+  inv.qty=inv.variants.reduce((s,v)=>s+(v.qty||0),0);
+  saveInventory(); refreshAll();
+}
+function openVar(key){
+  document.getElementById('av-key').value=key;
+  document.getElementById('av-vi').value='';
+  document.getElementById('varModalTitle').textContent='Add Color Variant';
+  document.getElementById('av-save-btn').textContent='Add Variant';
+  document.getElementById('av-name').value='';
+  document.getElementById('av-qty').value=0;
+  document.getElementById('av-etsy').value='';
+  document.getElementById('av-color').value='#e85d26';
+  document.getElementById('variantModal').classList.add('open');
+}
+function openEditVar(key,vi){
+  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
+  const v=inv.variants[vi];
+  document.getElementById('av-key').value=key;
+  document.getElementById('av-vi').value=vi;
+  document.getElementById('varModalTitle').textContent='Edit Color Variant';
+  document.getElementById('av-save-btn').textContent='Save Changes';
+  document.getElementById('av-name').value=v.name;
+  document.getElementById('av-color').value=v.color;
+  document.getElementById('av-qty').value=v.qty||0;
+  document.getElementById('av-etsy').value=v.etsyId||'';
+  document.getElementById('variantModal').classList.add('open');
+}
+function openEditSoloVar(cat,id,vi){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  const v=x.variants[vi];
+  document.getElementById('av-key').value=`__solo__${cat}__${id}`;
+  document.getElementById('av-vi').value=vi;
+  document.getElementById('varModalTitle').textContent='Edit Color Variant';
+  document.getElementById('av-save-btn').textContent='Save Changes';
+  document.getElementById('av-name').value=v.name;
+  document.getElementById('av-color').value=v.color;
+  document.getElementById('av-qty').value=v.qty||0;
+  document.getElementById('av-etsy').value=v.etsyId||'';
+  document.getElementById('variantModal').classList.add('open');
+}
 function saveVariant(){
   const key=document.getElementById('av-key').value;
+  const viStr=document.getElementById('av-vi').value;
   const v={name:document.getElementById('av-name').value.trim()||'Unnamed',color:document.getElementById('av-color').value,qty:parseInt(document.getElementById('av-qty').value)||0,etsyId:document.getElementById('av-etsy').value.trim()};
   if(key.startsWith('__solo__')){
     const parts=key.split('__');const cat=parts[2];const id=parseInt(parts[3]);
-    const x=findSolo(cat,id);if(x){x.variants=x.variants||[];x.variants.push(v);}
+    const x=findSolo(cat,id);
+    if(x){x.variants=x.variants||[];if(viStr!=='')x.variants[parseInt(viStr)]=v;else x.variants.push(v);}
     saveSoloItems();
   } else {
     if(!S.inventory[key]) return;
-    S.inventory[key].variants=S.inventory[key].variants||[];
-    S.inventory[key].variants.push(v);
+    if(!S.inventory[key].variants) S.inventory[key].variants=[];
+    if(viStr!==''){
+      S.inventory[key].variants[parseInt(viStr)]=v;
+    } else {
+      // Insert before Misc
+      const miscIdx=S.inventory[key].variants.findIndex(x=>x.name==='Misc');
+      if(miscIdx>=0) S.inventory[key].variants.splice(miscIdx,0,v);
+      else S.inventory[key].variants.push(v);
+    }
+    S.inventory[key].qty=S.inventory[key].variants.reduce((s,v)=>s+(v.qty||0),0);
     saveInventory();
   }
   closeModal('variantModal'); refreshAll();
 }
-function rmVar(key,vi){S.inventory[key].variants.splice(vi,1);saveInventory();refreshAll();}
+function adjSoloVar(cat,id,vi,d){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  x.variants[vi].qty=Math.max(0,(x.variants[vi].qty||0)+d);
+  x.qty=x.variants.reduce((s,v)=>s+(v.qty||0),0);
+  saveSoloItems(); refreshAll();
+}
+function setSoloVar(cat,id,vi,v){
+  const x=findSolo(cat,id); if(!x||!x.variants) return;
+  x.variants[vi].qty=Math.max(0,parseInt(v)||0);
+  x.qty=x.variants.reduce((s,v)=>s+(v.qty||0),0);
+  saveSoloItems(); refreshAll();
+}
+function rmSoloVar(cat,id,vi){
+  const x=findSolo(cat,id);
+  if(x){x.variants.splice(vi,1);x.qty=x.variants.reduce((s,v)=>s+(v.qty||0),0);saveSoloItems();refreshAll();}
+}
 
 // OTHER COMPONENTS
 function adjOther(id,d){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,o.qty+d);saveOtherComponents();renderOtherComps();renderAlerts();}}
