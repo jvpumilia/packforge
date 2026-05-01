@@ -7,11 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pack Forge">
 <meta name="theme-color" content="#151820">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<!-- PACK FORGE v3.0 — editable variants, Misc row, mobile fonts -->
-<title>Pack Forge v3 — Inventory System</title>
+<title>Pack Forge — Inventory System</title>
 
 <!-- Firebase v9 compat (CDN — no build step needed) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -102,49 +98,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .ham-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:2px 6px;transition:.15s;line-height:1}
 .ham-btn:hover{color:var(--text)}
 @media(max-width:600px){.ham-btn{display:flex;align-items:center}}
-
-/* MOBILE FONT SIZES */
-@media(max-width:600px){
-  body{font-size:17px}
-  .pcn{font-size:16px!important}
-  .ql{font-size:13px!important;min-width:96px!important}
-  .qval{font-size:16px!important}
-  .qbtn{font-size:18px!important;padding:6px 12px!important}
-  .pbl{font-size:12px!important}
-  .prn{font-size:13px!important;min-width:70px!important}
-  .prq{font-size:14px!important}
-  .thl{font-size:13px!important}
-  .thi{font-size:14px!important;width:62px!important}
-  .varl{font-size:12px!important}
-  .vchip,.vrow-name{font-size:13px!important}
-  .vrow-qty{font-size:15px!important}
-  .pb{font-size:14px!important;padding:3px 10px!important}
-  .sb{font-size:12px!important;padding:3px 9px!important}
-  .asm strong{font-size:16px!important}
-  .sht{font-size:19px!important}
-  .tname{font-size:16px!important}
-  .tsub{font-size:13px!important}
-  .priceinput{font-size:17px!important}
-  .treadyl{font-size:12px!important}
-  .tready{font-size:32px!important}
-  .strategy-note{font-size:14px!important}
-  .rcl{font-size:12px!important}
-  .rcc{font-size:52px!important}
-  .rcs{font-size:13px!important}
-  .btn{font-size:15px!important;padding:9px 18px!important}
-  .bsm{font-size:13px!important;padding:6px 13px!important}
-  .sc-name{font-size:17px!important}
-  .sc-sub{font-size:13px!important}
-  .igh-title{font-size:16px!important}
-  .igh-count{font-size:13px!important}
-  .sort-btn{font-size:13px!important;padding:6px 14px!important}
-  .addrow{font-size:15px!important}
-  .f-name{font-size:16px!important}
-  .f-mfr{font-size:13px!important}
-  .f-weight-input{font-size:15px!important;width:88px!important}
-  .f-meta-chip{font-size:13px!important}
-  .content{padding:14px 12px!important;gap:14px!important}
-}
 
 /* INVENTORY GROUPS */
 .inv-group{display:flex;flex-direction:column;gap:0}
@@ -251,23 +204,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .vremove:hover{color:var(--c-alert)}
 .addbtn{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
 .addbtn:hover{border-color:var(--border2);color:var(--text-muted)}
-
-/* EDITABLE VARIANT ROWS */
-.vrow{display:flex;align-items:center;gap:7px;background:var(--surface3);border-radius:7px;padding:6px 9px;margin-bottom:5px}
-.vrow-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)}
-.vrow-name{flex:1;font-size:12px;font-weight:700;color:var(--text)}
-.vrow-misc{color:var(--text-dim);font-style:italic}
-.vrow-qw{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
-.vrow-qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:14px;line-height:1;transition:.15s}
-.vrow-qbtn:hover{background:var(--border);color:var(--text)}
-.vrow-qty{background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:3px 0;width:38px;outline:none}
-.vrow-edit{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 3px;transition:.15s}
-.vrow-edit:hover{color:var(--text)}
-.vrow-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 2px;transition:.15s}
-.vrow-del:hover{color:var(--c-alert)}
-.var-total-row{display:flex;align-items:center;justify-content:space-between;margin-top:4px;padding-top:6px;border-top:1px solid var(--border)}
-.var-total-lbl{font-size:11px;color:var(--text-muted);font-weight:600}
-.var-total-val{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
 .pc-chip{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px 2px 4px;font-size:11px;font-weight:600;cursor:default}
 .pc-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
 .pc-qty{font-family:'Exo 2',sans-serif;font-weight:700;font-size:11px;color:var(--text-muted)}
@@ -634,16 +570,15 @@ select.fi option{background:var(--surface2)}
 <!-- MODALS -->
 <div class="mbg" id="variantModal">
 <div class="modal" style="width:380px">
-  <div class="mt" id="varModalTitle">Add Color Variant</div>
+  <div class="mt">Add Color Variant</div>
   <input type="hidden" id="av-key">
-  <input type="hidden" id="av-vi">
   <div class="fg"><label class="fl">Variant Name</label><input class="fi" id="av-name" placeholder="e.g. Red, Galaxy Blue"></div>
   <div class="fr2">
     <div class="fg"><label class="fl">Color</label><input class="fi" id="av-color" type="color" value="#e85d26"></div>
     <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="av-qty" type="number" value="0" min="0"></div>
   </div>
   <div class="fg"><label class="fl">Etsy Listing ID (optional)</label><input class="fi" id="av-etsy" placeholder="1234567890"></div>
-  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" id="av-save-btn" onclick="saveVariant()">Add Variant</button></div>
+  <div class="ma"><button class="btn btn-g" onclick="closeModal('variantModal')">Cancel</button><button class="btn btn-p" onclick="saveVariant()">Add Variant</button></div>
 </div></div>
 
 <div class="mbg" id="partColorModal">
@@ -908,18 +843,18 @@ const DEFAULT_DATA = {
     }
   },
   inventory: {
-    wood_dragon:          { qty:0, threshold:5,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    shadowcoil_mini:      { qty:0, threshold:5,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    zephyros_247:         { qty:0, threshold:5,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
+    wood_dragon:          { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    shadowcoil_mini:      { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    zephyros_247:         { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
     dragon_egg_clicker:   { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
     flying_dragon_clicker:{ qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
     dino_egg_clicker:     { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
     flying_dino_clicker:  { qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
-    trex_skeleton:        { qty:0, threshold:8,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    raptor_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    triceratops_skeleton: { qty:0, threshold:8,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    stego_skeleton:       { qty:0, threshold:8,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
-    ankylo_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[{name:'Misc',color:'#4a5068',qty:0,etsyId:''}], combos:[], partColors:{} },
+    trex_skeleton:        { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    raptor_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    triceratops_skeleton: { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    stego_skeleton:       { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
+    ankylo_skeleton:      { qty:0, threshold:8,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
   },
   soloItems: {
     dragon: [
@@ -1047,19 +982,8 @@ function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nex
 // BOOT APP — called after data is loaded
 // ══════════════════════════════════════════════════════════════
 function bootApp() {
-  // Add Misc variant to every non-clicker inventory item
-  for(const [key, inv] of Object.entries(S.inventory)){
-    if(!CLICKER_KEYS.includes(key)) ensureMisc(inv);
-  }
-  // Render immediately so Misc shows up right away
   refreshAll();
   renderPackConfig();
-  // Then save to Firestore so Misc persists (delay lets auth settle)
-  setTimeout(() => {
-    saveInventory();
-    // Re-render after save to confirm state
-    refreshAll();
-  }, 1200);
   document.getElementById('fl-spoolsize').addEventListener('change', function(){
     document.getElementById('fl-customWrap').style.display = this.value === 'custom' ? '' : 'none';
   });
@@ -1234,7 +1158,6 @@ function renderCard(key, label, col){
       <button class="addbtn" style="margin-top:6px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openPartColor('${key}','')">+ Add Color Combo</button>
     </div>`;
   } else {
-    } else {
     const storedVariants = (inv.variants || []).filter(v => v.name !== 'Misc');
     const storedMisc = (inv.variants || []).find(v => v.name === 'Misc');
     const miscQty = storedMisc ? storedMisc.qty : 0;
@@ -1259,7 +1182,6 @@ function renderCard(key, label, col){
             ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditVar('${key}',${vi})" title="Edit">✏</button>`:''}
             ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmVar('${key}',${vi})" title="Remove">×</button>`:''}
           </div>`).join('')}
-        
       </div>
       <div class="var-total-row">
         <span class="var-total-lbl">Total across variants</span>
@@ -1269,7 +1191,7 @@ function renderCard(key, label, col){
     </div>`;
   }
 
- const hasVariants = !isClicker;
+  const hasVariants = !isClicker;
   return `<div class="pcard ${cls}" id="pc-${key}">
     <div class="pch"><div class="pcn">${label}</div><span class="sb ${bc}">${bt}</span></div>
     <div class="qrow">
@@ -1334,9 +1256,7 @@ function renderSoloCard(item){
     ${item.tags?`<div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5">🔍 ${item.tags}</div>`:''}
     <div class="varsec" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
       <div class="varl">Color Variants</div>
-      <div style="display:flex;flex-direction:column;gap:0;margin-top:5px">${varChips}</div>
-      ${(item.variants||[]).length>0?`<div class="var-total-row"><span class="var-total-lbl">Total across variants</span><span class="var-total-val">${(item.variants||[]).reduce((s,v)=>s+v.qty,0)}</span></div>`:''}
-      <button class="addbtn" style="margin-top:7px;width:100%;text-align:center;border-radius:7px;padding:5px" onclick="openVar('__solo__${item.cat}__${item.id}')">+ Add Color Variant</button>
+      <div class="varrow">${varChips}<button class="addbtn" onclick="openVar('__solo__${item.cat}__${item.id}')">+ color</button></div>
     </div>
     <div class="sc-actions">
       <button class="syncbtn${item.synced?' synced':''}" onclick="syncSolo('${item.cat}',${item.id})" style="margin-top:0">${item.synced?'✓ Synced':'↑ Sync to Etsy'}</button>
@@ -1696,125 +1616,25 @@ function rmSolo(cat,id){S.soloItems[cat]=S.soloItems[cat].filter(x=>x.id!==id);s
 function rmSoloVar(cat,id,vi){const x=findSolo(cat,id);if(x){x.variants.splice(vi,1);saveSoloItems();refreshAll();}}
 
 // VARIANTS
-// Ensure every non-clicker inventory item has a Misc variant
-function ensureMisc(inv){
-  if(!inv) return;
-  if(!inv.variants) inv.variants=[];
-  if(!inv.variants.find(v=>v.name==='Misc'))
-    inv.variants.push({name:'Misc',color:'#4a5068',qty:0,etsyId:''});
-}
-
-// Recalc total qty from variants for non-clicker items
-function syncVarTotal(key){
-  const inv=S.inventory[key]; if(!inv||!inv.variants||CLICKER_KEYS.includes(key)) return;
-  inv.qty=inv.variants.reduce((s,v)=>s+v.qty,0);
-}
-
-function adjVar(key,vi,d){
-  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
-  inv.variants[vi].qty=Math.max(0,inv.variants[vi].qty+d);
-  syncVarTotal(key); saveInventory(); refreshAll();
-}
-function setVar(key,vi,v){
-  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
-  inv.variants[vi].qty=Math.max(0,parseInt(v)||0);
-  syncVarTotal(key); saveInventory(); refreshAll();
-}
-function rmVar(key,vi){
-  const inv=S.inventory[key]; if(!inv) return;
-  inv.variants.splice(vi,1);
-  syncVarTotal(key); saveInventory(); refreshAll();
-}
-
-function openVar(key){
-  document.getElementById('av-key').value=key;
-  document.getElementById('av-vi').value='';
-  document.getElementById('varModalTitle').textContent='Add Color Variant';
-  document.getElementById('av-save-btn').textContent='Add Variant';
-  document.getElementById('av-name').value='';
-  document.getElementById('av-qty').value=0;
-  document.getElementById('av-etsy').value='';
-  document.getElementById('av-color').value='#e85d26';
-  document.getElementById('variantModal').classList.add('open');
-}
-function openEditVar(key,vi){
-  const inv=S.inventory[key]; if(!inv||!inv.variants) return;
-  const v=inv.variants[vi];
-  document.getElementById('av-key').value=key;
-  document.getElementById('av-vi').value=vi;
-  document.getElementById('varModalTitle').textContent='Edit Color Variant';
-  document.getElementById('av-save-btn').textContent='Save Changes';
-  document.getElementById('av-name').value=v.name;
-  document.getElementById('av-color').value=v.color;
-  document.getElementById('av-qty').value=v.qty;
-  document.getElementById('av-etsy').value=v.etsyId||'';
-  document.getElementById('variantModal').classList.add('open');
-}
-function openEditSoloVar(cat,id,vi){
-  const x=findSolo(cat,id); if(!x||!x.variants) return;
-  const v=x.variants[vi];
-  document.getElementById('av-key').value=`__solo__${cat}__${id}`;
-  document.getElementById('av-vi').value=vi;
-  document.getElementById('varModalTitle').textContent='Edit Color Variant';
-  document.getElementById('av-save-btn').textContent='Save Changes';
-  document.getElementById('av-name').value=v.name;
-  document.getElementById('av-color').value=v.color;
-  document.getElementById('av-qty').value=v.qty;
-  document.getElementById('av-etsy').value=v.etsyId||'';
-  document.getElementById('variantModal').classList.add('open');
-}
+function openVar(key){document.getElementById('av-key').value=key;document.getElementById('av-name').value='';document.getElementById('av-qty').value=0;document.getElementById('av-etsy').value='';document.getElementById('variantModal').classList.add('open');}
 function saveVariant(){
   const key=document.getElementById('av-key').value;
-  const viStr=document.getElementById('av-vi').value;
-  const v={
-    name:document.getElementById('av-name').value.trim()||'Unnamed',
-    color:document.getElementById('av-color').value,
-    qty:parseInt(document.getElementById('av-qty').value)||0,
-    etsyId:document.getElementById('av-etsy').value.trim()
-  };
+  const v={name:document.getElementById('av-name').value.trim()||'Unnamed',color:document.getElementById('av-color').value,qty:parseInt(document.getElementById('av-qty').value)||0,etsyId:document.getElementById('av-etsy').value.trim()};
   if(key.startsWith('__solo__')){
     const parts=key.split('__');const cat=parts[2];const id=parseInt(parts[3]);
-    const x=findSolo(cat,id);
-    if(x){
-      x.variants=x.variants||[];
-      if(viStr!==''){x.variants[parseInt(viStr)]=v;}
-      else x.variants.push(v);
-    }
+    const x=findSolo(cat,id);if(x){x.variants=x.variants||[];x.variants.push(v);}
     saveSoloItems();
   } else {
     if(!S.inventory[key]) return;
     S.inventory[key].variants=S.inventory[key].variants||[];
-    if(viStr!==''){
-      S.inventory[key].variants[parseInt(viStr)]=v;
-    } else {
-      // Insert before Misc
-      const miscIdx=S.inventory[key].variants.findIndex(x=>x.name==='Misc');
-      if(miscIdx>=0) S.inventory[key].variants.splice(miscIdx,0,v);
-      else S.inventory[key].variants.push(v);
-    }
-    syncVarTotal(key);
+    S.inventory[key].variants.push(v);
     saveInventory();
   }
   closeModal('variantModal'); refreshAll();
 }
+function rmVar(key,vi){S.inventory[key].variants.splice(vi,1);saveInventory();refreshAll();}
 
-// Solo variant adj/set
-function adjSoloVar(cat,id,vi,d){
-  const x=findSolo(cat,id); if(!x||!x.variants) return;
-  x.variants[vi].qty=Math.max(0,x.variants[vi].qty+d);
-  x.qty=x.variants.reduce((s,v)=>s+v.qty,0);
-  saveSoloItems(); refreshAll();
-}
-function setSoloVar(cat,id,vi,v){
-  const x=findSolo(cat,id); if(!x||!x.variants) return;
-  x.variants[vi].qty=Math.max(0,parseInt(v)||0);
-  x.qty=x.variants.reduce((s,v)=>s+v.qty,0);
-  saveSoloItems(); refreshAll();
-}
-function rmSoloVar(cat,id,vi){
-  const x=findSolo(cat,id);
-  if(x){x.variants.splice(vi,1);x.qty=x.variants.reduce((s,v)=>s+v.qty,0);saveSoloItems();refreshAll();}
-}
+// OTHER COMPONENTS
 function adjOther(id,d){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,o.qty+d);saveOtherComponents();renderOtherComps();renderAlerts();}}
 function setOther(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.qty=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
 function setOtherThr(id,v){const o=S.otherComponents.find(x=>x.id===id);if(o){o.threshold=Math.max(0,parseInt(v)||0);saveOtherComponents();renderAlerts();}}
@@ -1991,7 +1811,6 @@ function saveNewComp(){
   const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
   const twopart=document.getElementById('nc-2p').value==='yes';
   S.inventory[key]={qty:parseInt(document.getElementById('nc-qty').value)||0,threshold:parseInt(document.getElementById('nc-thr').value)||10,twopart,parts:twopart?{}:{},variants:[],combos:[],partColors:{}};
-  if(!twopart&&!CLICKER_KEYS.includes(key)) ensureMisc(S.inventory[key]);
   saveInventory();closeModal('addCompModal');renderAllComps();renderAlerts();
 }
 
@@ -2018,9 +1837,6 @@ function refreshAll(){
 }
 
 // ── KICK OFF ──────────────────────────────────────────────────
-// Version check — if old cached JS is running this will be missing
-window.PACKFORGE_VERSION = '3.0';
-console.log('Pack Forge v3.0 loaded — editable variants active');
 initFirebase();
 </script>
 </body>
