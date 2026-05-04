@@ -708,7 +708,9 @@ select.fi option{background:var(--surface2)}
   <div style="font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px">Components (qty per pack)</div>
   <div class="cel" id="epCompList"></div>
   <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
-    <input class="fi" id="ep-cn" placeholder="Component name…" style="flex:1;min-width:140px">
+    <select class="fi" id="ep-cn" style="flex:1;min-width:160px">
+      <option value="">— Select a component —</option>
+    </select>
     <input class="fi" id="ep-cq" type="number" value="1" min="1" style="width:60px;text-align:center">
     <label style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;flex-shrink:0;cursor:pointer"><input type="checkbox" id="ep-c2p" style="cursor:pointer"> 2-part</label>
     <button class="btn btn-g" onclick="addComp()">Add</button>
@@ -1294,12 +1296,24 @@ function setGrouping(g){
   const el=document.getElementById('grp-'+g); if(el) el.classList.add('active');
   renderAllComps();
 }
-const COMP_GROUPS_TYPE=[
-  {id:'dragons',        label:'Dragons',        icon:'🐉', color:'#e85d26', keys:['wood_dragon','shadowcoil_mini','zephyros_247']},
-  {id:'dragon_clickers',label:'Dragon Clickers',icon:'🥚', color:'#e85d26', keys:['dragon_egg_clicker','flying_dragon_clicker']},
-  {id:'dino_skeletons', label:'Dino Skeletons', icon:'🦴', color:'#2eb87a', keys:['trex_skeleton','raptor_skeleton','triceratops_skeleton','stego_skeleton','ankylo_skeleton']},
-  {id:'dino_clickers',  label:'Dino Clickers',  icon:'🥚', color:'#2eb87a', keys:['dino_egg_clicker','flying_dino_clicker']},
-];
+// Build groups dynamically from all inventory keys
+function getCompGroups(){
+  // Start with pack-based groups to preserve ordering
+  const packGroups = Object.entries(S.packs).map(([pk,pack])=>({
+    id:'pack_'+pk, label:pack.name, icon:pack.emoji, color:pack.color,
+    keys:Object.keys(pack.composition).filter(k=>S.inventory[k])
+  })).filter(g=>g.keys.length);
+
+  // Find any inventory keys not in any pack (custom/new items)
+  const allPackKeys = new Set(Object.values(S.packs).flatMap(p=>Object.keys(p.composition)));
+  const orphanKeys = Object.keys(S.inventory).filter(k=>!allPackKeys.has(k));
+
+  if(orphanKeys.length){
+    packGroups.push({id:'custom',label:'Other Components',icon:'📦',color:'var(--text-muted)',keys:orphanKeys});
+  }
+  return packGroups;
+}
+
 function getGroupBadge(keys){
   let hasCrit=false,hasWarn=false;
   keys.forEach(k=>{const s=compStatus(k);if(s==='crit')hasCrit=true;else if(s==='low')hasWarn=true;});
@@ -1335,24 +1349,23 @@ function renderAllComps(){
   const container=document.getElementById('allCompGrid');
   container.style.display='flex'; container.style.flexDirection='column'; container.style.gap='10px';
   function getLabel(k){ for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; } return k.replace(/_/g,' '); }
-  function getCol(k){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return '#e85d26'; }
+  function getCol(k){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return 'var(--text-muted)'; }
+
+  const allKeys=[...new Set([
+    ...Object.values(S.packs).flatMap(p=>Object.keys(p.composition)),
+    ...Object.keys(S.inventory)
+  ])].filter(k=>S.inventory[k]);
 
   if(currentGrouping==='flat'){
-    const allKeys=[...new Set(Object.values(S.packs).flatMap(p=>Object.keys(p.composition)))];
     container.innerHTML=`<div class="pgrid">${allKeys.map(k=>renderCard(k,getLabel(k),getCol(k))).join('')}</div>`;
     return;
   }
-  if(currentGrouping==='type'){
-    container.innerHTML=COMP_GROUPS_TYPE.map(g=>renderGroup(g,true)).join(''); return;
-  }
-  if(currentGrouping==='pack'){
-    container.innerHTML=Object.entries(S.packs).map(([pk,pack])=>{
-      const keys=Object.keys(pack.composition).filter(k=>S.inventory[k]);
-      return renderGroup({id:'pack_'+pk,label:pack.name,icon:pack.emoji,color:pack.color,keys},true);
-    }).join(''); return;
+  if(currentGrouping==='type' || currentGrouping==='pack'){
+    container.innerHTML=getCompGroups().map(g=>renderGroup(g,true)).join('');
+    if(!container.innerHTML.trim()) container.innerHTML='<div style="color:var(--text-dim);padding:20px;font-size:13px">No components found.</div>';
+    return;
   }
   if(currentGrouping==='status'){
-    const allKeys=[...new Set(Object.values(S.packs).flatMap(p=>Object.keys(p.composition)))];
     const crits=allKeys.filter(k=>compStatus(k)==='crit');
     const lows=allKeys.filter(k=>compStatus(k)==='low');
     const oks=allKeys.filter(k=>compStatus(k)==='ok');
@@ -1508,6 +1521,7 @@ function renderPackConfig(){
           ${t.etsyId?`<div style="font-size:10px;color:#f1641e;margin-top:2px">🛍 ${t.etsyId}</div>`:''}
         </div>`).join('')}
       </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">Components (qty per pack)</div>
       <div class="cgrid">${Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}×${v.twopart?'<span style="font-size:9px;color:var(--text-dim)"> [2p]</span>':''}</span></div>`).join('')}</div>
     </div>`).join('');
 }
@@ -1828,6 +1842,23 @@ function openEdit(pk){
   document.getElementById('ep-name').value=pack.name;
   document.getElementById('ep-size').value=pack.size;
   document.getElementById('ep-emoji').value=pack.emoji;
+  // Populate component dropdown with all inventory items not already in this pack
+  const sel=document.getElementById('ep-cn');
+  sel.innerHTML='<option value="">— Select a component —</option>';
+  const inPack=new Set(Object.keys(pack.composition));
+  // Get all inventory keys with labels
+  const allItems=Object.keys(S.inventory).map(k=>{
+    let label=k;
+    for(const p of Object.values(S.packs)){if(p.composition[k]){label=p.composition[k].label;break;}}
+    return {key:k,label,twopart:S.inventory[k].twopart||false};
+  }).sort((a,b)=>a.label.localeCompare(b.label));
+  allItems.forEach(item=>{
+    const opt=document.createElement('option');
+    opt.value=item.key;
+    opt.textContent=item.label+(item.twopart?' [2-part]':'');
+    if(inPack.has(item.key)) opt.disabled=true;
+    sel.appendChild(opt);
+  });
   renderETiers(pk); renderEComps(pk);
   document.getElementById('editModal').classList.add('open');
 }
@@ -1859,13 +1890,18 @@ function delTier(pk,i){S.packs[pk].tiers.splice(i,1);renderETiers(pk);}
 function delComp(pk,k){delete S.packs[pk].composition[k];renderEComps(pk);}
 function addComp(){
   const pk=document.getElementById('ep-key').value;
-  const name=document.getElementById('ep-cn').value.trim(); if(!name) return;
+  const sel=document.getElementById('ep-cn');
+  const key=sel.value; if(!key){alert('Select a component first.');return;}
   const qty=parseInt(document.getElementById('ep-cq').value)||1;
-  const twopart=document.getElementById('ep-c2p').checked;
-  const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-  S.packs[pk].composition[key]={label:name,qty,twopart};
-  if(!S.inventory[key]) S.inventory[key]={qty:0,threshold:10,twopart,parts:twopart?{}:{},variants:[],combos:[],partColors:{}};
-  document.getElementById('ep-cn').value='';
+  const twopart=document.getElementById('ep-c2p').checked||S.inventory[key]?.twopart||false;
+  // Get label from inventory or pack composition
+  let label=key;
+  for(const p of Object.values(S.packs)){if(p.composition[key]){label=p.composition[key].label;break;}}
+  S.packs[pk].composition[key]={label,qty,twopart};
+  // Disable this option in the dropdown now
+  const opt=sel.querySelector(`option[value="${key}"]`);
+  if(opt) opt.disabled=true;
+  sel.value='';
   document.getElementById('ep-cq').value=1;
   document.getElementById('ep-c2p').checked=false;
   renderEComps(pk);
