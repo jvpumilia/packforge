@@ -171,6 +171,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .pcard.critical{border-color:rgba(232,58,58,.5);background:rgba(232,58,58,.03)}
 .pch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px;gap:7px}
 .pcn{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;line-height:1.2}
+.pcn-edit{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;background:var(--surface3);border:1px solid var(--c-dragon);border-radius:5px;color:var(--text);padding:2px 7px;outline:none;width:100%;min-width:0}
+.pcn-edit-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:0 3px;line-height:1;transition:.15s;flex-shrink:0}
+.pcn-edit-btn:hover{color:var(--text)}
 .sb{font-size:10px;font-weight:700;letter-spacing:.7px;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:2px}
 .sb.ok{background:rgba(46,184,122,.15);color:var(--c-dino)}.sb.low{background:rgba(232,160,32,.15);color:var(--c-warn)}.sb.crit{background:rgba(232,58,58,.2);color:var(--c-alert)}
 .qrow{display:flex;align-items:center;gap:7px;margin-bottom:8px}
@@ -1212,8 +1215,16 @@ function renderCard(key, label, col){
   }
 
   const hasVariants = !isClicker;
+  // Use customLabel stored on inventory item if available, else passed label
+  const displayLabel = inv.customLabel || label;
   return `<div class="pcard ${cls}" id="pc-${key}">
-    <div class="pch"><div class="pcn">${label}</div><span class="sb ${bc}">${bt}</span></div>
+    <div class="pch">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;gap:5px">
+        <div class="pcn" id="pcn-${key}">${displayLabel}</div>
+        <button class="pcn-edit-btn" onclick="startEditName('${key}')" title="Rename">✏</button>
+      </div>
+      <span class="sb ${bc}">${bt}</span>
+    </div>
     <div class="qrow">
       <span class="ql">${hasVariants?'Total Units':'Complete Units'}</span>
       <div class="qw" style="${hasVariants?'opacity:.6;pointer-events:none':''}">
@@ -1324,7 +1335,6 @@ function getGroupBadge(keys){
 function renderGroup(group, open=true){
   const keys=group.keys.filter(k=>S.inventory[k]); if(!keys.length) return '';
   const badge=getGroupBadge(keys);
-  function getLabel(k){ for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; } return k.replace(/_/g,' '); }
   return `<div class="inv-group">
     <div class="inv-group-header${open?' open':''}" onclick="toggleGroup('${group.id}')">
       <span class="igh-icon">${group.icon}</span>
@@ -1348,7 +1358,11 @@ function toggleGroup(id){
 function renderAllComps(){
   const container=document.getElementById('allCompGrid');
   container.style.display='flex'; container.style.flexDirection='column'; container.style.gap='10px';
-  function getLabel(k){ for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; } return k.replace(/_/g,' '); }
+function getLabel(k){
+  if(S.inventory[k]&&S.inventory[k].customLabel) return S.inventory[k].customLabel;
+  for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; }
+  return k.replace(/_/g,' ');
+}
   function getCol(k){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return 'var(--text-muted)'; }
 
   const allKeys=[...new Set([
@@ -1553,6 +1567,33 @@ function setPart(key,pname,v){
   saveInventory(); refreshAll();
 }
 function setThr(key,v){ if(S.inventory[key]){S.inventory[key].threshold=Math.max(0,parseInt(v)||0); saveInventory(); renderAlerts();} }
+
+function startEditName(key){
+  const inv=S.inventory[key]; if(!inv) return;
+  const nameDiv=document.getElementById('pcn-'+key); if(!nameDiv) return;
+  const currentLabel=inv.customLabel||(()=>{for(const p of Object.values(S.packs)){if(p.composition[key])return p.composition[key].label;}return key.replace(/_/g,' ');})();
+  // Replace name div with input
+  nameDiv.outerHTML=`<input class="pcn-edit" id="pcn-input-${key}" value="${currentLabel}"
+    onblur="saveEditName('${key}',this.value)"
+    onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){this.value='${currentLabel}';this.blur();}"
+  >`;
+  const input=document.getElementById('pcn-input-'+key);
+  if(input){input.focus();input.select();}
+}
+
+function saveEditName(key, newLabel){
+  newLabel=newLabel.trim();
+  if(!newLabel||!S.inventory[key]) return refreshAll();
+  // Store on inventory item
+  S.inventory[key].customLabel=newLabel;
+  // Also update any pack composition labels that reference this key
+  for(const pack of Object.values(S.packs)){
+    if(pack.composition[key]) pack.composition[key].label=newLabel;
+  }
+  saveInventory();
+  savePacks();
+  refreshAll();
+}
 
 function adjCombo(key,ci,d){
   const inv=S.inventory[key]; if(!inv||!inv.combos) return;
@@ -1847,11 +1888,9 @@ function openEdit(pk){
   sel.innerHTML='<option value="">— Select a component —</option>';
   const inPack=new Set(Object.keys(pack.composition));
   // Get all inventory keys with labels
-  const allItems=Object.keys(S.inventory).map(k=>{
-    let label=k;
-    for(const p of Object.values(S.packs)){if(p.composition[k]){label=p.composition[k].label;break;}}
-    return {key:k,label,twopart:S.inventory[k].twopart||false};
-  }).sort((a,b)=>a.label.localeCompare(b.label));
+  const allItems=Object.keys(S.inventory).map(k=>({
+    key:k, label:getLabel(k), twopart:S.inventory[k].twopart||false
+  })).sort((a,b)=>a.label.localeCompare(b.label));
   allItems.forEach(item=>{
     const opt=document.createElement('option');
     opt.value=item.key;
@@ -1894,9 +1933,8 @@ function addComp(){
   const key=sel.value; if(!key){alert('Select a component first.');return;}
   const qty=parseInt(document.getElementById('ep-cq').value)||1;
   const twopart=document.getElementById('ep-c2p').checked||S.inventory[key]?.twopart||false;
-  // Get label from inventory or pack composition
-  let label=key;
-  for(const p of Object.values(S.packs)){if(p.composition[key]){label=p.composition[key].label;break;}}
+  // Get label from inventory customLabel, pack composition, or key
+  const label = getLabel(key);
   S.packs[pk].composition[key]={label,qty,twopart};
   // Disable this option in the dropdown now
   const opt=sel.querySelector(`option[value="${key}"]`);
