@@ -1239,6 +1239,7 @@ function renderCard(key, label, col){
       <span class="thl">⚠ Alert below</span>
       <input class="thi" type="number" min="0" value="${inv.threshold}" onchange="setThr('${key}',this.value)">
       <span style="font-size:10px;color:var(--text-dim)">units</span>
+      <button class="bsm bsm-r" style="margin-left:auto" onclick="deleteComponent('${key}')" title="Delete component">🗑 Delete</button>
     </div>
   </div>`;
 }
@@ -1524,7 +1525,10 @@ function renderPackConfig(){
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
         <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px">${pack.emoji} ${pack.name} <span style="font-size:11px;color:var(--text-dim)">(size ${pack.size})</span></div>
-        <button class="btn btn-g" onclick="openEdit('${pk}')">✏ Edit Pack</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-g" onclick="openEdit('${pk}')">✏ Edit Pack</button>
+          <button class="bsm bsm-r" onclick="deletePack('${pk}')" title="Delete pack">🗑 Delete</button>
+        </div>
       </div>
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">Price Tiers</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:11px">
@@ -1584,10 +1588,50 @@ function startEditName(key){
 function saveEditName(key, newLabel){
   newLabel=newLabel.trim();
   if(!newLabel||!S.inventory[key]) return refreshAll();
-  // Store on inventory item
   S.inventory[key].customLabel=newLabel;
-  // Also update any pack composition labels that reference this key
   for(const pack of Object.values(S.packs)){
+    if(pack.composition[key]) pack.composition[key].label=newLabel;
+  }
+  saveInventory();
+  savePacks();
+  refreshAll();
+}
+
+function deleteComponent(key){
+  const label=getLabel(key);
+  // Check if used in any pack
+  const usedIn=Object.entries(S.packs).filter(([,p])=>p.composition[key]).map(([,p])=>p.name);
+  let msg=`Delete "${label}"?`;
+  if(usedIn.length) msg+=`\n\nWarning: this component is used in ${usedIn.join(', ')}. It will be removed from those packs too.`;
+  if(!confirm(msg)) return;
+  // Remove from inventory
+  delete S.inventory[key];
+  // Remove from all pack compositions
+  for(const pack of Object.values(S.packs)){
+    delete pack.composition[key];
+  }
+  saveInventory();
+  savePacks();
+  refreshAll();
+  renderPackConfig();
+}
+
+function deletePack(pk){
+  const pack=S.packs[pk];
+  if(!confirm(`Delete pack "${pack.name}"?\n\nThis removes the pack configuration only. Component inventory is not affected.`)) return;
+  // Remove from sidebar nav
+  const navItem=document.querySelector(`.ni[data-p="${pk}"]`);
+  if(navItem) navItem.remove();
+  // Remove from page content
+  const page=document.getElementById('page-'+pk);
+  if(page) page.remove();
+  // Remove from state
+  delete S.packs[pk];
+  savePacks();
+  renderPackConfig();
+  renderAlerts();
+  nav('packconfig');
+}
     if(pack.composition[key]) pack.composition[key].label=newLabel;
   }
   saveInventory();
