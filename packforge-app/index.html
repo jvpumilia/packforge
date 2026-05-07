@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pack Forge">
 <meta name="theme-color" content="#151820">
-<title>Pack Forge — Inventory System</title>
+<title>Pack Forge â Inventory System</title>
 
-<!-- Firebase v9 compat (CDN — no build step needed) -->
+<!-- Firebase v9 compat (CDN â no build step needed) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -96,173 +96,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .tag-solo{background:rgba(123,94,167,.15);color:var(--c-single);border:1px solid rgba(123,94,167,.3)}
 .ns{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-dim);padding:10px 15px 3px;text-transform:uppercase;transition:opacity .15s,height .15s}
 .ham-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:2px 6px;transition:.15s;line-height:1}
-.ham-btn:hover{color:var(--text)}
+ .ham-btn:hover{color:var(--text)}
 @media(max-width:600px){.ham-btn{display:flex;align-items:center}}
 
-/* INVENTORY GROUPS */
-.inv-group{display:flex;flex-direction:column;gap:0}
-.inv-group-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;user-select:none;transition:.15s}
-.inv-group-header:hover{border-color:var(--border2);background:var(--surface3)}
-.inv-group-header.open{border-radius:9px 9px 0 0;border-bottom-color:transparent}
-.igh-icon{font-size:16px;flex-shrink:0}.igh-title{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;flex:1}
-.igh-count{font-size:11px;color:var(--text-muted);font-weight:600}
-.igh-alert{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(232,58,58,.15);color:var(--c-alert);border:1px solid rgba(232,58,58,.3)}
-.igh-warn{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(232,160,32,.12);color:var(--c-warn);border:1px solid rgba(232,160,32,.3)}
-.igh-chevron{font-size:12px;color:var(--text-dim);transition:transform .2s;flex-shrink:0}
-.igh-chevron.open{transform:rotate(180deg)}
-.inv-group-body{background:var(--surface2);border:1px solid var(--border);border-radius:0 0 9px 9px;padding:12px;display:none;margin-bottom:10px}
-.inv-group-body.open{display:block}
-.sort-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.sort-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
-.sort-btn:hover{border-color:var(--border2);color:var(--text)}
-.sort-btn.active{background:rgba(232,93,38,.12);border-color:rgba(232,93,38,.3);color:var(--c-dragon)}
-
-/* CONTENT */
-.content{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:18px}
-.page{display:none;flex-direction:column;gap:18px}.page.active{display:flex}
-
-/* CARDS */
-.card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:18px}
-.sh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.sht{font-family:'Exo 2',sans-serif;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.7px}
-.pill-pack{background:rgba(232,93,38,.12);color:var(--c-dragon);border:1px solid rgba(232,93,38,.3)}
-.pill-dino{background:rgba(46,184,122,.12);color:var(--c-dino);border:1px solid rgba(46,184,122,.3)}
-.pill-solo{background:rgba(123,94,167,.12);color:var(--c-single);border:1px solid rgba(123,94,167,.3)}
-.pill-prem{background:rgba(196,154,42,.12);color:var(--c-premium);border:1px solid rgba(196,154,42,.3)}
-.astrip{background:linear-gradient(135deg,rgba(232,58,58,.1),rgba(232,160,32,.06));border:1px solid rgba(232,58,58,.3);border-radius:10px;padding:11px 15px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.ast{font-family:'Exo 2',sans-serif;font-weight:700;font-size:12px;color:var(--c-alert);margin-right:5px}
-.ac{border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600}
-.ac.crit{background:rgba(232,58,58,.15);color:#ff7070;border:1px solid rgba(232,58,58,.3)}
-.ac.warn{background:rgba(232,160,32,.12);color:var(--c-warn);border:1px solid rgba(232,160,32,.3)}
-
-/* READY CARDS */
-.rrow{display:flex;gap:12px;flex-wrap:wrap}
-.rcard{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px 20px;flex:1;min-width:165px;position:relative;overflow:hidden;cursor:pointer;transition:.2s}
-.rcard:hover{border-color:var(--border2)}
-.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.rcl{font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px}
-.rcc{font-family:'Exo 2',sans-serif;font-weight:900;font-size:44px;line-height:1;margin-bottom:2px}
-.rcs{font-size:11px;color:var(--text-muted)}
-
-/* TIER CARDS */
-.trow{display:flex;gap:12px;flex-wrap:wrap}
-.tcard{flex:1;min-width:190px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;position:relative;overflow:hidden;transition:.2s}
-.tcard:hover{border-color:var(--border2)}
-.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.tname{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;margin-bottom:2px}
-.tsub{font-size:11px;color:var(--text-muted);margin-bottom:11px}
-.tpr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
-.tpl{font-size:11px;color:var(--text-muted);font-weight:600;min-width:82px}
-.priceinput{background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;padding:5px 9px;width:100px;outline:none}
-.priceinput:focus{border-color:var(--c-dino)}
-.eidsinput{background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:5px 9px;width:125px;outline:none}
-.eidsinput:focus{border-color:#f1641e}
-.tready{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;line-height:1;margin-bottom:1px}
-.treadyl{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
-.syncbtn{margin-top:9px;background:rgba(241,100,30,.1);border:1px solid rgba(241,100,30,.3);color:#f1641e;border-radius:6px;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s;width:100%;justify-content:center}
-.syncbtn:hover{background:rgba(241,100,30,.2)}
-.syncbtn.synced{background:rgba(46,184,122,.1);border-color:rgba(46,184,122,.3);color:var(--c-dino)}
-
-/* PRODUCT GRID & CARDS */
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
-.pcard{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;transition:.2s}
-.pcard.low{border-color:rgba(232,160,32,.45);background:rgba(232,160,32,.02)}
-.pcard.critical{border-color:rgba(232,58,58,.5);background:rgba(232,58,58,.03)}
-.pch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px;gap:7px}
-.pcn{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;line-height:1.2}
-.pcn-edit{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;background:var(--surface3);border:1px solid var(--c-dragon);border-radius:5px;color:var(--text);padding:2px 7px;outline:none;width:100%;min-width:0}
-.pcn-edit-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:0 3px;line-height:1;transition:.15s;flex-shrink:0}
-.pcn-edit-btn:hover{color:var(--text)}
-.sb{font-size:10px;font-weight:700;letter-spacing:.7px;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:2px}
-.sb.ok{background:rgba(46,184,122,.15);color:var(--c-dino)}.sb.low{background:rgba(232,160,32,.15);color:var(--c-warn)}.sb.crit{background:rgba(232,58,58,.2);color:var(--c-alert)}
-.qrow{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.ql{font-size:11px;color:var(--text-muted);min-width:88px;font-weight:600}
-.qw{display:flex;align-items:center;background:var(--surface3);border:1px solid var(--border);border-radius:6px;overflow:hidden;flex:1}
-.qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:5px 9px;font-size:15px;line-height:1;transition:.15s}
-.qbtn:hover{background:var(--border);color:var(--text)}
-.qval{flex:1;background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:4px 0;width:44px;outline:none}
-.pbox{background:var(--surface3);border-radius:7px;padding:9px 11px;margin-top:5px}
-.pbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px}
-.pr{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.prn{font-size:11px;color:var(--text-muted);min-width:60px;font-weight:600;text-transform:capitalize}
-.barw{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.barf{height:100%;border-radius:3px;transition:width .3s}
-.prq{font-family:'Exo 2',sans-serif;font-weight:700;font-size:12px;min-width:22px;text-align:right}
-.prbtns{display:flex;gap:3px}
-.pb{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:4px;font-size:12px;padding:1px 7px;cursor:pointer;line-height:1.4;transition:.15s}
-.pb:hover{color:var(--text);border-color:var(--border2)}
-.asm{margin-top:6px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
-.asm strong{font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;color:var(--text)}
-.thr{display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
-.thl{font-size:11px;color:var(--text-dim);font-weight:600}
-.thi{background:var(--surface3);border:1px solid var(--border);border-radius:5px;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:3px 7px;width:52px;outline:none}
-.thi:focus{border-color:var(--c-warn);color:var(--text)}
-.varsec{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
-.varl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px}
-.varrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-.vchip{display:flex;align-items:center;gap:4px;background:var(--surface3);border:1px solid var(--border);border-radius:20px;padding:3px 9px 3px 5px;font-size:11px;font-weight:600}
-.vswatch{width:11px;height:11px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
-.vremove{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 3px;transition:.15s}
-.vremove:hover{color:var(--c-alert)}
-.addbtn{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
-.addbtn:hover{border-color:var(--border2);color:var(--text-muted)}
-
-/* EDITABLE VARIANT ROWS */
-.vrow{display:flex;align-items:center;gap:7px;background:var(--surface3);border-radius:7px;padding:6px 9px;margin-bottom:5px}
-.vrow-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)}
-.vrow-name{flex:1;font-size:12px;font-weight:700;color:var(--text)}
-.vrow-misc{color:var(--text-dim);font-style:italic}
-.vrow-qw{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
-.vrow-qbtn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:14px;line-height:1;transition:.15s}
-.vrow-qbtn:hover{background:var(--border);color:var(--text)}
-.vrow-qty{background:none;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;text-align:center;padding:3px 0;width:38px;outline:none}
-.vrow-edit{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 3px;transition:.15s}
-.vrow-edit:hover{color:var(--text)}
-.vrow-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 2px;transition:.15s}
-.vrow-del:hover{color:var(--c-alert)}
-.var-total-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
-.var-total-lbl{font-size:11px;color:var(--text-muted);font-weight:600}
-.var-total-val{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
-.pc-chip{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px 2px 4px;font-size:11px;font-weight:600;cursor:default}
-.pc-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.15)}
-.pc-qty{font-family:'Exo 2',sans-serif;font-weight:700;font-size:11px;color:var(--text-muted)}
-.pc-remove{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;padding:0 0 0 2px;line-height:1;transition:.15s}
-.pc-remove:hover{color:var(--c-alert)}
-.pc-add{background:none;border:1px dashed var(--border);color:var(--text-dim);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
-.pc-add:hover{border-color:var(--border2);color:var(--text-muted)}
-
-/* SOLO CARDS */
-.solorow{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.solocard{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;transition:.2s}
-.solocard:hover{border-color:var(--border2)}
-.solocard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.solocard.low{border-color:rgba(232,160,32,.45)}.solocard.critical{border-color:rgba(232,58,58,.5)}
-.sc-name{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;margin-bottom:2px}
-.sc-sub{font-size:11px;color:var(--text-muted);margin-bottom:12px}
-.sc-price-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.sc-price-label{font-size:11px;color:var(--text-muted);font-weight:600;min-width:70px}
-.sc-range{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;color:var(--c-premium)}
-.sc-stock-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.sc-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.printer-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
-.pb-h2c{background:rgba(196,154,42,.15);color:var(--c-premium);border:1px solid rgba(196,154,42,.3)}
-.pb-any{background:rgba(46,184,122,.12);color:var(--c-dino);border:1px solid rgba(46,184,122,.3)}
-
-/* TABLE */
-.tbw{background:var(--surface2);border:1px solid var(--border);border-radius:11px;overflow:hidden}
-table{width:100%;border-collapse:collapse}
-th{background:var(--surface3);font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-muted);padding:10px 13px;text-align:left}
-td{padding:9px 13px;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
-tr:hover td{background:var(--surface3)}
-.etl{color:#f1641e;font-size:11px;font-weight:700}
-
-/* BUTTONS */
-.btn{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;padding:7px 15px;border-radius:7px;cursor:pointer;transition:.2s;border:none}
-.btn-p{background:var(--c-dragon);color:#fff}.btn-p:hover{opacity:.85}
-.btn-g{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)}.btn-g:hover{border-color:var(--border2);color:var(--text)}
-.bsm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;border-radius:5px;padding:4px 10px;cursor:pointer;transition:.2s;border:none}
-.bsm-g{background:var(--surface3);border:1px solid var(--border);color:var(--text-muted)}.bsm-g:hover{border-color:var(--border2);color:var(--text)}
+/* INVENTORY GROUPS "
+,í­É½Õ¹éÙÈ ´µÍÕÉÌ¥ô(¹¥¹ØµÉ½ÕÀµ¡È¹½Á¹í½ÉÈµÉ¥ÕÌèåÁàåÁàÀÀí½ÉÈµ½ÑÑ½´µ½±½ÈéÑÉ¹ÍÁÉ¹Ñô(¹¥ µ¥½¹í½¹ÐµÍ¥éèÄÙÁàí±àµÍ¡É¥¹¬èÁô¹¥ µÑ¥Ñ±í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàí±àèÅô(¹¥ µ½Õ¹Ñí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹ÐµÝ¥¡ÐèØÀÁô(¹¥ µ±ÉÑí½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÁ¥¹èÉÁàÝÁàí½ÉÈµÉ¥ÕÌèÈÁÁàí­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸ÄÔ¤í½±½ÈéÙÈ ´µµ±ÉÐ¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°Ôà°Ôà°¸Ì¥ô(¹¥ µÝÉ¹í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÁ¥¹èÉÁàÝÁàí½ÉÈµÉ¥ÕÌèÈÁÁàí­É½Õ¹éÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÄÈ¤í½±½ÈéÙÈ ´µµÝÉ¸¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°ÄØÀ°ÌÈ°¸Ì¥ô(¹¥ µ¡ÙÉ½¹í½¹ÐµÍ¥éèÄÉÁàí½±½ÈéÙÈ ´µÑáÐµ¥´¤íÑÉ¹Í¥Ñ¥½¸éÑÉ¹Í½É´¸ÉÌí±àµÍ¡É¥¹¬èÁô(¹¥ µ¡ÙÉ½¸¹½Á¹íÑÉ¹Í½É´éÉ½ÑÑ ÄàÁ¥ô(¹¥¹ØµÉ½ÕÀµ½åí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÀÀåÁàåÁàíÁ¥¹èÄÉÁàí¥ÍÁ±äé¹½¹íµÉ¥¸µ½ÑÑ½´èÄÁÁáô(¹¥¹ØµÉ½ÕÀµ½ä¹½Á¹í¥ÍÁ±äé±½­ô(¹Í½ÉÐµÉí¥ÍÁ±äé±àíÀèáÁàí±¥¸µ¥ÑµÌé¹ÑÈí±àµÝÉÀéÝÉÁô(¹Í½ÉÐµÑ¹í­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÑÁàÄÉÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÌí½¹Ðµµ¥±äèI©¡¹¤±Í¹ÌµÍÉ¥í±ÑÑÈµÍÁ¥¹è¸ÕÁáô(¹Í½ÉÐµÑ¸é¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹Í½ÉÐµÑ¸¹Ñ¥Ùí­É½Õ¹éÉ ÈÌÈ°äÌ°Ìà°¸ÄÈ¤í½ÉÈµ½±½ÈéÉ ÈÌÈ°äÌ°Ìà°¸Ì¤í½±½ÈéÙÈ ´µµÉ½¸¥ô((¼¨=9Q9P¨¼(¹½¹Ñ¹Ñí±àèÄí½ÙÉ±½ÜµäéÕÑ¼íÁ¥¹èÈÉÁàí¥ÍÁ±äé±àí±àµ¥ÉÑ¥½¸é½±Õµ¸íÀèÄáÁáô(¹Áí¥ÍÁ±äé¹½¹í±àµ¥ÉÑ¥½¸é½±Õµ¸íÀèÄáÁáô¹Á¹Ñ¥Ùí¥ÍÁ±äé±áô((¼¨IL¨¼(¹Éí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÅÁàíÁ¥¹èÄáÁáô(¹Í¡í¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈí©ÕÍÑ¥äµ½¹Ñ¹ÐéÍÁµÑÝ¸íÀèÄÁÁàí±àµÝÉÀéÝÉÁô(¹Í¡Ñí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÝÁàí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÄÁÁàí±àµÝÉÀéÝÉÁô(¹Á¥±±í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÁ¥¹èÉÁàáÁàí½ÉÈµÉ¥ÕÌèÈÁÁàí±ÑÑÈµÍÁ¥¹è¸ÝÁáô(¹Á¥±°µÁ­í­É½Õ¹éÉ ÈÌÈ°äÌ°Ìà°¸ÄÈ¤í½±½ÈéÙÈ ´µµÉ½¸¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°äÌ°Ìà°¸Ì¥ô(¹Á¥±°µ¥¹½í­É½Õ¹éÉ ÐØ°ÄàÐ°ÄÈÈ°¸ÄÈ¤í½±½ÈéÙÈ ´µµ¥¹¼¤í½ÉÈèÅÁàÍ½±¥É ÐØ°ÄàÐ°ÄÈÈ°¸Ì¥ô(¹Á¥±°µÍ½±½í­É½Õ¹éÉ ÄÈÌ°äÐ°ÄØÜ°¸ÄÈ¤í½±½ÈéÙÈ ´µµÍ¥¹±¤í½ÉÈèÅÁàÍ½±¥É ÄÈÌ°äÐ°ÄØÜ°¸Ì¥ô(¹Á¥±°µÁÉµí­É½Õ¹éÉ ÄäØ°ÄÔÐ°ÐÈ°¸ÄÈ¤í½±½ÈéÙÈ ´µµÁÉµ¥Õ´¤í½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄÔÐ°ÐÈ°¸Ì¥ô(¹ÍÑÉ¥Áí­É½Õ¹é±¥¹ÈµÉ¥¹Ð ÄÌÕ±É ÈÌÈ°Ôà°Ôà°¸Ä¤±É ÈÌÈ°ÄØÀ°ÌÈ°¸ÀØ¤¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°Ôà°Ôà°¸Ì¤í½ÉÈµÉ¥ÕÌèÄÁÁàíÁ¥¹èÄÅÁàÄÕÁàí¥ÍÁ±äé±àí±àµÝÉÀéÝÉÀíÀèÙÁàí±¥¸µ¥ÑµÌé¹ÑÉô(¹ÍÑí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÉÁàí½±½ÈéÙÈ ´µµ±ÉÐ¤íµÉ¥¸µÉ¥¡ÐèÕÁáô(¹í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÉÁàåÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèØÀÁô(¹¹É¥Ñí­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸ÄÔ¤í½±½ÈèÜÀÜÀí½ÉÈèÅÁàÍ½±¥É ÈÌÈ°Ôà°Ôà°¸Ì¥ô(¹¹ÝÉ¹í­É½Õ¹éÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÄÈ¤í½±½ÈéÙÈ ´µµÝÉ¸¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°ÄØÀ°ÌÈ°¸Ì¥ô((¼¨IdIL¨¼(¹ÉÉ½Ýí¥ÍÁ±äé±àíÀèÄÉÁàí±àµÝÉÀéÝÉÁô(¹ÉÉí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÅÁàíÁ¥¹èÄÕÁàÈÁÁàí±àèÄíµ¥¸µÝ¥Ñ èÄØÕÁàíÁ½Í¥Ñ¥½¸éÉ±Ñ¥Ùí½ÙÉ±½Üé¡¥¸íÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÉÍô(¹ÉÉé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¥ô(¹ÉÉèé½Éí½¹Ñ¹ÐèíÁ½Í¥Ñ¥½¸éÍ½±ÕÑíÑ½ÀèÀí±ÐèÀíÉ¥¡ÐèÀí¡¥¡ÐèÍÁáô(¹É±í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀí±ÑÑÈµÍÁ¥¹èÄ¸ÑÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íÑáÐµÑÉ¹Í½É´éÕÁÁÉÍíµÉ¥¸µ½ÑÑ½´èÍÁáô(¹Éí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèäÀÀí½¹ÐµÍ¥éèÐÑÁàí±¥¹µ¡¥¡ÐèÄíµÉ¥¸µ½ÑÑ½´èÉÁáô(¹ÉÍí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô((¼¨Q%HIL¨¼(¹ÑÉ½Ýí¥ÍÁ±äé±àíÀèÄÉÁàí±àµÝÉÀéÝÉÁô(¹ÑÉí±àèÄíµ¥¸µÝ¥Ñ èÄäÁÁàí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÅÁàíÁ¥¹èÄÕÁàíÁ½Í¥Ñ¥½¸éÉ±Ñ¥Ùí½ÙÉ±½Üé¡¥¸íÑÉ¹Í¥Ñ¥½¸è¸ÉÍô(¹ÑÉé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¥ô(¹ÑÉèé½Éí½¹Ñ¹ÐèíÁ½Í¥Ñ¥½¸éÍ½±ÕÑíÑ½ÀèÀí±ÐèÀíÉ¥¡ÐèÀí¡¥¡ÐèÍÁáô(¹Ñ¹µí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàíµÉ¥¸µ½ÑÑ½´èÉÁáô(¹ÑÍÕí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íµÉ¥¸µ½ÑÑ½´èÄÅÁáô(¹ÑÁÉí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàíµÉ¥¸µ½ÑÑ½´èÝÁáô(¹ÑÁ±í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹ÐµÝ¥¡ÐèØÀÀíµ¥¸µÝ¥Ñ èàÉÁáô(¹ÁÉ¥¥¹ÁÕÑí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÙÁàí½±½ÈéÙÈ ´µÑáÐ¤í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÕÁàíÁ¥¹èÕÁàåÁàíÝ¥Ñ èÄÀÁÁàí½ÕÑ±¥¹é¹½¹ô(¹ÁÉ¥¥¹ÁÕÐé½ÕÍí½ÉÈµ½±½ÈéÙÈ ´µµ¥¹¼¥ô(¹¥Í¥¹ÁÕÑí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÙÁàí½±½ÈéÙÈ ´µÑáÐ¤í½¹Ðµµ¥±äèI©¡¹¤±Í¹ÌµÍÉ¥í½¹ÐµÍ¥éèÄÉÁàí½¹ÐµÝ¥¡ÐèØÀÀíÁ¥¹èÕÁàåÁàíÝ¥Ñ èÄÈÕÁàí½ÕÑ±¥¹é¹½¹ô(¹¥Í¥¹ÁÕÐé½ÕÍí½ÉÈµ½±½ÈèÄØÐÅô(¹ÑÉåí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÍ¥éèÈáÁàí½¹ÐµÝ¥¡ÐèäÀÀí±¥¹µ¡¥¡ÐèÄíµÉ¥¸µ½ÑÑ½´èÅÁáô(¹ÑÉå±í½¹ÐµÍ¥éèÄÁÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹ÐµÝ¥¡ÐèØÀÀí±ÑÑÈµÍÁ¥¹èÅÁàíÑáÐµÑÉ¹Í½É´éÕÁÁÉÍô(¹Íå¹Ñ¹íµÉ¥¸µÑ½ÀèåÁàí­É½Õ¹éÉ ÈÐÄ°ÄÀÀ°ÌÀ°¸Ä¤í½ÉÈèÅÁàÍ½±¥É ÈÐÄ°ÄÀÀ°ÌÀ°¸Ì¤í½±½ÈèÄØÐÅí½ÉÈµÉ¥ÕÌèÙÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÁ¥¹èÕÁàÄÅÁàíÕÉÍ½ÈéÁ½¥¹ÑÈí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÕÁàíÑÉ¹Í¥Ñ¥½¸è¸ÉÌíÝ¥Ñ èÄÀÀí©ÕÍÑ¥äµ½¹Ñ¹Ðé¹ÑÉô(¹Íå¹Ñ¸é¡½ÙÉí­É½Õ¹éÉ ÈÐÄ°ÄÀÀ°ÌÀ°¸È¥ô(¹Íå¹Ñ¸¹Íå¹í­É½Õ¹éÉ ÐØ°ÄàÐ°ÄÈÈ°¸Ä¤í½ÉÈµ½±½ÈéÉ ÐØ°ÄàÐ°ÄÈÈ°¸Ì¤í½±½ÈéÙÈ ´µµ¥¹¼¥ô((¼¨AI=UPI%IL¨¼(¹ÁÉ¥í¥ÍÁ±äéÉ¥íÉ¥µÑµÁ±Ñµ½±Õµ¹ÌéÉÁÐ¡ÕÑ¼µ¥±°±µ¥¹µà ÈÔÕÁà°ÅÈ¤¤íÀèÄÍÁáô(¹ÁÉí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÅÁàíÁ¥¹èÄÕÁàíÑÉ¹Í¥Ñ¥½¸è¸ÉÍô(¹ÁÉ¹±½Ýí½ÉÈµ½±½ÈéÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÐÔ¤í­É½Õ¹éÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÀÈ¥ô(¹ÁÉ¹É¥Ñ¥±í½ÉÈµ½±½ÈéÉ ÈÌÈ°Ôà°Ôà°¸Ô¤í­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸ÀÌ¥ô(¹Á¡í¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé±àµÍÑÉÐí©ÕÍÑ¥äµ½¹Ñ¹ÐéÍÁµÑÝ¸íµÉ¥¸µ½ÑÑ½´èÄÅÁàíÀèÝÁáô(¹Á¹í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàí±¥¹µ¡¥¡ÐèÄ¸Éô(¹Á¸µ¥Ñí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µµÉ½¸¤í½ÉÈµÉ¥ÕÌèÕÁàí½±½ÈéÙÈ ´µÑáÐ¤íÁ¥¹èÉÁàÝÁàí½ÕÑ±¥¹é¹½¹íÝ¥Ñ èÄÀÀíµ¥¸µÝ¥Ñ èÁô(¹Á¸µ¥ÐµÑ¹í­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÕÉÍ½ÈéÁ½¥¹ÑÈí½¹ÐµÍ¥éèÄÉÁàíÁ¥¹èÀÍÁàí±¥¹µ¡¥¡ÐèÄíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÌí±àµÍ¡É¥¹¬èÁô(¹Á¸µ¥ÐµÑ¸é¡½ÙÉí½±½ÈéÙÈ ´µÑáÐ¥ô(¹Íí½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀí±ÑÑÈµÍÁ¥¹è¸ÝÁàíÁ¥¹èÉÁàÝÁàí½ÉÈµÉ¥ÕÌèÈÁÁàí±àµÍ¡É¥¹¬èÀíµÉ¥¸µÑ½ÀèÉÁáô(¹Í¹½­í­É½Õ¹éÉ ÐØ°ÄàÐ°ÄÈÈ°¸ÄÔ¤í½±½ÈéÙÈ ´µµ¥¹¼¥ô¹Í¹±½Ýí­É½Õ¹éÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÄÔ¤í½±½ÈéÙÈ ´µµÝÉ¸¥ô¹Í¹É¥Ñí­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸È¤í½±½ÈéÙÈ ´µµ±ÉÐ¥ô(¹ÅÉ½Ýí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàíµÉ¥¸µ½ÑÑ½´èáÁáô(¹Å±í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íµ¥¸µÝ¥Ñ èàáÁàí½¹ÐµÝ¥¡ÐèØÀÁô(¹ÅÝí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÙÁàí½ÙÉ±½Üé¡¥¸í±àèÅô(¹ÅÑ¹í­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íÕÉÍ½ÈéÁ½¥¹ÑÈíÁ¥¹èÕÁàåÁàí½¹ÐµÍ¥éèÄÕÁàí±¥¹µ¡¥¡ÐèÄíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÅÑ¸é¡½ÙÉí­É½Õ¹éÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹ÅÙ±í±àèÄí­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐ¤í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàíÑáÐµ±¥¸é¹ÑÈíÁ¥¹èÑÁàÀíÝ¥Ñ èÐÑÁàí½ÕÑ±¥¹é¹½¹ô(¹Á½áí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈµÉ¥ÕÌèÝÁàíÁ¥¹èåÁàÄÅÁàíµÉ¥¸µÑ½ÀèÕÁáô(¹Á±í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀí±ÑÑÈµÍÁ¥¹èÅÁàí½±½ÈéÙÈ ´µÑáÐµ¥´¤íÑáÐµÑÉ¹Í½É´éÕÁÁÉÍíµÉ¥¸µ½ÑÑ½´èÙÁáô(¹ÁÉí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÙÁàíµÉ¥¸µ½ÑÑ½´èÕÁáô(¹ÁÉ¹í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íµ¥¸µÝ¥Ñ èØÁÁàí½¹ÐµÝ¥¡ÐèØÀÀíÑáÐµÑÉ¹Í½É´éÁ¥Ñ±¥éô(¹ÉÝí±àèÄí¡¥¡ÐèÕÁàí­É½Õ¹éÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÍÁàí½ÙÉ±½Üé¡¥¹ô(¹Éí¡¥¡ÐèÄÀÀí½ÉÈµÉ¥ÕÌèÍÁàíÑÉ¹Í¥Ñ¥½¸éÝ¥Ñ ¸ÍÍô(¹ÁÉÅí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÉÁàíµ¥¸µÝ¥Ñ èÈÉÁàíÑáÐµ±¥¸éÉ¥¡Ñô(¹ÁÉÑ¹Íí¥ÍÁ±äé±àíÀèÍÁáô(¹Áí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½ÉÈµÉ¥ÕÌèÑÁàí½¹ÐµÍ¥éèÄÉÁàíÁ¥¹èÅÁàÝÁàíÕÉÍ½ÈéÁ½¥¹ÑÈí±¥¹µ¡¥¡ÐèÄ¸ÐíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹Áé¡½ÙÉí½±½ÈéÙÈ ´µÑáÐ¤í½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¥ô(¹ÍµíµÉ¥¸µÑ½ÀèÙÁàí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÕÁáô(¹Í´ÍÑÉ½¹í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÍÁàí½±½ÈéÙÈ ´µÑáÐ¥ô(¹Ñ¡Éí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàíµÉ¥¸µÑ½ÀèáÁàíÁ¥¹µÑ½ÀèáÁàí½ÉÈµÑ½ÀèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¥ô(¹Ñ¡±í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµ¥´¤í½¹ÐµÝ¥¡ÐèØÀÁô(¹Ñ¡¥í­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÕÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹Ðµµ¥±äèI©¡¹¤±Í¹ÌµÍÉ¥í½¹ÐµÍ¥éèÄÉÁàí½¹ÐµÝ¥¡ÐèØÀÀíÁ¥¹èÍÁàÝÁàíÝ¥Ñ èÔÉÁàí½ÕÑ±¥¹é¹½¹ô(¹Ñ¡¤é½ÕÍí½ÉÈµ½±½ÈéÙÈ ´µµÝÉ¸¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹ÙÉÍíµÉ¥¸µÑ½ÀèáÁàíÁ¥¹µÑ½ÀèáÁàí½ÉÈµÑ½ÀèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¥ô(¹ÙÉ±í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀí±ÑÑÈµÍÁ¥¹èÅÁàí½±½ÈéÙÈ ´µÑáÐµ¥´¤íÑáÐµÑÉ¹Í½É´éÕÁÁÉÍíµÉ¥¸µ½ÑÑ½´èÕÁáô(¹ÙÉÉ½Ýí¥ÍÁ±äé±àí±àµÝÉÀéÝÉÀíÀèÑÁàí±¥¸µ¥ÑµÌé¹ÑÉô(¹Ù¡¥Áí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÑÁàí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÍÁàåÁàÍÁàÕÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèØÀÁô(¹ÙÍÝÑ¡íÝ¥Ñ èÄÅÁàí¡¥¡ÐèÄÅÁàí½ÉÈµÉ¥ÕÌèÔÀí±àµÍ¡É¥¹¬èÀí½ÉÈèÅÁàÍ½±¥É ÈÔÔ°ÈÔÔ°ÈÔÔ°¸ÄÔ¥ô(¹ÙÉµ½Ùí­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÕÉÍ½ÈéÁ½¥¹ÑÈí½¹ÐµÍ¥éèÄÑÁàí±¥¹µ¡¥¡ÐèÄíÁ¥¹èÀÀÀÍÁàíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÙÉµ½Ùé¡½ÙÉí½±½ÈéÙÈ ´µµ±ÉÐ¥ô(¹Ñ¹í­É½Õ¹é¹½¹í½ÉÈèÅÁàÍ¡ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµ¥´¤í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÍÁàåÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèØÀÀíÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹Ñ¸é¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô((¼¨%Q	1YI%9PI=]L¨¼(¹ÙÉ½Ýí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈµÉ¥ÕÌèÝÁàíÁ¥¹èÙÁàåÁàíµÉ¥¸µ½ÑÑ½´èÕÁáô(¹ÙÉ½ÜµÍÝÑ¡íÝ¥Ñ èÄÑÁàí¡¥¡ÐèÄÑÁàí½ÉÈµÉ¥ÕÌèÔÀí±àµÍ¡É¥¹¬èÀí½ÉÈèÄ¸ÕÁàÍ½±¥É ÈÔÔ°ÈÔÔ°ÈÔÔ°¸È¥ô(¹ÙÉ½Üµ¹µí±àèÄí½¹ÐµÍ¥éèÄÉÁàí½¹ÐµÝ¥¡ÐèÜÀÀí½±½ÈéÙÈ ´µÑáÐ¥ô(¹ÙÉ½Üµµ¥Íí½±½ÈéÙÈ ´µÑáÐµ¥´¤í½¹ÐµÍÑå±é¥Ñ±¥ô(¹ÙÉ½ÜµÅÝí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÕÁàí½ÙÉ±½Üé¡¥¹ô(¹ÙÉ½ÜµÅÑ¹í­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íÕÉÍ½ÈéÁ½¥¹ÑÈíÁ¥¹èÑÁàáÁàí½¹ÐµÍ¥éèÄÑÁàí±¥¹µ¡¥¡ÐèÄíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÙÉ½ÜµÅÑ¸é¡½ÙÉí­É½Õ¹éÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹ÙÉ½ÜµÅÑåí­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐ¤í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàíÑáÐµ±¥¸é¹ÑÈíÁ¥¹èÍÁàÀíÝ¥Ñ èÌáÁàí½ÕÑ±¥¹é¹½¹ô(¹ÙÉ½Üµ¥Ñí­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÕÉÍ½ÈéÁ½¥¹ÑÈí½¹ÐµÍ¥éèÄÍÁàíÁ¥¹èÀÍÁàíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÙÉ½Üµ¥Ðé¡½ÙÉí½±½ÈéÙÈ ´µÑáÐ¥ô(¹ÙÉ½Üµ±í­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÕÉÍ½ÈéÁ½¥¹ÑÈí½¹ÐµÍ¥éèÄÑÁàíÁ¥¹èÀÉÁàíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÙÉ½Üµ°é¡½ÙÉí½±½ÈéÙÈ ´µµ±ÉÐ¥ô(¹ÙÈµÑ½Ñ°µÉ½Ýí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈí©ÕÍÑ¥äµ½¹Ñ¹ÐéÍÁµÑÝ¸íµÉ¥¸µÑ½ÀèÙÁàíÁ¥¹µÑ½ÀèÙÁàí½ÉÈµÑ½ÀèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¥ô(¹ÙÈµÑ½Ñ°µ±±í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹ÐµÝ¥¡ÐèØÀÁô(¹ÙÈµÑ½Ñ°µÙ±í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÕÁàí½±½ÈéÙÈ ´µÑáÐ¥ô(¹Áµ¡¥Áí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÍÁàí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÉÁàáÁàÉÁàÑÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèØÀÀíÕÉÍ½ÈéÕ±Ñô(¹ÁµÍÝÑ¡íÝ¥Ñ èÄÁÁàí¡¥¡ÐèÄÁÁàí½ÉÈµÉ¥ÕÌèÔÀí±àµÍ¡É¥¹¬èÀí½ÉÈèÅÁàÍ½±¥É ÈÔÔ°ÈÔÔ°ÈÔÔ°¸ÄÔ¥ô(¹ÁµÅÑåí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô(¹ÁµÉµ½Ùí­É½Õ¹é¹½¹í½ÉÈé¹½¹í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÕÉÍ½ÈéÁ½¥¹ÑÈí½¹ÐµÍ¥éèÄÍÁàíÁ¥¹èÀÀÀÉÁàí±¥¹µ¡¥¡ÐèÄíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹ÁµÉµ½Ùé¡½ÙÉí½±½ÈéÙÈ ´µµ±ÉÐ¥ô(¹Áµí­É½Õ¹é¹½¹í½ÉÈèÅÁàÍ¡ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµ¥´¤í½ÉÈµÉ¥ÕÌèÈÁÁàíÁ¥¹èÉÁàáÁàí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèØÀÀíÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÄÕÍô(¹Áµé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô((¼¨M=1<IL¨¼(¹Í½±½É½Ýí¥ÍÁ±äéÉ¥íÉ¥µÑµÁ±Ñµ½±Õµ¹ÌéÉÁÐ¡ÕÑ¼µ¥±°±µ¥¹µà ÈàÁÁà°ÅÈ¤¤íÀèÄÑÁáô(¹Í½±½Éí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÉÁàíÁ¥¹èÄáÁàíÁ½Í¥Ñ¥½¸éÉ±Ñ¥Ùí½ÙÉ±½Üé¡¥¸íÑÉ¹Í¥Ñ¥½¸è¸ÉÍô(¹Í½±½Éé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¥ô(¹Í½±½Éèé½Éí½¹Ñ¹ÐèíÁ½Í¥Ñ¥½¸éÍ½±ÕÑíÑ½ÀèÀí±ÐèÀíÉ¥¡ÐèÀí¡¥¡ÐèÍÁáô(¹Í½±½É¹±½Ýí½ÉÈµ½±½ÈéÉ ÈÌÈ°ÄØÀ°ÌÈ°¸ÐÔ¥ô¹Í½±½É¹É¥Ñ¥±í½ÉÈµ½±½ÈéÉ ÈÌÈ°Ôà°Ôà°¸Ô¥ô(¹Íµ¹µí½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÕÁàíµÉ¥¸µ½ÑÑ½´èÉÁáô(¹ÍµÍÕí½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íµÉ¥¸µ½ÑÑ½´èÄÉÁáô(¹ÍµÁÉ¥µÉ½Ýí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàíµÉ¥¸µ½ÑÑ½´èáÁáô(¹ÍµÁÉ¥µ±±í½¹ÐµÍ¥éèÄÅÁàí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤í½¹ÐµÝ¥¡ÐèØÀÀíµ¥¸µÝ¥Ñ èÜÁÁáô(¹ÍµÉ¹í½¹Ðµµ¥±äèá¼È±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÑÁàí½±½ÈéÙÈ ´µµÁÉµ¥Õ´¥ô(¹ÍµÍÑ½¬µÉ½Ýí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé¹ÑÈíÀèÝÁàíµÉ¥¸µ½ÑÑ½´èáÁáô(¹ÍµÑ¥½¹Íí¥ÍÁ±äé±àíÀèÙÁàíµÉ¥¸µÑ½ÀèÄÁÁàí±àµÝÉÀéÝÉÁô(¹ÁÉ¥¹ÑÈµí½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀíÁ¥¹èÉÁàáÁàí½ÉÈµÉ¥ÕÌèÈÁÁàíµÉ¥¸µ±ÐèÙÁáô(¹Áµ Éí­É½Õ¹éÉ ÄäØ°ÄÔÐ°ÐÈ°¸ÄÔ¤í½±½ÈéÙÈ ´µµÁÉµ¥Õ´¤í½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄÔÐ°ÐÈ°¸Ì¥ô(¹Áµ¹åí­É½Õ¹éÉ ÐØ°ÄàÐ°ÄÈÈ°¸ÄÈ¤í½±½ÈéÙÈ ´µµ¥¹¼¤í½ÉÈèÅÁàÍ½±¥É ÐØ°ÄàÐ°ÄÈÈ°¸Ì¥ô((¼¨Q	1¨¼(¹ÑÝí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½ÉÈµÉ¥ÕÌèÄÅÁàí½ÙÉ±½Üé¡¥¹ô)Ñ±íÝ¥Ñ èÄÀÀí½ÉÈµ½±±ÁÍé½±±ÁÍô)Ñ¡í­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½¹ÐµÍ¥éèÄÁÁàí½¹ÐµÝ¥¡ÐèÜÀÀí±ÑÑÈµÍÁ¥¹èÄ¸ÑÁàíÑáÐµÑÉ¹Í½É´éÕÁÁÉÍí½±½ÈéÙÈ ´µÑáÐµµÕÑ¤íÁ¥¹èÄÁÁàÄÍÁàíÑáÐµ±¥¸é±Ñô)ÑíÁ¥¹èåÁàÄÍÁàí½ÉÈµÑ½ÀèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½¹ÐµÍ¥éèÄÍÁàíÙÉÑ¥°µ±¥¸éµ¥±ô)ÑÈé¡½ÙÈÑí­É½Õ¹éÙÈ ´µÍÕÉÌ¥ô(¹Ñ±í½±½ÈèÄØÐÅí½¹ÐµÍ¥éèÄÅÁàí½¹ÐµÝ¥¡ÐèÜÀÁô((¼¨	UQQ=9L¨¼(¹Ñ¹í½¹Ðµµ¥±äèI©¡¹¤±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÍÁàíÁ¥¹èÝÁàÄÕÁàí½ÉÈµÉ¥ÕÌèÝÁàíÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÉÌí½ÉÈé¹½¹ô(¹Ñ¸µÁí­É½Õ¹éÙÈ ´µµÉ½¸¤í½±½Èèô¹Ñ¸µÀé¡½ÙÉí½Á¥Ñäè¸àÕô(¹Ñ¸µí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô¹Ñ¸µé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹Íµí½¹Ðµµ¥±äèI©¡¹¤±Í¹ÌµÍÉ¥í½¹ÐµÝ¥¡ÐèÜÀÀí½¹ÐµÍ¥éèÄÅÁàí½ÉÈµÉ¥ÕÌèÕÁàíÁ¥¹èÑÁàÄÁÁàíÕÉÍ½ÈéÁ½¥¹ÑÈíÑÉ¹Í¥Ñ¥½¸è¸ÉÌí½ÉÈé¹½¹ô(¹Í´µí­É½Õ¹éÙÈ ´µÍÕÉÌ¤í½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµµÕÑ¥ô¹Í´µé¡½ÙÉí½ÉÈµ½±½ÈéÙÈ ´µ½ÉÈÈ¤í½±½ÈéÙÈ ´µÑáÐ¥ô(¹Í´µÉí­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸ÄÈ¤í½ÉÈèÅÁàÍ½±¥É ÈÌÈ°Ôà°Ôà°¸Ì¤í½±½ÈéÙÈ ´µµ±ÉÐ¥ô¹Í´µÈé¡½ÙÉí­É½Õ¹éÉ ÈÌÈ°Ôà°Ôà°¸ÈÈ¥ô(¹É½Ýí­É½Õ¹éÙÈ ´µÍÕÉÈ¤í½ÉÈèÅÁàÍ¡ÙÈ ´µ½ÉÈ¤í½±½ÈéÙÈ ´µÑáÐµ¥´¤íÁ¥¹èåÁàí½ÉÈµÉ¥ÕÌèáÁàíÝ¥Ñ èÄÀÀí¥ÍÁ±äé±àí±¥¸µ¥ÑµÌé--text)}
 .bsm-r{background:rgba(232,58,58,.12);border:1px solid rgba(232,58,58,.3);color:var(--c-alert)}.bsm-r:hover{background:rgba(232,58,58,.22)}
 .addrow{background:var(--surface2);border:1px dashed var(--border);color:var(--text-dim);padding:9px;border-radius:8px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;transition:.2s;margin-top:9px}
 .addrow:hover{border-color:var(--c-dragon);color:var(--c-dragon)}
@@ -338,21 +176,79 @@ select.fi option{background:var(--surface2)}
 .margin-chip{background:var(--surface3);border-radius:7px;padding:7px 12px;font-size:12px}
 .margin-chip strong{font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;color:var(--c-dino)}
 .margin-chip span{color:var(--text-muted);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;margin-top:1px}
+
+/* âââââââââââââââ PRINT QUEUE âââââââââââââââ */
+.pq-list{display:flex;flex-direction:column;gap:8px}
+.pq-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:.2s;position:relative}
+.pq-item.drag-over{border-color:var(--c-dragon);background:rgba(232,93,38,.07)}
+.pq-rank{font-family:'Exo 2',sans-serif;font-weight:900;font-size:22px;color:var(--text-dim);min-width:28px;text-align:center;line-height:1.1;padding-top:3px;flex-shrink:0}
+.pq-rank.hot{color:var(--c-alert)}
+.pq-rank.warm{color:var(--c-warn)}
+.pq-body{flex:1;min-width:0}
+.pq-name{font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px}
+.pq-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.pq-chip{border-radius:12px;padding:2px 8px;font-size:10px;font-weight:700;border:1px solid transparent}
+.pq-chip.status-crit{background:rgba(232,58,58,.18);border-color:rgba(232,58,58,.35);color:var(--c-alert)}
+.pq-chip.status-low{background:rgba(232,160,32,.15);border-color:rgba(232,160,32,.3);color:var(--c-warn)}
+.pq-chip.status-ok{background:rgba(46,184,122,.1);border-color:rgba(46,184,122,.25);color:var(--c-dino)}
+.pq-chip.pack{background:rgba(196,154,42,.1);border-color:rgba(196,154,42,.25);color:var(--c-premium)}
+.pq-chip.shared{background:rgba(123,94,167,.12);border-color:rgba(123,94,167,.3);color:var(--c-single)}
+.pq-stock-row{font-size:12px;color:var(--text-muted);margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap}
+.pq-stock-row strong{color:var(--text)}
+.pq-print-row{display:flex;align-items:center;gap:8px;margin-top:4px}
+.pq-print-label{font-size:11px;color:var(--text-muted);font-weight:600;white-space:nowrap}
+.pq-notes{width:100%;margin-top:6px;background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--text);resize:none;height:36px}
+.pq-notes:focus{outline:none;border-color:var(--border2)}
+.pq-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.pq-btn{background:var(--surface3);border:1px solid var(--border);border-radius:5px;color:var(--text-muted);cursor:pointer;padding:5px 9px;font-size:12px;transition:.15s;line-height:1;white-space:nowrap}
+.pq-btn:hover{background:var(--border);color:var(--text)}
+.pq-btn.danger:hover{color:var(--c-alert);border-color:rgba(232,58,58,.4)}
+.pq-stale{display:none;align-items:center;gap:10px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:8px;padding:9px 14px;font-size:12px;color:var(--c-warn);font-weight:600;margin-bottom:10px}
+.pq-stale.show{display:flex}
+.pq-empty{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:14px}
+.pq-auto-btn{background:linear-gradient(135deg,var(--c-dragon),var(--c-premium));color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.pq-auto-btn:hover{filter:brightness(1.12)}
+
+/* âââââââââââââââ SALES âââââââââââââââ */
+.log-sale-btn{background:linear-gradient(135deg,var(--c-dino),#1a9e65);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.2s}
+.log-sale-btn:hover{filter:brightness(1.1)}
+.sale-period-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sale-tab{background:var(--surface3);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:.15s}
+.sale-tab.active{background:var(--c-dragon);border-color:var(--c-dragon);color:#fff}
+.sale-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.sale-stat{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.sale-stat-val{font-family:'Exo 2',sans-serif;font-weight:900;font-size:26px;color:var(--c-dragon);line-height:1.1}
+.sale-stat-val.green{color:var(--c-dino)}
+.sale-stat-lbl{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-top:3px}
+.sale-pack-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sale-pack-row:last-child{border-bottom:none}
+.sale-pack-name{min-width:160px;font-weight:700;font-size:13px}
+.sale-pack-bar-wrap{height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;flex:1}
+.sale-pack-bar{height:100%;border-radius:4px;transition:width .5s}
+.sale-pack-count{font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;min-width:40px;text-align:right}
+.sale-hist-table{width:100%;border-collapse:collapse;font-size:13px}
+.sale-hist-table th{text-align:left;padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-dim);border-bottom:1px solid var(--border2)}
+.sale-hist-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.sale-hist-table tr:last-child td{border-bottom:none}
+.sale-hist-table tr:hover td{background:rgba(255,255,255,.02)}
+.sale-undo-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text-dim);font-size:11px;cursor:pointer;padding:3px 8px;transition:.15s}
+.sale-undo-btn:hover{color:var(--c-alert);border-color:rgba(232,58,58,.4)}
+.sale-no-data{text-align:center;padding:30px;color:var(--text-dim);font-size:13px}
 </style>
 </head>
 <body>
 
 <!-- LOADING SCREEN -->
 <div id="loadingScreen">
-  <div class="load-logo">🐉 PACK FORGE</div>
+  <div class="load-logo">ð PACK FORGE</div>
   <div class="load-spinner"></div>
-  <div class="load-msg" id="loadMsg">Connecting to database…</div>
+  <div class="load-msg" id="loadMsg">Connecting to databaseâ¦</div>
 </div>
 
 <header>
   <div style="display:flex;align-items:center;gap:10px">
-    <button class="ham-btn" onclick="toggleSidebar()" title="Menu">☰</button>
-    <div class="logo">🐉 PACK FORGE</div>
+    <button class="ham-btn" onclick="toggleSidebar()" title="Menu">â°</button>
+    <div class="logo">ð PACK FORGE</div>
   </div>
   <div class="hright">
     <div class="sync-pill" id="syncPill">
@@ -362,7 +258,7 @@ select.fi option{background:var(--surface2)}
     <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px">
       <div class="dot" id="etsyDot"></div><span id="etsyTxt">Etsy: Not Connected</span>
     </div>
-    <button class="etsy-pill" onclick="nav('etsy')">🛍 Etsy</button>
+    <button class="etsy-pill" onclick="nav('etsy')">ð Etsy</button>
   </div>
 </header>
 
@@ -371,27 +267,29 @@ select.fi option{background:var(--surface2)}
 <div class="wrap">
 <nav class="sidebar" id="sidebar">
   <div class="sb-toggle">
-    <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Collapse">◀</button>
+    <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Collapse">â</button>
   </div>
   <div class="ns">Dashboard</div>
-  <div class="ni active" data-p="overview" onclick="navAndClose('overview')"><span class="ni-icon">📊</span><span class="ni-label">Overview</span></div>
-  <div class="ni" data-p="alerts" onclick="navAndClose('alerts')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span><span class="nbadge" id="abadge" style="display:none">0</span></div>
+  <div class="ni active" data-p="overview" onclick="navAndClose('overview')"><span class="ni-icon">ð</span><span class="ni-label">Overview</span></div>
+  <div class="ni" data-p="alerts" onclick="navAndClose('alerts')"><span class="ni-icon">ð</span><span class="ni-label">Alerts</span><span class="nbadge" id="abadge" style="display:none">0</span></div>
+  <div class="ni" data-p="queue" onclick="navAndClose('queue')"><span class="ni-icon">ð¨</span><span class="ni-label">Print Queue</span><span class="nbadge" id="qbadge" style="display:none">0</span></div>
+  <div class="ni" data-p="sales" onclick="navAndClose('sales')"><span class="ni-icon">ð°</span><span class="ni-label">Sales</span></div>
   <div class="ns">Party Packs</div>
-  <div class="ni" data-p="classic" onclick="navAndClose('classic')"><span class="ni-icon">🪵</span><span class="ni-label">Classic Dragon Pack</span></div>
-  <div class="ni" data-p="standard" onclick="navAndClose('standard')"><span class="ni-icon">🐉</span><span class="ni-label">Standard Dragon Pack</span></div>
-  <div class="ni cpremium" data-p="premium" onclick="navAndClose('premium')"><span class="ni-icon">✨</span><span class="ni-label">Premium Dragon Pack</span></div>
-  <div class="ni cdino" data-p="dino" onclick="navAndClose('dino')"><span class="ni-icon">🦕</span><span class="ni-label">Dino Party Pack</span></div>
+  <div class="ni" data-p="classic" onclick="navAndClose('classic')"><span class="ni-icon">ðªµ</span><span class="ni-label">Classic Dragon Pack</span></div>
+  <div class="ni" data-p="standard" onclick="navAndClose('standard')"><span class="ni-icon">ð</span><span class="ni-label">Standard Dragon Pack</span></div>
+  <div class="ni cpremium" data-p="premium" onclick="navAndClose('premium')"><span class="ni-icon">â¨</span><span class="ni-label">Premium Dragon Pack</span></div>
+  <div class="ni cdino" data-p="dino" onclick="navAndClose('dino')"><span class="ni-icon">ð¦</span><span class="ni-label">Dino Party Pack</span></div>
   <div class="ns">Standalone Items</div>
-  <div class="ni csingle" data-p="solo-dragon" onclick="navAndClose('solo-dragon')"><span class="ni-icon">🐉</span><span class="ni-label">Solo Dragons <span class="ni-tag tag-solo">SOLO</span></span></div>
-  <div class="ni cgothic" data-p="ashbone" onclick="navAndClose('ashbone')"><span class="ni-icon">💀</span><span class="ni-label">Ashbone Dragon <span class="ni-tag tag-solo">SOLO</span></span></div>
-  <div class="ni cseasonal" data-p="halloween" onclick="navAndClose('halloween')"><span class="ni-icon">🎃</span><span class="ni-label">Halloween Pack <span class="ni-tag tag-future">Q3</span></span></div>
+  <div class="ni csingle" data-p="solo-dragon" onclick="navAndClose('solo-dragon')"><span class="ni-icon">ð</span><span class="ni-label">Solo Dragons <span class="ni-tag tag-solo">SOLO</span></span></div>
+  <div class="ni cgothic" data-p="ashbone" onclick="navAndClose('ashbone')"><span class="ni-icon">ð</span><span class="ni-label">Ashbone Dragon <span class="ni-tag tag-solo">SOLO</span></span></div>
+  <div class="ni cseasonal" data-p="halloween" onclick="navAndClose('halloween')"><span class="ni-icon">ð</span><span class="ni-label">Halloween Pack <span class="ni-tag tag-future">Q3</span></span></div>
   <div class="ns">Inventory</div>
-  <div class="ni" data-p="components" onclick="navAndClose('components')"><span class="ni-icon">🔧</span><span class="ni-label">All Components</span></div>
-  <div class="ni" data-p="other-components" onclick="navAndClose('other-components')"><span class="ni-icon">📦</span><span class="ni-label">Other Components</span></div>
-  <div class="ni" data-p="filament" onclick="navAndClose('filament')"><span class="ni-icon">🧵</span><span class="ni-label">Filament Stock</span></div>
+  <div class="ni" data-p="components" onclick="navAndClose('components')"><span class="ni-icon">ð§</span><span class="ni-label">All Components</span></div>
+  <div class="ni" data-p="other-components" onclick="navAndClose('other-components')"><span class="ni-icon">ð¦</span><span class="ni-label">Other Components</span></div>
+  <div class="ni" data-p="filament" onclick="navAndClose('filament')"><span class="ni-icon">ð§µ</span><span class="ni-label">Filament Stock</span></div>
   <div class="ns">Settings</div>
-  <div class="ni" data-p="etsy" onclick="navAndClose('etsy')"><span class="ni-icon">🛍</span><span class="ni-label">Etsy Integration</span></div>
-  <div class="ni" data-p="packconfig" onclick="navAndClose('packconfig')"><span class="ni-icon">⚙</span><span class="ni-label">Pack Config</span></div>
+  <div class="ni" data-p="etsy" onclick="navAndClose('etsy')"><span class="ni-icon">ð</span><span class="ni-label">Etsy Integration</span></div>
+  <div class="ni" data-p="packconfig" onclick="navAndClose('packconfig')"><span class="ni-icon">â</span><span class="ni-label">Pack Config</span></div>
 </nav>
 
 <div class="content" id="content">
@@ -403,7 +301,7 @@ select.fi option{background:var(--surface2)}
   <div class="rrow" id="readyRow"></div>
   <div class="sh" style="margin-top:4px">
     <div class="sht">Standalone Items Stock</div>
-    <div style="font-size:11px;color:var(--text-muted)">Individual listings · different buyers · launch same week as packs</div>
+    <div style="font-size:11px;color:var(--text-muted)">Individual listings Â· different buyers Â· launch same week as packs</div>
   </div>
   <div class="solorow" id="soloOverviewRow"></div>
 </div>
@@ -411,10 +309,10 @@ select.fi option{background:var(--surface2)}
 <!-- CLASSIC DRAGON PACK -->
 <div class="page" id="page-classic">
   <div class="sh">
-    <div class="sht">🪵 Classic Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
-    <button class="btn btn-g" onclick="openEdit('classic')">✏ Edit Pack</button>
+    <div class="sht">ðªµ Classic Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('classic')">â Edit Pack</button>
   </div>
-  <div class="strategy-note"><strong>Classic Dragon Pack</strong> — Wood Dragon (4-leg, single piece) + 10× Dragon Egg Clicker (head+egg) + 1× Flying Dragon Clicker (top+bottom). Entry-mid tier. All-printer compatible. <strong>$82 recommended</strong>.</div>
+  <div class="strategy-note"><strong>Classic Dragon Pack</strong> â Wood Dragon (4-leg, single piece) + 10Ã Dragon Egg Clicker (head+egg) + 1Ã Flying Dragon Clicker (top+bottom). Entry-mid tier. All-printer compatible. <strong>$82 recommended</strong>.</div>
   <div class="trow" id="classicTiers"></div>
   <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="classicCG"></div></div>
   <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
@@ -424,10 +322,10 @@ select.fi option{background:var(--surface2)}
 <!-- STANDARD DRAGON PACK -->
 <div class="page" id="page-standard">
   <div class="sh">
-    <div class="sht">🐉 Standard Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
-    <button class="btn btn-g" onclick="openEdit('standard')">✏ Edit Pack</button>
+    <div class="sht">ð Standard Dragon Pack <span class="pill pill-pack">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('standard')">â Edit Pack</button>
   </div>
-  <div class="strategy-note"><strong>Standard Dragon Pack</strong> — Shadowcoil Mini 7.7" (single piece) + 10× Dragon Egg Clicker (head+egg) + 1× Flying Dragon Clicker (top+bottom). Entry tier. All-printer compatible. <strong>$72 recommended</strong>.</div>
+  <div class="strategy-note"><strong>Standard Dragon Pack</strong> â Shadowcoil Mini 7.7" (single piece) + 10Ã Dragon Egg Clicker (head+egg) + 1Ã Flying Dragon Clicker (top+bottom). Entry tier. All-printer compatible. <strong>$72 recommended</strong>.</div>
   <div class="trow" id="standardTiers"></div>
   <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="standardCG"></div></div>
   <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
@@ -437,10 +335,10 @@ select.fi option{background:var(--surface2)}
 <!-- PREMIUM DRAGON PACK -->
 <div class="page" id="page-premium">
   <div class="sh">
-    <div class="sht">✨ Premium Dragon Pack <span class="pill pill-prem">10-PACK · H2C</span></div>
-    <button class="btn btn-g" onclick="openEdit('premium')">✏ Edit Pack</button>
+    <div class="sht">â¨ Premium Dragon Pack <span class="pill pill-prem">10-PACK Â· H2C</span></div>
+    <button class="btn btn-g" onclick="openEdit('premium')">â Edit Pack</button>
   </div>
-  <div class="strategy-note"><strong>Premium Dragon Pack</strong> — Zephyros 247mm (9.7") + 10× Dragon Egg Clicker + 1× Flying Dragon Clicker. <span style="color:var(--c-premium)">H2C printer for Zephyros</span>. ~2.8 hrs/dragon, ~90g silk filament. <strong>$95–98 recommended · ~21% margin</strong>.</div>
+  <div class="strategy-note"><strong>Premium Dragon Pack</strong> â Zephyros 247mm (9.7") + 10Ã Dragon Egg Clicker + 1Ã Flying Dragon Clicker. <span style="color:var(--c-premium)">H2C printer for Zephyros</span>. ~2.8 hrs/dragon, ~90g silk filament. <strong>$95â98 recommended Â· ~21% margin</strong>.</div>
   <div class="trow" id="premiumTiers"></div>
   <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="premiumCG"></div></div>
   <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
@@ -450,10 +348,10 @@ select.fi option{background:var(--surface2)}
 <!-- DINO PACK -->
 <div class="page" id="page-dino">
   <div class="sh">
-    <div class="sht">🦕 Dino Party Pack <span class="pill pill-dino">10-PACK</span></div>
-    <button class="btn btn-g" onclick="openEdit('dino')">✏ Edit Pack</button>
+    <div class="sht">ð¦ Dino Party Pack <span class="pill pill-dino">10-PACK</span></div>
+    <button class="btn btn-g" onclick="openEdit('dino')">â Edit Pack</button>
   </div>
-  <div class="strategy-note"><strong>Dino Party Pack</strong> — STLFLIX skeleton dinosaurs (5 species × 2) + 10× Dino Egg Clicker (head+egg) + 1× Flying Dino Clicker (top+bottom). <strong>$29.99–$39.99</strong>.</div>
+  <div class="strategy-note"><strong>Dino Party Pack</strong> â STLFLIX skeleton dinosaurs (5 species Ã 2) + 10Ã Dino Egg Clicker (head+egg) + 1Ã Flying Dino Clicker (top+bottom). <strong>$29.99â$39.99</strong>.</div>
   <div class="trow" id="dinoTiers"></div>
   <div class="card" style="padding:14px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted)">PACK CONTENTS (per 10-pack)</div><div class="cgrid" id="dinoCG"></div></div>
   <div class="sh" style="margin-top:2px"><div class="sht" style="font-size:15px">Component Inventory</div></div>
@@ -463,37 +361,37 @@ select.fi option{background:var(--surface2)}
 <!-- SOLO DRAGONS -->
 <div class="page" id="page-solo-dragon">
   <div class="sh">
-    <div class="sht">🐉 Solo Dragon Listings <span class="pill pill-solo">STANDALONE</span></div>
+    <div class="sht">ð Solo Dragon Listings <span class="pill pill-solo">STANDALONE</span></div>
     <button class="btn btn-g" onclick="openAddSolo('dragon')">+ Add Item</button>
   </div>
-  <div class="strategy-note"><strong>Individual listings</strong> — launch same week as party packs. Different search terms, different buyers. Early single sales build your review count which lifts all listings. <strong>No assembly labor = stronger per-unit margin than party packs.</strong></div>
+  <div class="strategy-note"><strong>Individual listings</strong> â launch same week as party packs. Different search terms, different buyers. Early single sales build your review count which lifts all listings. <strong>No assembly labor = stronger per-unit margin than party packs.</strong></div>
   <div class="solorow" id="soloDragonRow"></div>
-  <button class="addrow" onclick="openAddSolo('dragon')">＋ Add Solo Dragon Listing</button>
+  <button class="addrow" onclick="openAddSolo('dragon')">ï¼ Add Solo Dragon Listing</button>
 </div>
 
 <!-- ASHBONE -->
 <div class="page" id="page-ashbone">
   <div class="sh">
-    <div class="sht">💀 Ashbone Skeleton Dragon <span class="pill" style="background:rgba(155,89,182,.12);color:var(--c-gothic);border:1px solid rgba(155,89,182,.3)">STANDALONE · GOTHIC</span></div>
+    <div class="sht">ð Ashbone Skeleton Dragon <span class="pill" style="background:rgba(155,89,182,.12);color:var(--c-gothic);border:1px solid rgba(155,89,182,.3)">STANDALONE Â· GOTHIC</span></div>
     <button class="btn btn-g" onclick="openAddSolo('gothic')">+ Add Item</button>
   </div>
-  <div class="strategy-note"><strong>NOT a party favor.</strong> Target buyer: age 16–35. Search terms: <em>"gothic dragon decor," "skeleton dragon gift," "Halloween dragon."</em> <strong style="color:var(--c-seasonal)">🎃 Q3 Halloween 10-pack opportunity: Ashbone + skull clicker + skeleton keychain, $115–125, September launch.</strong></div>
+  <div class="strategy-note"><strong>NOT a party favor.</strong> Target buyer: age 16â35. Search terms: <em>"gothic dragon decor," "skeleton dragon gift," "Halloween dragon."</em> <strong style="color:var(--c-seasonal)">ð Q3 Halloween 10-pack opportunity: Ashbone + skull clicker + skeleton keychain, $115â125, September launch.</strong></div>
   <div class="solorow" id="ashboneRow"></div>
-  <button class="addrow" onclick="openAddSolo('gothic')">＋ Add Ashbone Listing</button>
+  <button class="addrow" onclick="openAddSolo('gothic')">ï¼ Add Ashbone Listing</button>
 </div>
 
 <!-- HALLOWEEN -->
 <div class="page" id="page-halloween">
-  <div class="sh"><div class="sht">🎃 Halloween Pack <span class="pill" style="background:rgba(232,58,138,.12);color:var(--c-seasonal);border:1px solid rgba(232,58,138,.3)">SEASONAL · Q3</span></div></div>
+  <div class="sh"><div class="sht">ð Halloween Pack <span class="pill" style="background:rgba(232,58,138,.12);color:var(--c-seasonal);border:1px solid rgba(232,58,138,.3)">SEASONAL Â· Q3</span></div></div>
   <div class="card" style="border-color:rgba(232,58,138,.3);background:rgba(232,58,138,.03)">
-    <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--c-seasonal)">Future seasonal listing — plan for Q3 launch</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--c-seasonal)">Future seasonal listing â plan for Q3 launch</div>
     <div class="cgrid">
-      <div class="ci"><span class="cin">Ashbone Long (hero)</span><span class="ciq">1×</span></div>
-      <div class="ci"><span class="cin">Skull Clicker Fidget</span><span class="ciq">10×</span></div>
-      <div class="ci"><span class="cin">Skeleton Keychain</span><span class="ciq">10×</span></div>
+      <div class="ci"><span class="cin">Ashbone Long (hero)</span><span class="ciq">1Ã</span></div>
+      <div class="ci"><span class="cin">Skull Clicker Fidget</span><span class="ciq">10Ã</span></div>
+      <div class="ci"><span class="cin">Skeleton Keychain</span><span class="ciq">10Ã</span></div>
     </div>
     <div class="margin-row">
-      <div class="margin-chip"><strong>$115–125</strong><span>Target Price</span></div>
+      <div class="margin-chip"><strong>$115â125</strong><span>Target Price</span></div>
       <div class="margin-chip"><strong>Q3</strong><span>Launch Target</span></div>
       <div class="margin-chip"><strong>6 wks</strong><span>Selling Window</span></div>
     </div>
@@ -503,7 +401,7 @@ select.fi option{background:var(--surface2)}
 <!-- ALL COMPONENTS -->
 <div class="page" id="page-components">
   <div class="sh">
-    <div class="sht">🔧 All Components</div>
+    <div class="sht">ð§ All Components</div>
     <button class="btn btn-g" onclick="openAddComp()">+ Add Component</button>
   </div>
   <div class="sort-bar">
@@ -519,57 +417,111 @@ select.fi option{background:var(--surface2)}
 <!-- OTHER COMPONENTS -->
 <div class="page" id="page-other-components">
   <div class="sh">
-    <div class="sht">📦 Other Components</div>
+    <div class="sht">ð¦ Other Components</div>
     <button class="btn btn-g" onclick="openAddOther()">+ Add Component</button>
   </div>
   <div style="font-size:12px;color:var(--text-muted);margin-top:-8px">Track keyboard clickers, packaging, accessories, and any other supplies not part of a pack composition.</div>
   <div class="pgrid" id="otherCompGrid"></div>
-  <button class="addrow" onclick="openAddOther()">＋ Add Other Component</button>
+  <button class="addrow" onclick="openAddOther()">ï¼ Add Other Component</button>
 </div>
 
 <!-- FILAMENT -->
 <div class="page" id="page-filament">
   <div class="sh">
-    <div class="sht">🧵 Filament Inventory</div>
+    <div class="sht">ð§µ Filament Inventory</div>
     <button class="btn btn-g" onclick="openAddFilament()">+ Add Spool</button>
   </div>
   <div id="filamentAlertStrip" style="display:none" class="astrip"></div>
   <div class="pgrid" id="filamentGrid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))"></div>
-  <button class="addrow" onclick="openAddFilament()">＋ Add Filament Spool</button>
+  <button class="addrow" onclick="openAddFilament()">ï¼ Add Filament Spool</button>
 </div>
 
 <!-- ALERTS -->
 <div class="page" id="page-alerts">
-  <div class="sh"><div class="sht">🔔 Active Alerts</div></div>
+  <div class="sh"><div class="sht">ð Active Alerts</div></div>
   <div id="alertsList" style="display:flex;flex-direction:column;gap:8px"></div>
+</div>
+
+<!-- PRINT QUEUE -->
+<div class="page" id="page-queue">
+  <div class="sh">
+    <div class="sht">ð¨ Print Queue</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="pq-auto-btn" onclick="autoRefreshQueue()">â» Auto-Suggest Queue</button>
+      <button class="btn btn-g" onclick="openAddQueueItem()">+ Add Item</button>
+    </div>
+  </div>
+  <div style="font-size:12px;color:var(--text-muted);margin-top:-6px;margin-bottom:12px;line-height:1.6">
+    Queue auto-prioritizes by inventory shortage, how many packs share each item, and recent sales velocity.
+    You can manually reorder, add, or remove items â your edits are saved.
+  </div>
+  <div class="pq-stale" id="pqStale">
+    â  Inventory changed since last auto-suggest â queue may be outdated.
+    <button class="pq-auto-btn" style="padding:5px 12px;font-size:12px" onclick="autoRefreshQueue()">Refresh Now</button>
+  </div>
+  <div class="pq-list" id="pqList"></div>
+</div>
+
+<!-- SALES -->
+<div class="page" id="page-sales">
+  <div class="sh">
+    <div class="sht">ð° Sales</div>
+    <button class="log-sale-btn" onclick="openLogSale()">ð¦ Log a Sale</button>
+  </div>
+  <div class="sale-period-tabs" id="salePeriodTabs">
+    <div class="sale-tab active" data-period="7" onclick="setSalePeriod(7)">7 Days</div>
+    <div class="sale-tab" data-period="30" onclick="setSalePeriod(30)">30 Days</div>
+    <div class="sale-tab" data-period="90" onclick="setSalePeriod(90)">90 Days</div>
+    <div class="sale-tab" data-period="0" onclick="setSalePeriod(0)">All Time</div>
+  </div>
+  <div class="sale-stats-grid" id="saleStatsGrid"></div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px">Pack Breakdown</div>
+    <div id="salePackBreakdown"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase">Sales History</div>
+      <div style="font-size:11px;color:var(--text-muted)" id="saleHistCount"></div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="sale-hist-table" id="saleHistTable">
+        <thead><tr>
+          <th>Date</th><th>Pack</th><th>Tier</th><th>Qty</th><th>Price</th><th>Total</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody id="saleHistBody"></tbody>
+      </table>
+    </div>
+    <div id="saleNoData" class="sale-no-data" style="display:none">No sales recorded yet. Log your first sale!</div>
+  </div>
 </div>
 
 <!-- ETSY -->
 <div class="page" id="page-etsy">
-  <div class="sh"><div class="sht">🛍 Etsy Integration</div></div>
+  <div class="sh"><div class="sht">ð Etsy Integration</div></div>
   <div class="card">
-    <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="color:#f1641e">●</span> Connect via Etsy Open API v3</div>
+    <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="color:#f1641e">â</span> Connect via Etsy Open API v3</div>
     <p style="font-size:13px;color:var(--text-muted);margin-bottom:13px;line-height:1.6">Sync pack-ready counts, tier prices, and standalone item stock with your Etsy shop.</p>
     <ol class="esteps">
       <li>Visit <strong>etsy.com/developers</strong> and sign in as a seller.</li>
-      <li>Click <strong>"Create a New App"</strong> — name it "Pack Forge", redirect to <code>http://localhost</code>.</li>
+      <li>Click <strong>"Create a New App"</strong> â name it "Pack Forge", redirect to <code>http://localhost</code>.</li>
       <li>Copy your <strong>API Key String</strong> from the app dashboard.</li>
       <li>Paste it below and click <strong>Connect</strong> to begin OAuth 2.0.</li>
       <li>Use <strong>Sync to Etsy</strong> buttons on each tier / standalone card to push qty and price.</li>
     </ol>
     <div style="display:flex;gap:9px;margin-top:13px">
-      <input class="fi" id="etsyKey" type="password" placeholder="Paste Etsy API Key…" style="flex:1">
+      <input class="fi" id="etsyKey" type="password" placeholder="Paste Etsy API Keyâ¦" style="flex:1">
       <button class="btn btn-p" onclick="connectEtsy()">Connect</button>
     </div>
   </div>
   <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
     <div style="background:var(--surface3);border-radius:8px;padding:13px">
-      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dino)">↓ FROM ETSY</div>
-      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">• Orders → decrement components<br>• Cancellations → restore stock<br>• Current listing quantities</div>
+      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dino)">â FROM ETSY</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">â¢ Orders â decrement components<br>â¢ Cancellations â restore stock<br>â¢ Current listing quantities</div>
     </div>
     <div style="background:var(--surface3);border-radius:8px;padding:13px">
-      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dragon)">↑ TO ETSY</div>
-      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">• Packs-ready → listing qty<br>• Tier price → listing price<br>• Solo item stock → listing qty<br>• Sold-out auto-flag at 0</div>
+      <div style="font-weight:700;font-size:12px;margin-bottom:5px;color:var(--c-dragon)">â TO ETSY</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.9">â¢ Packs-ready â listing qty<br>â¢ Tier price â listing price<br>â¢ Solo item stock â listing qty<br>â¢ Sold-out auto-flag at 0</div>
     </div>
   </div>
   <p style="font-size:11px;color:var(--text-dim)">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
@@ -578,7 +530,7 @@ select.fi option{background:var(--surface2)}
 <!-- PACK CONFIG -->
 <div class="page" id="page-packconfig">
   <div class="sh">
-    <div class="sht">⚙ Pack Configuration</div>
+    <div class="sht">â Pack Configuration</div>
     <button class="btn btn-g" onclick="openNewPack()">+ New Pack Type</button>
   </div>
   <div id="packConfigList" style="display:flex;flex-direction:column;gap:13px"></div>
@@ -692,7 +644,7 @@ select.fi option{background:var(--surface2)}
     <div class="fg"><label class="fl">Stock Qty</label><input class="fi" id="nc-qty" type="number" value="0" min="0"></div>
     <div class="fg"><label class="fl">Alert Threshold</label><input class="fi" id="nc-thr" type="number" value="10" min="0"></div>
   </div>
-  <div class="fg"><label class="fl">Two-Part Product?</label><select class="fi" id="nc-2p"><option value="no">No — single piece</option><option value="yes">Yes — track parts separately</option></select></div>
+  <div class="fg"><label class="fl">Two-Part Product?</label><select class="fi" id="nc-2p"><option value="no">No â single piece</option><option value="yes">Yes â track parts separately</option></select></div>
   <div class="ma"><button class="btn btn-g" onclick="closeModal('addCompModal')">Cancel</button><button class="btn btn-p" onclick="saveNewComp()">Add</button></div>
 </div></div>
 
@@ -707,12 +659,12 @@ select.fi option{background:var(--surface2)}
   </div>
   <div style="font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px">Price Tiers</div>
   <div id="epTierList"></div>
-  <button class="addrow" onclick="addTierRow()" style="margin-bottom:14px">＋ Add Price Tier</button>
+  <button class="addrow" onclick="addTierRow()" style="margin-bottom:14px">ï¼ Add Price Tier</button>
   <div style="font-size:10px;font-weight:700;letter-spacing:.7px;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px">Components (qty per pack)</div>
   <div class="cel" id="epCompList"></div>
   <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
     <select class="fi" id="ep-cn" style="flex:1;min-width:160px">
-      <option value="">— Select a component —</option>
+      <option value="">â Select a component â</option>
     </select>
     <input class="fi" id="ep-cq" type="number" value="1" min="1" style="width:60px;text-align:center">
     <label style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;flex-shrink:0;cursor:pointer"><input type="checkbox" id="ep-c2p" style="cursor:pointer"> 2-part</label>
@@ -726,7 +678,7 @@ select.fi option{background:var(--surface2)}
   <div class="mt">New Pack Type</div>
   <div class="fr2">
     <div class="fg"><label class="fl">Pack Name</label><input class="fi" id="np-name"></div>
-    <div class="fg" style="max-width:75px"><label class="fl">Emoji</label><input class="fi" id="np-emoji" value="📦" maxlength="4" style="font-size:20px;text-align:center;padding:6px"></div>
+    <div class="fg" style="max-width:75px"><label class="fl">Emoji</label><input class="fi" id="np-emoji" value="ð¦" maxlength="4" style="font-size:20px;text-align:center;padding:6px"></div>
   </div>
   <div class="fr2">
     <div class="fg"><label class="fl">Pack Size</label><input class="fi" id="np-size" type="number" value="10" min="1"></div>
@@ -735,12 +687,67 @@ select.fi option{background:var(--surface2)}
   <div class="ma"><button class="btn btn-g" onclick="closeModal('newPackModal')">Cancel</button><button class="btn btn-p" onclick="saveNewPack()">Create</button></div>
 </div></div>
 
+<!-- LOG SALE MODAL -->
+<div class="mbg" id="logSaleModal">
+<div class="modal" style="width:480px">
+  <div class="mt">ð¦ Log a Sale</div>
+  <div class="fg" style="margin-bottom:10px">
+    <label class="fl">Pack Type</label>
+    <select class="fi" id="ls-pack" onchange="onSalePackChange()"></select>
+  </div>
+  <div class="fg" style="margin-bottom:10px">
+    <label class="fl">Price Tier</label>
+    <select class="fi" id="ls-tier" onchange="onSaleTierChange()"></select>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Qty Sold</label><input class="fi" id="ls-qty" type="number" min="1" value="1" oninput="updateSaleTotal()"></div>
+    <div class="fg"><label class="fl">Price per Pack ($)</label><input class="fi" id="ls-price" type="number" step="0.01" min="0" value="0" oninput="updateSaleTotal()"></div>
+  </div>
+  <div style="background:var(--surface3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--text-muted)">
+    Sale Total: <strong id="ls-total" style="color:var(--c-dino);font-family:'Exo 2',sans-serif;font-weight:700;font-size:16px">$0.00</strong>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Date</label><input class="fi" id="ls-date" type="date"></div>
+    <div class="fg"><label class="fl">Notes (optional)</label><input class="fi" id="ls-notes" placeholder="e.g. Etsy order #123"></div>
+  </div>
+  <div id="ls-inv-preview" style="background:rgba(232,93,38,.07);border:1px solid rgba(232,93,38,.2);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;display:none">
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--c-dragon);margin-bottom:6px">Inventory Will Be Deducted:</div>
+    <div id="ls-inv-list" style="display:flex;flex-direction:column;gap:3px;color:var(--text-muted)"></div>
+  </div>
+  <div class="ma">
+    <button class="btn btn-g" onclick="closeModal('logSaleModal')">Cancel</button>
+    <button class="btn btn-p" onclick="saveSale()">Record Sale</button>
+  </div>
+</div></div>
+
+<!-- ADD QUEUE ITEM MODAL -->
+<div class="mbg" id="addQueueModal">
+<div class="modal" style="width:440px">
+  <div class="mt" id="aqModalTitle">Add Item to Print Queue</div>
+  <div class="fg" style="margin-bottom:10px">
+    <label class="fl">Component</label>
+    <select class="fi" id="aq-key" onchange="onQueueItemChange()"></select>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Target Print Qty</label><input class="fi" id="aq-qty" type="number" min="1" value="10"></div>
+    <div class="fg"><label class="fl">Priority Position</label><input class="fi" id="aq-pos" type="number" min="1" value="1"></div>
+  </div>
+  <div class="fg" style="margin-bottom:10px">
+    <label class="fl">Notes (optional)</label>
+    <input class="fi" id="aq-notes" placeholder="e.g. need gold + blue variants">
+  </div>
+  <div class="ma">
+    <button class="btn btn-g" onclick="closeModal('addQueueModal')">Cancel</button>
+    <button class="btn btn-p" onclick="saveQueueItem()">Add to Queue</button>
+  </div>
+</div></div>
+
 <script>
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // FIREBASE CONFIG
 // Follow SETUP.md to get your config and paste it here.
-// ══════════════════════════════════════════════════════════════
-// ► PASTE YOUR FIREBASE CONFIG HERE
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// âº PASTE YOUR FIREBASE CONFIG HERE
 const firebaseConfig = {apiKey: "AIzaSyD6mKGOOqo-mHgxj_HJpt8xG-aFX8GrZQU",
   authDomain: "packforge-bb736.firebaseapp.com",
   projectId: "packforge-bb736",
@@ -748,19 +755,19 @@ const firebaseConfig = {apiKey: "AIzaSyD6mKGOOqo-mHgxj_HJpt8xG-aFX8GrZQU",
   messagingSenderId: "698990375295",
   appId: "1:698990375295:web:ecf996ff060cea0a09ea4a" };
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // FIREBASE INIT
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let db, auth;
 let firebaseReady = false;
 
 function initFirebase() {
   try {
     if (firebaseConfig.REPLACE_ME) {
-      // No config yet — run in local mode
+      // No config yet â run in local mode
       console.warn('PackForge: Running in LOCAL mode (no Firebase config). Data will not persist.');
       setSync('local');
-      hideLoading('Running in local demo mode — data will not save');
+      hideLoading('Running in local demo mode â data will not save');
       bootApp();
       return;
     }
@@ -781,7 +788,7 @@ function initFirebase() {
       .catch(err => {
         console.error('Auth failed:', err);
         setSync('error');
-        hideLoading('Auth failed — check Firebase config');
+        hideLoading('Auth failed â check Firebase config');
         bootApp();
       });
   } catch(e) {
@@ -792,14 +799,14 @@ function initFirebase() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // SYNC STATUS UI
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function setSync(state, text) {
   const pill = document.getElementById('syncPill');
   const txt = document.getElementById('syncTxt');
   pill.className = 'sync-pill ' + (state === 'saving' ? 'saving' : state === 'error' ? 'error' : state === 'local' ? 'offline' : '');
-  txt.textContent = text || (state === 'saving' ? 'Saving…' : state === 'error' ? 'Error' : state === 'local' ? 'Local Only' : '✓ Synced');
+  txt.textContent = text || (state === 'saving' ? 'Savingâ¦' : state === 'error' ? 'Error' : state === 'local' ? 'Local Only' : 'â Synced');
 }
 
 let saveTimer = null;
@@ -816,13 +823,13 @@ function hideLoading(msg) {
   }, msg && msg.includes('local') ? 1200 : 400);
 }
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DEFAULT DATA (used on first run or local mode)
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const DEFAULT_DATA = {
   packs: {
     classic: {
-      name:'Classic Dragon Pack', size:10, emoji:'🪵', color:'#c49a2a',
+      name:'Classic Dragon Pack', size:10, emoji:'ðªµ', color:'#c49a2a',
       tiers:[{ id:'c1', name:'Classic Dragon Pack', subtitle:'Wood Dragon 4-leg articulated', price:82, etsyId:'', synced:false }],
       composition:{
         wood_dragon:          { label:'Wood Dragon (4-leg)',        qty:1,  twopart:false },
@@ -831,7 +838,7 @@ const DEFAULT_DATA = {
       }
     },
     standard: {
-      name:'Standard Dragon Pack', size:10, emoji:'🐉', color:'#e85d26',
+      name:'Standard Dragon Pack', size:10, emoji:'ð', color:'#e85d26',
       tiers:[{ id:'s1', name:'Standard Dragon Pack', subtitle:'Shadowcoil Mini 7.7"', price:72, etsyId:'', synced:false }],
       composition:{
         shadowcoil_mini:      { label:'Shadowcoil Mini (7.7")',     qty:1,  twopart:false },
@@ -840,8 +847,8 @@ const DEFAULT_DATA = {
       }
     },
     premium: {
-      name:'Premium Dragon Pack', size:10, emoji:'✨', color:'#c49a2a',
-      tiers:[{ id:'p1', name:'Premium Dragon Pack', subtitle:'Zephyros 247mm (9.7") — H2C multicolor', price:96.99, etsyId:'', synced:false }],
+      name:'Premium Dragon Pack', size:10, emoji:'â¨', color:'#c49a2a',
+      tiers:[{ id:'p1', name:'Premium Dragon Pack', subtitle:'Zephyros 247mm (9.7") â H2C multicolor', price:96.99, etsyId:'', synced:false }],
       composition:{
         zephyros_247:         { label:'Zephyros Dragon 247mm',      qty:1,  twopart:false },
         dragon_egg_clicker:   { label:'Dragon Egg Clicker',         qty:10, twopart:true  },
@@ -849,7 +856,7 @@ const DEFAULT_DATA = {
       }
     },
     dino: {
-      name:'Dino Party Pack', size:10, emoji:'🦕', color:'#2eb87a',
+      name:'Dino Party Pack', size:10, emoji:'ð¦', color:'#2eb87a',
       tiers:[
         { id:'d1', name:'Dino Pack Standard', subtitle:'STLFLIX skeleton series', price:29.99, etsyId:'', synced:false },
         { id:'d2', name:'Dino Pack Deluxe',   subtitle:'Premium painted finish',  price:39.99, etsyId:'', synced:false },
@@ -866,10 +873,10 @@ const DEFAULT_DATA = {
     }
   },
   inventory: {
-    wood_dragon:          { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
-    shadowcoil_mini:      { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
-    zephyros_247:         { qty:0, threshold:5,  twopart:false, parts:{}, variants:[], combos:[], partColors:{} },
-    dragon_egg_clicker:   { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
+    wood_dragon:          { qty:0, threshold:5,  twopart:false, parts:{, variants:[], combos:[], partColors:{} },
+    shadowcoil_mini:      { qty:0, threshold:5,  twopart:false, parts:{, variants:[], combos:[], partColors:{} },
+    zephyros_247:         { qty:0, threshold:5,  twopart:false, parts:{, variants:[], combos:[], partColors:{} },
+    dragon_egg_clicker:   { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{g:{egg:[],head:[]} },
     flying_dragon_clicker:{ qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
     dino_egg_clicker:     { qty:0, threshold:20, twopart:true,  parts:{head:0, egg:0}, variants:[], combos:[], partColors:{egg:[],head:[]} },
     flying_dino_clicker:  { qty:0, threshold:5,  twopart:true,  parts:{top:0, bottom:0}, variants:[], combos:[], partColors:{top:[],bottom:[]} },
@@ -881,111 +888,11 @@ const DEFAULT_DATA = {
   },
   soloItems: {
     dragon: [
-      { id:1, cat:'dragon', name:'Zephyros 247mm Dragon',  size:'9.7"',  sub:'Articulated · silk multicolor · gift or collector', priceLo:32, priceHi:38, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'articulated dragon gift, large dragon fidget', variants:[], synced:false },
-      { id:2, cat:'dragon', name:'Zephyros 328mm Dragon',  size:'12.9"', sub:'Full-size display piece · H2C only',                priceLo:62, priceHi:72, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'full size dragon, desk dragon display', variants:[], synced:false },
-      { id:3, cat:'dragon', name:'Zephyros 370mm Dragon',  size:'14.6"', sub:'Showcase / premium gift · H2C only',                priceLo:85, priceHi:95, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'giant articulated dragon, display dragon', variants:[], synced:false },
-    ],
-    gothic: [
-      { id:4, cat:'gothic', name:'Ashbone Skeleton Dragon', size:'Long', sub:'White bone + gold horns/teeth · gothic/collector',  priceLo:75, priceHi:88, qty:0, etsyId:'', color:'#9b59b6', printer:'any', tags:'skeleton dragon, gothic dragon decor, Halloween dragon', variants:[], synced:false },
-    ]
-  },
-  otherComponents: [
-    { id:1, name:'Keyboard Clicker',    cat:'Clicker',   qty:0, threshold:10, unit:'pcs',  notes:'Cherry MX style' },
-    { id:2, name:'Bubble Mailer 6x9"',  cat:'Packaging', qty:0, threshold:20, unit:'bags', notes:'' },
-    { id:3, name:'Thank You Cards',     cat:'Accessory', qty:0, threshold:25, unit:'pcs',  notes:'Business card size' },
-  ],
-  filament: [
-    { id:1, mfr:'Bambu Lab', type:'Silk PLA', colorName:'Silk Gold',   color:'#d4af37', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Dragon egg clickers' },
-    { id:2, mfr:'Hatchbox',  type:'PLA',      colorName:'Natural',     color:'#c8b06a', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Default for most prints' },
-    { id:3, mfr:'eSUN',      type:'Silk PLA', colorName:'Silk Blue',   color:'#3b82f6', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Zephyros dragon' },
-    { id:4, mfr:'eSUN',      type:'PLA+',     colorName:'Teal',        color:'#2eb8b8', spoolSize:1000, spools:0, remaining:0, alertAt:200, dia:'1.75', notes:'Dino egg clickers' },
-  ],
-  meta: { nextSoloId: 5, nextOtherId: 4, nextFilamentId: 5 }
-};
-
-// ══════════════════════════════════════════════════════════════
-// STATE — loaded from Firestore or defaults
-// ══════════════════════════════════════════════════════════════
-let S = {
-  etsy: { connected: false },
-  packs: {},
-  inventory: {},
-  soloItems: { dragon: [], gothic: [] },
-  otherComponents: [],
-  filament: [],
-  nextSoloId: 5,
-  nextOtherId: 4,
-  nextFilamentId: 5
-};
-
-// ══════════════════════════════════════════════════════════════
-// FIRESTORE LOAD / SAVE
-// ══════════════════════════════════════════════════════════════
-const COL = 'packforge';
-
-async function loadFromFirestore() {
-  document.getElementById('loadMsg').textContent = 'Loading your inventory…';
-  try {
-    const docs = ['packs','inventory','soloItems','otherComponents','filament','meta'];
-    const results = await Promise.all(docs.map(d => db.collection(COL).doc(d).get()));
-
-    const [packsDoc, invDoc, soloDoc, otherDoc, filmDoc, metaDoc] = results;
-
-    S.packs          = packsDoc.exists    ? packsDoc.data()    : JSON.parse(JSON.stringify(DEFAULT_DATA.packs));
-    S.inventory      = invDoc.exists      ? invDoc.data()      : JSON.parse(JSON.stringify(DEFAULT_DATA.inventory));
-    S.soloItems      = soloDoc.exists     ? soloDoc.data()     : JSON.parse(JSON.stringify(DEFAULT_DATA.soloItems));
-    S.otherComponents= otherDoc.exists    ? otherDoc.data().list : JSON.parse(JSON.stringify(DEFAULT_DATA.otherComponents));
-    S.filament       = filmDoc.exists     ? filmDoc.data().list  : JSON.parse(JSON.stringify(DEFAULT_DATA.filament));
-    if (metaDoc.exists) {
-      const m = metaDoc.data();
-      S.nextSoloId      = m.nextSoloId      || 5;
-      S.nextOtherId     = m.nextOtherId     || 4;
-      S.nextFilamentId  = m.nextFilamentId  || 5;
-    }
-
-    // If first run, write defaults to Firestore so future loads work
-    if (!packsDoc.exists) await writeAll();
-
-    hideLoading();
-    bootApp();
-  } catch(e) {
-    console.error('Firestore load failed:', e);
-    setSync('error', 'Load failed');
-    // Fall back to defaults
-    S = { etsy:{connected:false}, ...JSON.parse(JSON.stringify(DEFAULT_DATA)),
-          nextSoloId:DEFAULT_DATA.meta.nextSoloId,
-          nextOtherId:DEFAULT_DATA.meta.nextOtherId,
-          nextFilamentId:DEFAULT_DATA.meta.nextFilamentId };
-    hideLoading('Loaded defaults (database error)');
-    bootApp();
-  }
-}
-
-// Write a single document
-async function writeDoc(docName, data) {
-  if (!firebaseReady) return;
-  setSaving();
-  try {
-    await db.collection(COL).doc(docName).set(data);
-  } catch(e) {
-    console.error('Write failed:', docName, e);
-    setSync('error');
-  }
-}
-
-// Write all documents (used on first run)
-async function writeAll() {
-  if (!firebaseReady) return;
-  setSaving();
-  try {
-    const batch = db.batch();
-    const col = db.collection(COL);
-    batch.set(col.doc('packs'),           S.packs);
-    batch.set(col.doc('inventory'),       S.inventory);
-    batch.set(col.doc('soloItems'),       S.soloItems);
-    batch.set(col.doc('otherComponents'), { list: S.otherComponents });
-    batch.set(col.doc('filament'),        { list: S.filament });
-    batch.set(col.doc('meta'),            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId });
+      { id:1, cat:'dragon', name:'Zephyros 247mm Dragon',  size:'9.7"',  sub:'Articulated Â· silk multicolor Â· gift or collector', priceLo:32, priceHi:38, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'articulated dragon gift, large dragon fidget', variants:[], synced:false },
+      { id:2, cat:'dragon', name:'Zephyros 328mm Dragon',  size:'12.9"', sub:'Full-size display piece Â· H2C only',                priceLo:62, priceHi:72, qty:0, etsyId:'', color:'#c49a2a', printer:'h2c', tags:'full size dragon, desk dragon display', variants:[], synced:false },
+      { id:3, cat:'dragon', name:'Z­Á¡åÉ½ÌÌÜÁµ´É½¸°Í¥éèÄÐ¸Ø°ÍÕèM¡½ÝÍ¼ÁÉµ¥Õ´¥Ð
+Ü É½¹±ä°ÁÉ¥1¼èàÔ°ÁÉ¥!¤èäÔ°ÅÑäèÀ°ÑÍå%è°½±½ÈèÐåÉ°ÁÉ¥¹ÑÈè É°ÑÌè¥¹ÐÉÑ¥Õ±ÑÉ½¸°¥ÍÁ±äÉ½¸°ÙÉ¥¹ÑÌémt°Íå¹é±Íô°(t°(½Ñ¡¥èl(ì¥èÐ°Ðè½Ñ¡¥°¹µèÍ¡½¹M­±Ñ½¸É½¸°Í¥éè1½¹°ÍÕè]¡¥Ñ½¹¬½±¡½É¹Ì½ÑÑ 
+Ü½Ñ¡¥½½±±Ñ½È°ÁÉ¥1¼èÜÔ°ÁÉ¥!¤èàà°ÅÑäèÀ°ÑÍå%è°½±½ÈèåÔåØ°ÁÉ¥¹ÑÈè¹ä°ÑÌèÍ­±Ñ½¸É½¸°½Ñ¡¥É½¸½È°!±±½Ý¸É½¸°ÙÉ¥¹ÑÌémt°Íå¹é±Íô°(t(ô°(½Ñ¡É½µÁ½¹¹ÑÌèl(ì¥èÄ°¹µè-å½É±¥­È°Ðè±¥­È°ÅÑäèÀ°Ñ¡ÉÍ¡½±èÄÀ°Õ¹¥ÐèÁÌ°¹½ÑÌè¡ÉÉä5`ÍÑå±ô°(ì¥èÈ°¹µè	Õ±5¥±ÈÙàä°ÐèA­¥¹°ÅÑäèÀ°Ñ¡ÉÍ¡½±èÈÀ°Õ¹¥ÐèÌ°¹½ÑÌèô°(ì¥èÌ°¹µèQ¡¹¬e½ÔÉÌ°ÐèÍÍ½Éä°ÅÑäèÀ°Ñ¡ÉÍ¡½±èÈÔ°Õ¹¥ÐèÁÌ°¹½ÑÌè	ÕÍ¥¹ÍÌÉÍ¥éô°(t°(¥±µ¹Ðèl(ì¥èÄ°µÈè	µÔ1°ÑåÁèM¥±¬A1°½±½É9µèM¥±¬½±°½±½ÈèÑÌÜ°ÍÁ½½±M¥éèÄÀÀÀ°ÍÁ½½±ÌèÀ°Éµ¥¹¥¹èÀ°±ÉÑÐèÈÀÀ°¥èÄ¸ÜÔ°¹½ÑÌèÉ½¸±¥­ÉÌô°(ì¥èÈ°µÈè!Ñ¡½à°ÑåÁèA1°½±½É9µè9ÑÕÉ°°½±½ÈèáÀÙ°ÍÁ½½±M¥éèÄÀÀÀ°ÍÁ½½±ÌèÀ°Éµ¥¹¥¹èÀ°±ÉÑÐèÈÀÀ°¥èÄ¸ÜÔ°¹½ÑÌèÕ±Ð½Èµ½ÍÐÁÉ¥¹ÑÌô°(ì¥èÌ°µÈèMU8°ÑåÁèM¥±¬A1°½±½É9µèM¥±¬	±Õ°½±½ÈèÍàÉØ°ÍÁ½½±M¥éèÄÀÀÀ°ÍÁ½½±ÌèÀ°Éµ¥¹¥¹èÀ°±ÉÑÐèÈÀÀ°¥èÄ¸ÜÔ°¹½ÑÌèiÁ¡åÉ½ÌÉ½¸ô°(ì¥èÐ°µÈèMU8°ÑåÁèA1¬°½±½É9µèQ°°½±½ÈèÉáà°ÍÁ½½±M¥éèÄÀÀÀ°ÍÁ½½±ÌèÀ°Éµ¥¹¥¹èÀ°±ÉÑÐèÈÀÀ°¥èÄ¸ÜÔ°¹½ÑÌè¥¹¼±¥­ÉÌô°(t°(µÑèì¹áÑM½±½%èÔ°¹áÑ=Ñ¡É%èÐ°¹áÑ¥±µ¹Ñ%èÔ°¹áÑM±%èÄô°(Í±Ìèmt°(ÁÉ¥¹ÑEÕÕèmt)ôì((¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@(¼¼MQQP±½É½´¥ÉÍÑ½É½ÈÕ±ÑÌ(¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@)±ÐLôì(ÑÍäèì½¹¹Ñè±Íô°(Á­Ìèíô°(¥¹Ù¹Ñ½Éäèíô°(Í½±½%ÑµÌèìÉ½¸èmt°½Ñ¡¥èmtô°(½Ñ¡É½µÁ½¹¹ÑÌèmt°(¥±µ¹Ðèmt°(Í±Ìèmt°(ÁÉ¥¹ÑEÕÕèmt°(¹áÑM½±½%èÔ°(¹áÑ=Ñ¡É%èÐ°(¹áÑ¥±µ¹Ñ%èÔ°(¹áÑM±%èÄ)ôì((¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@(¼¼%IMQ=I1=¼MY(¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@)½¹ÍÐ=0ôÁ­½Éì()Íå¹Õ¹Ñ¥½¸±½É½µ¥ÉÍÑ½É ¤ì(½Õµ¹Ð¹Ñ±µ¹Ñ	å% ±½5Í¤¹ÑáÑ½¹Ñ¹Ðô1½¥¹å½ÕÈ¥¹Ù¹Ñ½Éçì(ÑÉäì(½¹ÍÐ½ÌôlÁ­Ì°¥¹Ù¹Ñ½Éä°Í½±½%ÑµÌ°½Ñ¡É½µÁ½¹¹ÑÌ°¥±µ¹Ð°µÑ°Í±Ì°ÁÉ¥¹ÑEÕÕtì(½¹ÍÐÉÍÕ±ÑÌôÝ¥ÐAÉ½µ¥Í¹±°¡½Ì¹µÀ¡ôø¹½±±Ñ¥½¸¡=0¤¹½¡¤¹Ð ¤¤¤ì((½¹ÍÐmÁ­Í½°¥¹Ù½°Í½±½½°½Ñ¡É½°¥±µ½°µÑ½°Í±Í½°ÁÅ½tôÉÍÕ±ÑÌì((L¹Á­ÌôÁ­Í½¹á¥ÍÑÌüÁ­Í½¹Ñ ¤è)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¹Á­Ì¤¤ì(L¹¥¹Ù¹Ñ½Éäô¥¹Ù½¹á¥ÍÑÌü¥¹Ù½¹Ñ ¤è)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¹¥¹Ù¹Ñ½Éä¤¤ì(L¹Í½±½%ÑµÌôÍ½±½½¹á¥ÍÑÌüÍ½±½½¹Ñ ¤è)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¹Í½±½%ÑµÌ¤¤ì(L¹½Ñ¡É½µÁ½¹¹ÑÌô½Ñ¡É½¹á¥ÍÑÌü½Ñ¡É½¹Ñ ¤¹±¥ÍÐè)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¹½Ñ¡É½µÁ½¹¹ÑÌ¤¤ì(L¹¥±µ¹Ðô¥±µ½¹á¥ÍÑÌü¥±µ½¹Ñ ¤¹±¥ÍÐè)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¹¥±µ¹Ð¤¤ì(L¹Í±ÌôÍ±Í½¹á¥ÍÑÌü¡Í±Í½¹Ñ ¤¹±¥ÍÐñðmt¤èmtì(L¹ÁÉ¥¹ÑEÕÕôÁÅ½¹á¥ÍÑÌü¡ÁÅ½¹Ñ ¤¹±¥ÍÐñðmt¤èmtì(¥¡µÑ½¹á¥ÍÑÌ¤ì(½¹ÍÐ´ôµÑ½¹Ñ ¤ì(L¹¹áÑM½±½%ô´¹¹áÑM½±½%ñðÔì(L¹¹áÑ=Ñ¡É%ô´¹¹áÑ=Ñ¡É%ñðÐì(L¹¹áÑ¥±µ¹Ñ%ô´¹¹áÑ¥±µ¹Ñ%ñðÔì(L¹¹áÑM±%ô´¹¹áÑM±%ñðÄì(ô((¼¼%¥ÉÍÐÉÕ¸°ÝÉ¥ÑÕ±ÑÌÑ¼¥ÉÍÑ½ÉÍ¼ÕÑÕÉ±½ÌÝ½É¬(¥ Á­Í½¹á¥ÍÑÌ¤Ý¥ÐÝÉ¥Ñ±° ¤ì((¡¥1½¥¹ ¤ì(½½ÑÁÀ ¤ì(ôÑ ¡¤ì(½¹Í½±¹ÉÉ½È ¥ÉÍÑ½É±½¥±è°¤ì(ÍÑMå¹ ÉÉ½È°1½¥±¤ì(¼¼±°¬Ñ¼Õ±ÑÌ(LôìÑÍäéí½¹¹Ñé±Íô°¸¸¹)M=8¹ÁÉÍ¡)M=8¹ÍÑÉ¥¹¥ä¡U1Q}Q¤¤°(¹áÑM½±½%éU1Q}Q¹µÑ¹¹áÑM½±½%°(¹áÑ=Ñ¡É%éU1Q}Q¹µÑ¹¹áÑ=Ñ¡É%°(¹áÑ¥±µ¹Ñ%éU1Q}Q¹µÑ¹¹áÑ¥±µ¹Ñ%ôì(¡¥1½¥¹ 1½Õ±ÑÌ¡ÑÍÉÉ½È¤¤ì(½½ÑÁÀ ¤ì(ô)ô((¼¼]É¥ÑÍ¥¹±½Õµ¹Ð)Íå¹Õ¹Ñ¥½¸ÝÉ¥Ñ½¡½9µ°Ñ¤ì(¥ ¥ÉÍIä¤ÉÑÕÉ¸ì(ÍÑMÙ¥¹ ¤ì(ÑÉäì(Ý¥Ð¹½±±Ñ¥½¸¡=0¤¹½¡½9µ¤¹ÍÐ¡Ñ¤ì(ôÑ ¡¤ì(½¹Í½±¹ÉÉ½È ]É¥Ñ¥±è°½9µ°¤ì(ÍÑMå¹ ÉÉ½È¤ì(ô)ô((¼¼]É¥Ñ±°½Õµ¹ÑÌ¡ÕÍ½¸¥ÉÍÐÉÕ¸¤)Íå¹Õ¹Ñ¥½¸ÝÉ¥Ñ±° ¤ì(¥ ¥ÉÍIä¤ÉÑÕÉ¸ì(ÍÑMÙ¥¹ ¤ì(ÑÉäì(½¹ÍÐÑ ô¹Ñ  ¤ì(½¹ÍÐ½°ô¹½±±Ñ¥½¸¡=0¤ì(Ñ ¹ÍÐ¡½°¹½ Á­Ì¤°L¹Á­Ì¤ì(Ñ ¹ÍÐ¡½°¹½ ¥¹Ù¹Ñ½Éä¤°L¹¥¹Ù¹Ñ½Éä¤ì(Ñ ¹ÍÐ¡½°¹½ Í±Ì¤°ì±¥ÍÐèL¹Í±Ìô¤ì(Ñ ¹ÍÐ¡½°¹½ ÁÉ¥¹ÑEÕÕ¤°ì±¥ÍÐèL¹ÁÉ¥¹ÑEÕÕô¤ì(Ñ ¹ÍÐ¡½°¹½ Í½±½%ÑµÌ¤°L¹Í½±½%ÑµÌ¤ì(Ñ ¹ÍÐ¡½°¹½ ½Ñ¡É½µÁ½¹¹ÑÌ¤°ì±¥ÍÐèL¹½Ñ¡É½µÁ½¹¹ÑÌô¤ì(Ñ ¹ÍÐ¡½°¹½ ¥±µ¹Ð¤°ì±¥ÍÐèL¹¥±µ¹Ðô¤ì(  batch.set(col.doc('meta'),            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId });
     await batch.commit();
   } catch(e) {
     console.error('Batch write failed:', e);
@@ -993,28 +900,41 @@ async function writeAll() {
   }
 }
 
-// Targeted saves — called after each mutation
-function saveInventory()       { writeDoc('inventory',       S.inventory); }
+// Targeted saves â called after each mutation
+function saveInventory()       { writeDoc('inventory', S.inventory); setTimeout(pqCheckStale, 100); }
 function savePacks()           { writeDoc('packs',           S.packs); }
 function saveSoloItems()       { writeDoc('soloItems',       S.soloItems); }
 function saveOtherComponents() { writeDoc('otherComponents', { list: S.otherComponents }); }
 function saveFilamentData()    { writeDoc('filament',        { list: S.filament }); }
-function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId }); }
+function saveMeta()            { writeDoc('meta',            { nextSoloId: S.nextSoloId, nextOtherId: S.nextOtherId, nextFilamentId: S.nextFilamentId, nextSaleId: S.nextSaleId }); }
+function saveSales()           { writeDoc('sales',           { list: S.sales }); }
+function savePrintQueue()      { writeDoc('printQueue',      { list: S.printQueue }); }
 
-// ══════════════════════════════════════════════════════════════
-// BOOT APP — called after data is loaded
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// BOOT APP â called after data is loaded
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function bootApp() {
   refreshAll();
   renderPackConfig();
   document.getElementById('fl-spoolsize').addEventListener('change', function(){
     document.getElementById('fl-customWrap').style.display = this.value === 'custom' ? '' : 'none';
   });
+  // Capture initial inventory snapshot for stale detection
+  _pqLastInvSnapshot = JSON.stringify(S.inventory);
+  // Auto-suggest queue on first run if it's empty
+  if (!S.printQueue || !S.printQueue.length) {
+    const suggestions = calcPrintQueueSuggestions();
+    if (suggestions.length) {
+      S.printQueue = suggestions;
+      savePrintQueue();
+      renderPrintQueue();
+    }
+  }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // SIDEBAR TOGGLE
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let sidebarCollapsed = false;
 function toggleSidebar(){
   const sb=document.getElementById('sidebar');
@@ -1024,10 +944,10 @@ function toggleSidebar(){
   if(isMobile){
     sb.classList.toggle('collapsed', sidebarCollapsed);
     overlay.classList.toggle('open', !sidebarCollapsed);
-    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? '☰' : '✕';
+    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? 'â°' : 'â';
   } else {
     sb.classList.toggle('collapsed', sidebarCollapsed);
-    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? '▶' : '◀';
+    sb.querySelector('.sb-toggle-btn').textContent = sidebarCollapsed ? 'â¶' : 'â';
   }
 }
 function closeSidebar(){
@@ -1037,9 +957,9 @@ function closeSidebar(){
 }
 function navAndClose(id){ nav(id); if(window.innerWidth<=600) closeSidebar(); }
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // NAV
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -1048,9 +968,9 @@ function nav(id){
   document.querySelectorAll('.ni').forEach(n=>{ if(n.dataset.p===id) n.classList.add('active'); });
 }
 
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // CALCULATIONS
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function packsReady(pk){
   let min=Infinity;
   for(const[k,def] of Object.entries(S.packs[pk].composition)){
@@ -1075,9 +995,9 @@ function asmbl(key){
 
 const CLICKER_KEYS=['dragon_egg_clicker','dino_egg_clicker','flying_dragon_clicker','flying_dino_clicker'];
 
-// ══════════════════════════════════════════════════════════════
-// RENDER — TIERS
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// RENDER â TIERS
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderTiers(pk, cid){
   const pack=S.packs[pk], ready=packsReady(pk), col=pack.color;
   const el=document.getElementById(cid);
@@ -1095,19 +1015,19 @@ function renderTiers(pk, cid){
         </div>
       </div>
       <div class="tpr"><span class="tpl">Etsy Listing ID</span>
-        <input class="eidsinput" type="text" value="${t.etsyId}" placeholder="—" onchange="setTE('${pk}',${i},this.value)">
+        <input class="eidsinput" type="text" value="${t.etsyId}" placeholder="â" onchange="setTE('${pk}',${i},this.value)">
       </div>
       <div class="tready" style="color:${col}">${ready}</div>
       <div class="treadyl">packs ready to ship</div>
       <button class="syncbtn${t.synced?' synced':''}" onclick="syncTier('${pk}',${i})">
-        ${t.synced?'✓ Synced to Etsy':'↑ Sync to Etsy'}
+        ${t.synced?'â Synced to Etsy':'â Sync to Etsy'}
       </button>
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER — COMPONENT CARD
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// RENDER â COMPONENT CARD
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderCard(key, label, col){
   const inv=S.inventory[key]; if(!inv) return '';
   const st=compStatus(key);
@@ -1119,7 +1039,7 @@ function renderCard(key, label, col){
 
   let partsHtml='';
   if(inv.twopart&&inv.parts&&Object.keys(inv.parts).length){
-    partsHtml=`<div class="pbox"><div class="pbl">⚙ Parts Printed</div>${
+    partsHtml=`<div class="pbox"><div class="pbl">â Parts Printed</div>${
       Object.entries(inv.parts).map(([pname,pq])=>{
         const pct=Math.min(100,(pq/Math.max(inv.qty*1.5,1))*100);
         const pcColors=isClicker&&inv.partColors&&inv.partColors[pname]
@@ -1128,7 +1048,7 @@ function renderCard(key, label, col){
                 <span class="pc-chip" title="${c.name}: ${c.qty} raw parts">
                   <div class="pc-swatch" style="background:${c.color}"></div>
                   <span>${c.name}</span><span class="pc-qty" style="margin-left:3px">(${c.qty})</span>
-                  <button class="pc-remove" onclick="rmPartColor('${key}','${pname}',${ci})">×</button>
+                  <button class="pc-remove" onclick="rmPartColor('${key}','${pname}',${ci})">Ã</button>
                 </span>`).join('')}
               <button class="pc-add" onclick="openPartColor('${key}','${pname}')">+ color</button>
             </div>`:''
@@ -1139,7 +1059,7 @@ function renderCard(key, label, col){
             <span class="prq">${pq}</span>
             <div class="prbtns">
               <button class="pb" onclick="adjPart('${key}','${pname}',1)">+</button>
-              <button class="pb" onclick="adjPart('${key}','${pname}',-1)">−</button>
+              <button class="pb" onclick="adjPart('${key}','${pname}',-1)">â</button>
               <input class="qval" type="number" min="0" value="${pq}" style="width:40px;font-size:12px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;padding:2px 4px;margin-left:2px" oninput="setPart('${key}','${pname}',this.value)">
             </div>
           </div>${pcColors}
@@ -1170,11 +1090,11 @@ function renderCard(key, label, col){
               <span style="font-size:12px;font-weight:600">${n2}</span>
             </div>
             <div class="qw" style="max-width:100px">
-              <button class="qbtn" onclick="adjCombo('${key}',${ci},-1)" style="padding:3px 7px;font-size:13px">−</button>
+              <button class="qbtn" onclick="adjCombo('${key}',${ci},-1)" style="padding:3px 7px;font-size:13px">â</button>
               <input class="qval" style="font-size:13px" type="number" min="0" value="${c.qty}" oninput="setCombo('${key}',${ci},this.value)">
               <button class="qbtn" onclick="adjCombo('${key}',${ci},1)" style="padding:3px 7px;font-size:13px">+</button>
             </div>
-            <button class="pc-remove" onclick="rmCombo('${key}',${ci})" style="font-size:16px">×</button>
+            <button class="pc-remove" onclick="rmCombo('${key}',${ci})" style="font-size:16px">Ã</button>
           </div>`;
         }).join('')}
       </div>
@@ -1198,12 +1118,12 @@ function renderCard(key, label, col){
             <div class="vrow-swatch" style="background:${v.color}"></div>
             <span class="vrow-name${v.name==='Misc'?' vrow-misc':''}">${v.name}</span>
             <div class="vrow-qw">
-              <button class="vrow-qbtn" onclick="adjVar('${key}',${vi},-1)">−</button>
+              <button class="vrow-qbtn" onclick="adjVar('${key}',${vi},-1)">â</button>
               <input class="vrow-qty" type="number" min="0" value="${v.qty}" oninput="setVar('${key}',${vi},this.value)">
               <button class="vrow-qbtn" onclick="adjVar('${key}',${vi},1)">+</button>
             </div>
-            ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditVar('${key}',${vi})" title="Edit">✏</button>`:''}
-            ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmVar('${key}',${vi})" title="Remove">×</button>`:''}
+            ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditVar('${key}',${vi})" title="Edit">â</button>`:''}
+            ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmVar('${key}',${vi})" title="Remove">Ã</button>`:''}
           </div>`).join('')}
       </div>
       <div class="var-total-row">
@@ -1220,14 +1140,14 @@ function renderCard(key, label, col){
     <div class="pch">
       <div style="flex:1;min-width:0;display:flex;align-items:center;gap:5px">
         <div class="pcn" id="pcn-${key}">${displayLabel}</div>
-        <button class="pcn-edit-btn" onclick="startEditName('${key}')" title="Rename">✏</button>
+        <button class="pcn-edit-btn" onclick="startEditName('${key}')" title="Rename">â</button>
       </div>
       <span class="sb ${bc}">${bt}</span>
     </div>
     <div class="qrow">
       <span class="ql">${hasVariants?'Total Units':'Complete Units'}</span>
       <div class="qw" style="${hasVariants?'opacity:.6;pointer-events:none':''}">
-        <button class="qbtn" onclick="adjQ('${key}',-1)">−</button>
+        <button class="qbtn" onclick="adjQ('${key}',-1)">â</button>
         <input class="qval" type="number" min="0" value="${inv.qty}" oninput="setQ('${key}',this.value)" ${hasVariants?'readonly':''}>
         <button class="qbtn" onclick="adjQ('${key}',1)">+</button>
       </div>
@@ -1235,17 +1155,17 @@ function renderCard(key, label, col){
     </div>
     ${partsHtml}${colorHtml}
     <div class="thr">
-      <span class="thl">⚠ Alert below</span>
+      <span class="thl">â  Alert below</span>
       <input class="thi" type="number" min="0" value="${inv.threshold}" onchange="setThr('${key}',this.value)">
       <span style="font-size:10px;color:var(--text-dim)">units</span>
-      <button class="bsm bsm-r" style="margin-left:auto" onclick="deleteComponent('${key}')">🗑 Delete</button>
+      <button class="bsm bsm-r" style="margin-left:auto" onclick="deleteComponent('${key}')">ð Delete</button>
     </div>
   </div>`;
 }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER — SOLO CARD
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// RENDER â SOLO CARD
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderSoloCard(item){
   const low=item.qty<3, crit=item.qty===0;
   const cls=crit?'critical':low?'low':'';
@@ -1258,48 +1178,48 @@ function renderSoloCard(item){
       <div class="vrow-swatch" style="background:${v.color}"></div>
       <span class="vrow-name${v.name==='Misc'?' vrow-misc':''}">${v.name}</span>
       <div class="vrow-qw">
-        <button class="vrow-qbtn" onclick="adjSoloVar('${item.cat}',${item.id},${vi},-1)">−</button>
+        <button class="vrow-qbtn" onclick="adjSoloVar('${item.cat}',${item.id},${vi},-1)">â</button>
         <input class="vrow-qty" type="number" min="0" value="${v.qty}" oninput="setSoloVar('${item.cat}',${item.id},${vi},this.value)">
         <button class="vrow-qbtn" onclick="adjSoloVar('${item.cat}',${item.id},${vi},1)">+</button>
       </div>
-      ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditSoloVar('${item.cat}',${item.id},${vi})" title="Edit">✏</button>`:''}
-      ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmSoloVar('${item.cat}',${item.id},${vi})" title="Remove">×</button>`:''}
+      ${v.name!=='Misc'?`<button class="vrow-edit" onclick="openEditSoloVar('${item.cat}',${item.id},${vi})" title="Edit">â</button>`:''}
+      ${v.name!=='Misc'?`<button class="vrow-del" onclick="rmSoloVar('${item.cat}',${item.id},${vi})" title="Remove">Ã</button>`:''}
     </div>`).join('');
   return `<div class="solocard ${cls}">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${col},transparent)"></div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px">
       <div class="sc-name">${item.name}</div>${printerBadge}
     </div>
-    <div class="sc-sub">${item.size} · ${item.sub}</div>
-    <div class="sc-price-row"><span class="sc-price-label">Price Range</span><span class="sc-range" style="color:${col}">$${item.priceLo}–$${item.priceHi}</span></div>
+    <div class="sc-sub">${item.size} Â· ${item.sub}</div>
+    <div class="sc-price-row"><span class="sc-price-label">Price Range</span><span class="sc-range" style="color:${col}">$${item.priceLo}â$${item.priceHi}</span></div>
     <div class="sc-price-row"><span class="sc-price-label">Etsy ID</span>
-      <input class="eidsinput" type="text" value="${item.etsyId}" placeholder="—" onchange="setSoloEtsy('${item.cat}',${item.id},this.value)" style="width:120px">
+      <input class="eidsinput" type="text" value="${item.etsyId}" placeholder="â" onchange="setSoloEtsy('${item.cat}',${item.id},this.value)" style="width:120px">
     </div>
     <div class="sc-stock-row">
       <span class="sc-price-label">In Stock</span>
       <div class="qw" style="max-width:130px">
-        <button class="qbtn" onclick="adjSolo('${item.cat}',${item.id},-1)">−</button>
+        <button class="qbtn" onclick="adjSolo('${item.cat}',${item.id},-1)">â</button>
         <input class="qval" type="number" min="0" value="${item.qty}" oninput="setSoloQty('${item.cat}',${item.id},this.value)">
         <button class="qbtn" onclick="adjSolo('${item.cat}',${item.id},1)">+</button>
       </div>
       ${crit?'<span class="sb crit" style="margin-left:6px">SOLD OUT</span>':low?'<span class="sb low" style="margin-left:6px">LOW</span>':''}
     </div>
-    ${item.tags?`<div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5">🔍 ${item.tags}</div>`:''}
+    ${item.tags?`<div style="font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5">ð ${item.tags}</div>`:''}
     <div class="varsec" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
       <div class="varl">Color Variants</div>
       <div class="varrow">${varChips}<button class="addbtn" onclick="openVar('__solo__${item.cat}__${item.id}')">+ color</button></div>
     </div>
     <div class="sc-actions">
-      <button class="syncbtn${item.synced?' synced':''}" onclick="syncSolo('${item.cat}',${item.id})" style="margin-top:0">${item.synced?'✓ Synced':'↑ Sync to Etsy'}</button>
-      <button class="bsm bsm-g" onclick="openEditSolo('${item.cat}',${item.id})">✏ Edit</button>
-      <button class="bsm bsm-r" onclick="rmSolo('${item.cat}',${item.id})">✕</button>
+      <button class="syncbtn${item.synced?' synced':''}" onclick="syncSolo('${item.cat}',${item.id})" style="margin-top:0">${item.synced?'â Synced':'â Sync to Etsy'}</button>
+      <button class="bsm bsm-g" onclick="openEditSolo('${item.cat}',${item.id})">â Edit</button>
+      <button class="bsm bsm-r" onclick="rmSolo('${item.cat}',${item.id})">â</button>
     </div>
   </div>`;
 }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER — GROUPED COMPONENTS
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// RENDER â GROUPED COMPONENTS
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let currentGrouping='type';
 function setGrouping(g){
   currentGrouping=g;
@@ -1320,7 +1240,7 @@ function getCompGroups(){
   const orphanKeys = Object.keys(S.inventory).filter(k=>!allPackKeys.has(k));
 
   if(orphanKeys.length){
-    packGroups.push({id:'custom',label:'Other Components',icon:'📦',color:'var(--text-muted)',keys:orphanKeys});
+    packGroups.push({id:'custom',label:'Other Components',icon:'ð¦',color:'var(--text-muted)',keys:orphanKeys});
   }
   return packGroups;
 }
@@ -1328,8 +1248,8 @@ function getCompGroups(){
 function getGroupBadge(keys){
   let hasCrit=false,hasWarn=false;
   keys.forEach(k=>{const s=compStatus(k);if(s==='crit')hasCrit=true;else if(s==='low')hasWarn=true;});
-  if(hasCrit) return '<span class="igh-alert">⚠ CRITICAL</span>';
-  if(hasWarn) return '<span class="igh-warn">⚠ LOW</span>';
+  if(hasCrit) return '<span class="igh-alert">â  CRITICAL</span>';
+  if(hasWarn) return '<span class="igh-warn">â  LOW</span>';
   return '';
 }
 function renderGroup(group, open=true){
@@ -1341,7 +1261,7 @@ function renderGroup(group, open=true){
       <span class="igh-icon">${group.icon}</span>
       <span class="igh-title" style="color:${group.color}">${group.label}</span>
       <span class="igh-count">${keys.length} item${keys.length!==1?'s':''}</span>
-      ${badge}<span class="igh-chevron${open?' open':''}">▼</span>
+      ${badge}<span class="igh-chevron${open?' open':''}">â¼</span>
     </div>
     <div class="inv-group-body${open?' open':''}" id="gbody-${group.id}">
       <div class="pgrid">${keys.map(k=>renderCard(k,getLabel(k),group.color)).join('')}</div>
@@ -1360,7 +1280,7 @@ function renderAllComps(){
   const container=document.getElementById('allCompGrid');
   container.style.display='flex'; container.style.flexDirection='column'; container.style.gap='10px';
   function getLabel(k){ return getDisplayLabel(k); }
-  function getCol(k){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return 'var(--text-muted)'; }
+  function getCol({){   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.color; } return 'var(--text-muted)'; }
 
   const allKeys=[...new Set([
     ...Object.values(S.packs).flatMap(p=>Object.keys(p.composition)),
@@ -1381,16 +1301,16 @@ function renderAllComps(){
     const lows=allKeys.filter(k=>compStatus(k)==='low');
     const oks=allKeys.filter(k=>compStatus(k)==='ok');
     let html='';
-    if(crits.length) html+=renderGroup({id:'s_crit',label:'Critical — Out of Stock',icon:'🚨',color:'var(--c-alert)',keys:crits},true);
-    if(lows.length)  html+=renderGroup({id:'s_low', label:'Low Stock — Restock Soon',icon:'⚠', color:'var(--c-warn)', keys:lows}, true);
-    if(oks.length)   html+=renderGroup({id:'s_ok',  label:'In Stock',               icon:'✅',color:'var(--c-dino)', keys:oks},  false);
+    if(crits.length) html+=renderGroup({id:'s_crit',label:'Critical â Out of Stock',icon:'ð¨',color:'var(--c-alert)',keys:crits},true);
+    if(lows.length)  html+=renderGroup({id:'s_low', label:'Low Stock â Restock Soon',icon:'â ', color:'var(--c-warn)', keys:lows}, true);
+    if(oks.length)   html+=renderGroup({id:'s_ok',  label:'In Stock',               icon:'â',color:'var(--c-dino)', keys:oks},  false);
     container.innerHTML=html||'<div style="color:var(--text-dim);padding:20px;font-size:13px">No components found.</div>';
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER — PAGES
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// RENDER â PAGES
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderOverview(){
   const packDefs=[{key:'classic',label:'Classic Dragon Pack'},{key:'standard',label:'Standard Dragon Pack'},{key:'premium',label:'Premium Dragon Pack'},{key:'dino',label:'Dino Party Pack'}];
   document.getElementById('readyRow').innerHTML=packDefs.map(({key,label})=>{
@@ -1400,7 +1320,7 @@ function renderOverview(){
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${pack.color},transparent)"></div>
       <div class="rcl">${pack.emoji} ${label}</div>
       <div class="rcc" style="color:${pack.color}">${r}</div>
-      <div class="rcs">$${pack.tiers[0].price.toFixed(0)}${pack.tiers.length>1?'–$'+pack.tiers[pack.tiers.length-1].price.toFixed(0):''} · click to manage</div>
+      <div class="rcs">$${pack.tiers[0].price.toFixed(0)}${pack.tiers.length>1?'â$'+pack.tiers[pack.tiers.length-1].price.toFixed(0):''} Â· click to manage</div>
     </div>`;
   }).join('');
   const allSolo=[...(S.soloItems.dragon||[]),...(S.soloItems.gothic||[])];
@@ -1409,7 +1329,7 @@ function renderOverview(){
 function renderPackPage(pk){
   const pack=S.packs[pk]; if(!pack) return;
   renderTiers(pk,pk+'Tiers');
-  const cg=document.getElementById(pk+'CG'); if(cg) cg.innerHTML=Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}×${v.twopart?'<span style="font-size:9px;color:var(--text-dim);margin-left:2px">[2p]</span>':''}</span></div>`).join('');
+  const cg=document.getElementById(pk+'CG'); if(cg) cg.innerHTML=Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}Ã${v.twopart?'<span style="font-size:9px;color:var(--text-dim);margin-left:2px">[2p]</span>':''}</span></div>`).join('');
   const gg=document.getElementById(pk+'Grid'); if(gg) gg.innerHTML=Object.entries(pack.composition).map(([k,v])=>renderCard(k,v.label,pack.color)).join('');
 }
 function renderSoloDragonPage(){ const el=document.getElementById('soloDragonRow'); if(el) el.innerHTML=(S.soloItems.dragon||[]).map(i=>renderSoloCard(i)).join(''); }
@@ -1426,13 +1346,13 @@ function renderOtherComps(){
     return `<div class="pcard ${cls}">
       <div class="pch"><div><div class="pcn">${oc.name}</div><div style="font-size:11px;font-weight:700;color:${catColor};margin-top:2px">${oc.cat}</div></div><span class="sb ${bc}">${crit?'CRITICAL':low?'LOW':'OK'}</span></div>
       <div class="qrow"><span class="ql">In Stock</span>
-        <div class="qw"><button class="qbtn" onclick="adjOther(${oc.id},-1)">−</button><input class="qval" type="number" min="0" value="${oc.qty}" oninput="setOther(${oc.id},this.value)"><button class="qbtn" onclick="adjOther(${oc.id},1)">+</button></div>
+        <div class="qw"><button class="qbtn" onclick="adjOther(${oc.id},-1)">â</button><input class="qval" type="number" min="0" value="${oc.qty}" oninput="setOther(${oc.id},this.value)"><button class="qbtn" onclick="adjOther(${oc.id},1)">+</button></div>
         <span style="font-size:11px;color:var(--text-muted);margin-left:4px">${oc.unit}</span>
       </div>
-      ${oc.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:5px">📝 ${oc.notes}</div>`:''}
-      <div class="thr"><span class="thl">⚠ Alert below</span><input class="thi" type="number" min="0" value="${oc.threshold}" onchange="setOtherThr(${oc.id},this.value)"><span style="font-size:10px;color:var(--text-dim)">${oc.unit}</span>
-        <button class="bsm bsm-g" style="margin-left:auto" onclick="openEditOther(${oc.id})">✏</button>
-        <button class="bsm bsm-r" onclick="rmOther(${oc.id})">✕</button>
+      ${oc.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:5px">ð ${oc.notes}</div>`:''}
+      <div class="thr"><span class="thl">â  Alert below</span><input class="thi" type="number" min="0" value="${oc.threshold}" onchange="setOtherThr(${oc.id},this.value)"><span style="font-size:10px;color:var(--text-dim)">${oc.unit}</span>
+        <button class="bsm bsm-g" style="margin-left:auto" onclick="openEditOther(${oc.id})">â</button>
+        <button class="bsm bsm-r" onclick="rmOther(${oc.id})">â</button>
       </div>
     </div>`;
   }).join('');
@@ -1445,7 +1365,7 @@ function renderFilament(){
   if(!S.filament.length){ grid.innerHTML=`<div style="color:var(--text-dim);font-size:13px;grid-column:1/-1;padding:20px">No filament spools tracked yet.</div>`; strip.style.display='none'; return; }
   const lowSpools=S.filament.filter(f=>f.remaining<f.alertAt);
   strip.style.display=lowSpools.length?'flex':'none';
-  if(lowSpools.length) strip.innerHTML=`<span class="ast">⚠ LOW FILAMENT</span>`+lowSpools.map(f=>`<span class="ac warn">${f.mfr} ${f.colorName} — ${f.remaining}g left</span>`).join('');
+  if(lowSpools.length) strip.innerHTML=`<span class="ast">â  LOW FILAMENT</span>`+lowSpools.map(f=>`<span class="ac warn">${f.mfr} ${f.colorName} â ${f.remaining}g left</span>`).join('');
   grid.innerHTML=S.filament.map(f=>{
     const pct=Math.min(100,(f.remaining/f.spoolSize)*100);
     const low=f.remaining<f.alertAt;
@@ -1458,7 +1378,7 @@ function renderFilament(){
         <div style="flex:1"><div class="f-name">${f.colorName}</div><div class="f-mfr">${f.mfr}</div>
           <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px"><span class="f-type ${typeClass}">${f.type}</span><span class="f-type ft-other">${f.dia}mm</span></div>
         </div>
-        <div style="display:flex;gap:4px"><button class="bsm bsm-g" onclick="openEditFilament(${f.id})">✏</button><button class="bsm bsm-r" onclick="rmFilament(${f.id})">✕</button></div>
+        <div style="display:flex;gap:4px"><button class="bsm bsm-g" onclick="openEditFilament(${f.id})">â</button><button class="bsm bsm-r" onclick="rmFilament(${f.id})">â</button></div>
       </div>
       <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px">Current spool remaining (g)</div>
       <div class="f-weight-row">
@@ -1466,20 +1386,20 @@ function renderFilament(){
         <input class="f-weight-input" type="number" min="0" max="${f.spoolSize}" value="${f.remaining}" onchange="setFilamentRemaining(${f.id},this.value)">
         <span style="font-size:11px;color:var(--text-muted)">/ ${f.spoolSize}g</span>
       </div>
-      ${low?`<div style="font-size:11px;color:var(--c-warn);font-weight:700;margin-top:4px">⚠ Low — reorder soon</div>`:''}
+      ${low?`<div style="font-size:11px;color:var(--c-warn);font-weight:700;margin-top:4px">â  Low â reorder soon</div>`:''}
       <div class="f-meta" style="margin-top:9px">
-        <span class="f-meta-chip">📦 ${f.spools} spool${f.spools!==1?'s':''}</span>
+        <span class="f-meta-chip">ð¦ ${f.spools} spool${f.spools!==1?'s':''}</span>
         <span class="f-meta-chip">Total: ${f.spools*f.spoolSize}g</span>
         <span class="f-meta-chip">Alert at: ${f.alertAt}g</span>
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
         <span style="font-size:11px;color:var(--text-muted)">Spools in stock:</span>
-        <button class="pb" onclick="adjFilamentSpools(${f.id},-1)">−</button>
+        <button class="pb" onclick="adjFilamentSpools(${f.id},-1)">â</button>
         <span style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:14px;min-width:20px;text-align:center">${f.spools}</span>
         <button class="pb" onclick="adjFilamentSpools(${f.id},1)">+</button>
         <span style="font-size:10px;color:var(--text-dim);margin-left:3px">+1 resets remaining to ${f.spoolSize}g</span>
       </div>
-      ${f.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:7px;line-height:1.5">📝 ${f.notes}</div>`:''}
+      ${f.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:7px;line-height:1.5">ð ${f.notes}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1488,19 +1408,19 @@ function renderAlerts(){
   const al=[];
   for(const[key,inv] of Object.entries(S.inventory)){
     let label=key; for(const p of Object.values(S.packs)){if(p.composition[key]){label=p.composition[key].label;break;}}
-    if(inv.qty===0) al.push({sev:'crit',icon:'🚨',title:`OUT OF STOCK: ${label}`,sub:'Zero units — packs with this component cannot be fulfilled.'});
-    else if(inv.qty<inv.threshold) al.push({sev:'warn',icon:'⚠',title:`LOW STOCK: ${label}`,sub:`${inv.qty} units remaining (threshold: ${inv.threshold}).`});
+    if(inv.qty===0) al.push({sev:'crit',icon:'ð¨',title:`OUT OF STOCK: ${label}`,sub:'Zero units â packs with this component cannot be fulfilled.'});
+    else if(inv.qty<inv.threshold) al.push({sev:'warn',icon:'â ',title:`LOW STOCK: ${label}`,sub:`${inv.qty} units remaining (threshold: ${inv.threshold}).`});
     if(inv.twopart&&inv.parts) for(const[pk2,pq] of Object.entries(inv.parts))
-      if(pq<inv.qty) al.push({sev:'warn',icon:'🔧',title:`PARTS IMBALANCE: ${label} — ${pk2}`,sub:`${pq} printed, ${inv.qty} needed. Print ${inv.qty-pq} more.`});
+      if(pq<inv.qty) al.push({sev:'warn',icon:'ð§',title:`PARTS IMBALANCE: ${label} â ${pk2}`,sub:`${pq} printed, ${inv.qty} needed. Print ${inv.qty-pq} more.`});
   }
   for(const[pk,pack] of Object.entries(S.packs))
-    if(packsReady(pk)===0) al.push({sev:'crit',icon:'📦',title:`CANNOT SHIP: ${pack.name}`,sub:'Insufficient components.'});
+    if(packsReady(pk)===0) al.push({sev:'crit',icon:'ð¦',title:`CANNOT SHIP: ${pack.name}`,sub:'Insufficient components.'});
   [...(S.soloItems.dragon||[]),...(S.soloItems.gothic||[])].forEach(p=>{
-    if(p.qty===0) al.push({sev:'crit',icon:'🛍',title:`SOLD OUT: ${p.name}`,sub:'No individual units available.'});
-    else if(p.qty<3) al.push({sev:'warn',icon:'⚠',title:`LOW SOLO STOCK: ${p.name}`,sub:`Only ${p.qty} left.`});
+    if(p.qty===0) al.push({sev:'crit',icon:'ð',title:`SOLD OUT: ${p.name}`,sub:'No individual units available.'});
+    else if(p.qty<3) al.push({sev:'warn',icon:'â ',title:`LOW SOLO STOCK: ${p.name}`,sub:`Only ${p.qty} left.`});
   });
-  S.filament.forEach(f=>{ if(f.remaining<f.alertAt) al.push({sev:'warn',icon:'🧵',title:`LOW FILAMENT: ${f.mfr} ${f.colorName}`,sub:`${f.remaining}g remaining.`}); });
-  S.otherComponents.forEach(oc=>{ if(oc.qty<oc.threshold) al.push({sev:oc.qty===0?'crit':'warn',icon:'📦',title:`${oc.qty===0?'OUT OF STOCK':'LOW'}: ${oc.name}`,sub:`${oc.qty} ${oc.unit} remaining.`}); });
+  S.filament.forEach(f=>{ if(f.remaining<f.alertAt) al.push({sev:'warn',icon:'ð§µ',title:`LOW FILAMENT: ${f.mfr} ${f.colorName}`,sub:`${f.remaining}g remaining.`}); });
+  S.otherComponents.forEach(oc=>{ if(oc.qty<oc.threshold) al.push({sev:oc.qty===0?'crit':'warn',icon:'ð¦',title:`${oc.qty===0?'OUT OF STOCK':'LOW'}: ${oc.name}`,sub:`${oc.qty} ${oc.unit} remaining.`}); });
 
   const badge=document.getElementById('abadge');
   badge.style.display=al.length?'':'none'; badge.textContent=al.length;
@@ -1508,11 +1428,11 @@ function renderAlerts(){
   if(al.length){
     strip.style.display='flex';
     const crits=al.filter(a=>a.sev==='crit'), warns=al.filter(a=>a.sev==='warn');
-    strip.innerHTML=`<span class="ast">🔔 ${al.length} ALERT${al.length>1?'S':''}</span>`+crits.slice(0,3).map(a=>`<span class="ac crit">${a.title}</span>`).join('')+warns.slice(0,3).map(a=>`<span class="ac warn">${a.title}</span>`).join('')+(al.length>6?`<span class="ac warn">+${al.length-6} more</span>`:'');
+    strip.innerHTML=`<span class="ast">ð ${al.length} ALERT${al.length>1?'S':''}</span>`+crits.slice(0,3).map(a=>`<span class="ac crit">${a.title}</span>`).join('')+warns.slice(0,3).map(a=>`<span class="ac warn">${a.title}</span>`).join('')+(al.length>6?`<span class="ac warn">+${al.length-6} more</span>`:'');
   } else strip.style.display='none';
   document.getElementById('alertsList').innerHTML=al.length
     ?al.map(a=>`<div class="aitem"><div class="aico">${a.icon}</div><div class="abody"><strong>${a.title}</strong><span>${a.sub}</span></div><span class="asev ${a.sev}">${a.sev==='crit'?'CRITICAL':'WARNING'}</span></div>`).join('')
-    :`<div class="noal"><div style="font-size:34px;margin-bottom:9px">✅</div>All clear — no alerts.</div>`;
+    :`<div class="noal"><div style="font-size:34px;margin-bottom:9px">â</div>All clear â no alerts.</div>`;
 }
 
 function renderPackConfig(){
@@ -1522,8 +1442,8 @@ function renderPackConfig(){
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
         <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:15px">${pack.emoji} ${pack.name} <span style="font-size:11px;color:var(--text-dim)">(size ${pack.size})</span></div>
         <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn btn-g" onclick="openEdit('${pk}')">✏ Edit Pack</button>
-          <button class="bsm bsm-r" onclick="deletePack('${pk}')">🗑 Delete</button>
+          <button class="btn btn-g" onclick="openEdit('${pk}')">â Edit Pack</button>
+          <button class="bsm bsm-r" onclick="deletePack('${pk}')">ð Delete</button>
         </div>
       </div>
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">Price Tiers</div>
@@ -1532,17 +1452,17 @@ function renderPackConfig(){
           <div style="font-weight:700;font-size:13px">${t.name}</div>
           <div style="font-size:11px;color:var(--text-muted)">${t.subtitle}</div>
           <div style="font-family:'Exo 2',sans-serif;font-weight:700;font-size:18px;color:${pack.color};margin-top:3px">$${t.price.toFixed(2)}</div>
-          ${t.etsyId?`<div style="font-size:10px;color:#f1641e;margin-top:2px">🛍 ${t.etsyId}</div>`:''}
+          ${t.etsyId?`<div style="font-size:10px;color:#f1641e;margin-top:2px">ð ${t.etsyId}</div>`:''}
         </div>`).join('')}
       </div>
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">Components (qty per pack)</div>
-      <div class="cgrid">${Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}×${v.twopart?'<span style="font-size:9px;color:var(--text-dim)"> [2p]</span>':''}</span></div>`).join('')}</div>
+      <div class="cgrid">${Object.entries(pack.composition).map(([k,v])=>`<div class="ci"><span class="cin">${v.label}</span><span class="ciq">${v.qty}Ã${v.twopart?'<span style="font-size:9px;color:var(--text-dim)"> [2p]</span>':''}</span></div>`).join('')}</div>
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════════════════════════
-// MUTATIONS — INVENTORY (each one saves to Firestore)
-// ══════════════════════════════════════════════════════════════
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// MUTATIONS â INVENTORY (each one saves to Firestore)
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function adjQ(key,d){ const inv=S.inventory[key]; if(!inv) return; inv.qty=Math.max(0,inv.qty+d); saveInventory(); refreshAll(); }
 function setQ(key,v){ const inv=S.inventory[key]; if(!inv) return; inv.qty=Math.max(0,parseInt(v)||0); saveInventory(); refreshAll(); }
 function adjPart(key,pname,d){
@@ -1568,7 +1488,7 @@ function setPart(key,pname,v){
 }
 function setThr(key,v){ if(S.inventory[key]){S.inventory[key].threshold=Math.max(0,parseInt(v)||0); saveInventory(); renderAlerts();} }
 
-// ── COMPONENT NAME EDITING ─────────────────────────────────
+// ââ COMPONENT NAME EDITING âââââââââââââââââââââââââââââââââ
 function getDisplayLabel(k){
   if(S.inventory[k]&&S.inventory[k].customLabel) return S.inventory[k].customLabel;
   for(const p of Object.values(S.packs)){ if(p.composition[k]) return p.composition[k].label; }
@@ -1578,7 +1498,7 @@ function startEditName(key){
   const inv=S.inventory[key]; if(!inv) return;
   const nameDiv=document.getElementById('pcn-'+key); if(!nameDiv) return;
   const cur=getDisplayLabel(key);
-  nameDiv.outerHTML=`<input class="pcn-edit" id="pcn-input-${key}" value="${cur}"
+  nameDiv.outerHTML<`<input class="pcn-edit" id="pcn-input-${key}" value="${cur}"
     onblur="saveEditName('${key}',this.value)"
     onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){this.value='${cur}';this.blur();}">`;
   const inp=document.getElementById('pcn-input-'+key);
@@ -1594,7 +1514,7 @@ function saveEditName(key,newLabel){
   saveInventory(); savePacks(); refreshAll();
 }
 
-// ── DELETE COMPONENT ───────────────────────────────────────
+// ââ DELETE COMPONENT âââââââââââââââââââââââââââââââââââââââ
 function deleteComponent(key){
   const label=getDisplayLabel(key);
   const usedIn=Object.entries(S.packs).filter(([,p])=>p.composition[key]).map(([,p])=>p.name);
@@ -1606,7 +1526,7 @@ function deleteComponent(key){
   saveInventory(); savePacks(); refreshAll(); renderPackConfig();
 }
 
-// ── DELETE PACK ────────────────────────────────────────────
+// ââ DELETE PACK ââââââââââââââââââââââââââââââââââââââââââââ
 function deletePack(pk){
   const pack=S.packs[pk];
   if(!confirm(`Delete pack "${pack.name}"?\n\nComponent inventory is not affected.`)) return;
@@ -1688,10 +1608,10 @@ function savePartColor(){
 function setTP(pk,i,v){ S.packs[pk].tiers[i].price=parseFloat(v)||0; S.packs[pk].tiers[i].synced=false; savePacks(); renderTiers(pk,pk+'Tiers'); renderPackConfig(); renderOverview(); }
 function setTE(pk,i,v){ S.packs[pk].tiers[i].etsyId=v; savePacks(); renderPackConfig(); }
 function syncTier(pk,i){
-  if(!S.etsy.connected){alert('Connect Etsy first — see Etsy Integration in sidebar.');return;}
+  if(!S.etsy.connected){alert('Connect Etsy first â see Etsy Integration in sidebar.');return;}
   S.packs[pk].tiers[i].synced=true; savePacks();
   const t=S.packs[pk].tiers[i];
-  alert(`✅ Synced "${t.name}" to Etsy${t.etsyId?' listing '+t.etsyId:''}.\nQty: ${packsReady(pk)} packs · Price: $${t.price.toFixed(2)}`);
+  alert(`â Synced "${t.name}" to Etsy${t.etsyId?' listing '+t.etsyId:''}.\nQty: ${packsReady(pk)} packs Â· Price: $${t.price.toFixed(2)}`);
   renderTiers(pk,pk+'Tiers');
 }
 
@@ -1705,7 +1625,7 @@ function syncSolo(cat,id){
   if(!S.etsy.connected){alert('Connect Etsy first.');return;}
   const x=findSolo(cat,id);if(!x)return;
   x.synced=true; saveSoloItems();
-  alert(`✅ Synced "${x.name}" to Etsy${x.etsyId?' listing '+x.etsyId:''}.\nStock: ${x.qty} · Price: $${x.priceLo}–$${x.priceHi}`);
+  alert(`â Synced "${x.name}" to Etsy${x.etsyId?' listing '+x.etsyId:''}.\nStock: ${x.qty} Â· Price: $${x.priceLo}â$${x.priceHi}`);
   refreshAll();
 }
 function rmSolo(cat,id){S.soloItems[cat]=S.soloItems[cat].filter(x=>x.id!==id);saveSoloItems();refreshAll();}
@@ -1902,13 +1822,13 @@ function saveSolo(){
 function openEdit(pk){
   const pack=S.packs[pk];
   document.getElementById('ep-key').value=pk;
-  document.getElementById('editModalTitle').textContent=`✏ Edit: ${pack.name}`;
+  document.getElementById('editModalTitle').textContent=`â Edit: ${pack.name}`;
   document.getElementById('ep-name').value=pack.name;
   document.getElementById('ep-size').value=pack.size;
   document.getElementById('ep-emoji').value=pack.emoji;
   // Populate component dropdown with all inventory items not already in this pack
   const sel=document.getElementById('ep-cn');
-  sel.innerHTML='<option value="">— Select a component —</option>';
+  sel.innerHTML='<option value="">â Select a component â</option>';
   const inPack=new Set(Object.keys(pack.composition));
   // Get all inventory keys with labels
   const allItems=Object.keys(S.inventory).map(k=>({
@@ -1934,7 +1854,7 @@ function renderETiers(pk){
         <input class="fi" type="number" step="0.01" value="${t.price.toFixed(2)}" style="width:75px;padding:6px 7px;font-family:'Exo 2',sans-serif;font-weight:700" oninput="S.packs['${pk}'].tiers[${i}].price=parseFloat(this.value)||0">
       </div>
       <input class="fi" value="${t.etsyId}" placeholder="Etsy ID" style="width:95px;padding:6px 8px;font-size:12px" oninput="S.packs['${pk}'].tiers[${i}].etsyId=this.value">
-      <button class="cedel" onclick="delTier('${pk}',${i})">×</button>
+      <button class="cedel" onclick="delTier('${pk}',${i})">Ã</button>
     </div>`).join('');
 }
 function renderEComps(pk){
@@ -1944,7 +1864,7 @@ function renderEComps(pk){
       ${v.twopart?'<span style="font-size:10px;color:var(--c-warn);background:rgba(232,160,32,.12);padding:1px 6px;border-radius:10px">2-part</span>':''}
       <span style="font-size:11px;color:var(--text-muted);flex-shrink:0">qty:</span>
       <input class="ceq" type="number" min="1" value="${v.qty}" onchange="S.packs['${pk}'].composition['${k}'].qty=parseInt(this.value)||1">
-      <button class="cedel" onclick="delComp('${pk}','${k}')">×</button>
+      <button class="cedel" onclick="delComp('${pk}','${k}')">Ã</button>
     </div>`).join('');
 }
 function addTierRow(){const pk=document.getElementById('ep-key').value;S.packs[pk].tiers.push({id:'t'+Date.now(),name:'New Tier',subtitle:'',price:0,etsyId:'',synced:false});renderETiers(pk);}
@@ -1980,16 +1900,16 @@ function saveNewPack(){
   const name=document.getElementById('np-name').value.trim();if(!name){alert('Enter a name');return;}
   const key=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
   const color=document.getElementById('np-color').value;
-  const emoji=document.getElementById('np-emoji').value||'📦';
+  const emoji=document.getElementById('np-emoji').value||'ð¦';
   S.packs[key]={name,size:parseInt(document.getElementById('np-size').value)||10,emoji,color,tiers:[{id:'t'+Date.now(),name:'Standard',subtitle:'',price:0,etsyId:'',synced:false}],composition:{}};
   savePacks();
   const ni=document.createElement('div');
-  ni.className='ni';ni.dataset.p=key;ni.innerHTML=`<span class="ni-icon">${emoji}</span><span class="ni-label">${name}</span>`;
+  ni.className='ni';ni.dataset.p=key;ni.innerHTML<`<span class="ni-icon">${emoji}</span><span class="ni-label">${name}</span>`;
   ni.onclick=()=>{nav(key);};
   document.getElementById('sidebar').querySelector('.ns:last-of-type').before(ni);
   const pg=document.createElement('div');
   pg.className='page';pg.id='page-'+key;
-  pg.innerHTML=`<div class="sh"><div class="sht">${emoji} ${name}</div><button class="btn btn-g" onclick="openEdit('${key}')">✏ Edit Pack</button></div>
+  pg.innerHTML=`<div class="sh"><div class="sht">${emoji} ${name}</div><button class="btn btn-g" onclick="openEdit('${key}')">â Edit Pack</button></div>
     <div class="trow" id="${key}Tiers"></div>
     <div class="card" style="padding:14px"><div class="cgrid" id="${key}CG"></div></div>
     <div class="pgrid" id="${key}Grid"></div>`;
@@ -2013,7 +1933,7 @@ function connectEtsy(){
   S.etsy.connected=true;
   document.getElementById('etsyDot').classList.add('on');
   document.getElementById('etsyTxt').textContent='Etsy: Connected';
-  alert('✅ API key saved!\n\nComplete OAuth 2.0 via the Etsy Developer Portal:\n1. Open your app on etsy.com/developers\n2. Click "Authorize" and approve access\n3. Etsy redirects back — access token stored\n\nYou can now use Sync buttons on tier and solo item cards.');
+  alert('â API key saved!\n\nComplete OAuth 2.0 via the Etsy Developer Portal:\n1. Open your app on etsy.com/developers\n2. Click "Authorize" and approve access\n3. Etsy redirects back â access token stored\n\nYou can now use Sync buttons on tier and solo item cards.');
 }
 
 // MODALS
@@ -2027,9 +1947,559 @@ function refreshAll(){
   renderSoloDragonPage();renderAshbonePage();
   renderAllComps();renderOtherComps();renderFilament();
   renderAlerts();
+  renderPrintQueue();
+  renderSales();
 }
 
-// ── KICK OFF ──────────────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// PRINT QUEUE â ALGORITHM
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+let _pqLastInvSnapshot = '';
+
+function calcPrintQueueSuggestions() {
+  const now = Date.now();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  const recentSales = (S.sales || []).filter(s => now - s.timestamp < thirtyDays);
+
+  // Sales velocity per pack (packs sold in last 30 days)
+  const packVelocity = {};
+  for (const pk of Object.keys(S.packs)) packVelocity[pk] = 0;
+  for (const sale of recentSales) packVelocity[sale.packKey] = (packVelocity[sale.packKey] || 0) + sale.qty;
+
+  const suggestions = [];
+
+  for (const [key, inv] of Object.entries(S.inventory)) {
+    // Find all packs that use this item
+    const packsUsing = Object.entries(S.packs).filter(([, p]) => p.composition && p.composition[key]);
+    if (!packsUsing.length) continue; // skip orphaned items
+
+    const shortage = Math.max(0, inv.threshold - inv.qty);
+    const stockRatio = inv.threshold > 0 ? inv.qty / inv.threshold : 1;
+
+    // Cross-pack multiplier: items used in more packs have higher urgency
+    const packCount = packsUsing.length;
+
+    // Total units demanded across all packs: sum of qty-per-pack Ã velocity
+    let demandWeight = 0;
+    let totalQtyNeeded = 0;
+    for (const [pk, pack] of packsUsing) {
+      const comp = pack.composition[key];
+      const vel = packVelocity[pk] || 0;
+      demandWeight += vel * comp.qty;
+      // How many units short to fulfill the threshold number of packs?
+      const packsShort = Math.max(0, Math.ceil(inv.threshold / comp.qty) - Math.floor(inv.qty / comp.qty));
+      totalQtyNeeded += packsShort * comp.qty;
+    }
+
+    // Score: shortage drives urgency; shared items amplify; velocity boosts further
+    const velocityBonus = Math.log1p(demandWeight);
+    const score = (shortage * 4 + stockRatio < 0.5 ? 6 : stockRatio < 1 ? 3 : 0)
+                  * packCount
+                  * (1 + velocityBonus)
+                  + (shortage > 0 ? 10 : 0); // bias: always queue anything below threshold
+
+    const pureShortage = shortage;
+    // Only include items that are below threshold OR used in 2+ packs and below 1.5Ã threshold
+    const includeThreshold = inv.qty < inv.threshold
+      || (packCount >= 2 && inv.qty < Math.ceil(inv.threshold * 1.5));
+
+    if (!includeThreshold) continue;
+
+    // Suggested print qty: enough to reach 1.5Ã threshold, accounting for shared-pack demand
+    const targetQty = Math.max(inv.threshold * 2, inv.qty + 10);
+    const suggestedQty = Math.max(5, targetQty - inv.qty);
+
+    suggestions.push {
+      id: 'auto_' + key,
+      itemKey: key,
+      label: getDisplayLabel(key),
+      suggestedQty: Math.ceil(suggestedQty / 5) * 5, // round up to nearest 5
+      printQty: Math.ceil(suggestedQty / 5) * 5,
+      isManual: false,
+      notes: '',
+      score,
+      packCount,
+      packsUsing: packsUsing.map(([pk, p]) => ({ pk, name: p.name, qty: p.composition[key].qty }))
+    });
+  }
+
+  suggestions.sort((a, b) => b.score - a.score);
+  return suggestions.slice(0, 10);
+}
+
+function autoRefreshQueue() {
+  const suggestions = calcPrintQueueSuggestions();
+  // Merge: keep manual items that aren't in suggestions at their position; prepend auto items
+  const manualItems = (S.printQueue || []).filter(q => q.isManual);
+  // For auto items, update existing entries but keep user's printQty if they edited it
+  const newQueue = suggestions.map((s, i) => {
+    const existing = (S.printQueue || []).find(q => q.itemKey === s.itemKey && !q.isManual);
+    return {
+      ...s,
+      printQty: existing ? existing.printQty : s.suggestedQty,
+      notes: existing ? existing.notes : '',
+      id: 'auto_' + s.itemKey
+    };
+  });
+  // Append any manual items not already in the new queue
+  for (const m of manualItems) {
+    if (!newQueue.find(q => q.itemKey === m.itemKey)) newQueue.push(m);
+  }
+  S.printQueue = newQueue;
+  _pqLastInvSnapshot = JSON.stringify(S.inventory);
+  savePrintQueue();
+  renderPrintQueue();
+}
+
+function pqCheckStale() {
+  const cur = JSON.stringify(S.inventory);
+  const staleEl = document.getElementById('pqStale');
+  if (!staleEl) return;
+  if (_pqLastInvSnapshot && cur !== _pqLastInvSnapshot) {
+    staleEl.classList.add('show');
+  } else {
+    staleEl.classList.remove('show');
+  }
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// PRINT QUEUE â RENDER
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderPrintQueue() {
+  const list = document.getElementById('pqList');
+  if (!list) return;
+
+  // Badge
+  const badge = document.getElementById('qbadge');
+  if (badge) {
+    const count = (S.printQueue || []).length;
+    badge.style.display = count ? '' : 'none';
+    badge.textContent = count;
+  }
+
+  pqCheckStale();
+
+  if (!S.printQueue || !S.printQueue.length) {
+    list.innerHTML = `<div class="pq-empty">
+      <div style="font-size:32px;margin-bottom:10px">â</div>
+      <div>No items in the print queue.</div>
+      <div style="margin-top:8px;font-size:12px">Click <strong>Auto-Suggest Queue</strong> to generate a list from low inventory,
+      or <strong>+ Add Item</strong> to manually add items.</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = S.printQueue.map((item, idx) => {
+    const inv = S.inventory[item.itemKey] || { qty: 0, threshold: 0 };
+    const shortage = Math.max(0, inv.threshold - inv.qty);
+    const statusCls = inv.qty === 0 ? 'status-crit' : shortage > 0 ? 'status-low' : 'status-ok';
+    const statusTxt = inv.qty === 0 ? 'OUT OF STOCK' : shortage > 0 ? `${shortage} SHORT` : 'IN STOCK';
+    const rankCls = idx === 0 ? 'hot' : idx <= 2 ? 'warm' : '';
+
+    const packsUsing = item.packsUsing || Object.entries(S.packs)
+      .filter(([, p]) => p.composition && p.composition[item.itemKey])
+      .map(([pk, p]) => ({ pk, name: p.name, qty: p.composition[item.itemKey].qty }));
+
+    const sharedChip = packsUsing.length > 1
+      ? `<span class="pq-chip shared">Shared Ã ${packsUsing.length} packs</span>` : '';
+
+    const packChips = packsUsing.map(p =>
+      `<span class="pq-chip pack">${p.name} (${p.qty}Ã)</span>`
+    ).join('');
+
+    const canMoveUp = idx > 0;
+    const canMoveDown = idx < S.printQueue.length - 1;
+
+    return `<div class="pq-item" id="pqi-${idx}" draggable="true"
+        ondragstart="pqDragStart(event,${idx})"
+        ondragover="pqDragOver(event,${idx})"
+        ondragleave="pqDragLeave(event,${idx})"
+        ondrop="pqDrop(event,${idx})">
+      <div class="pq-rank ${rankCls}">${idx + 1}</div>
+      <div class="pq-body">
+        <div class="pq-name">${item.label}</div>
+        <div class="pq-chips">
+          <span class="pq-chip ${statusCls}">${statusTxt}</span>
+          ${sharedChip}
+          ${packChips}
+          ${item.isManual ? '<span class="pq-chip" style="background:rgba(123,94,167,.12);border-color:rgba(123,94,167,.3);color:var(--c-single)">Manual</span>' : ''}
+        </div>
+        <div class="pq-stock-row">
+          <span>Stock: <strong>${inv.qty}</strong></span>
+          <span>Threshold: <strong>${inv.threshold}</strong></span>
+          ${shortage > 0 ? `<span style="color:var(--c-warn)">Need: <strong>${shortage}</strong></span>` : ''}
+        </div>
+        <div class="pq-print-row">
+          <span class="pq-print-label">ð¨ Print qty:</span>
+          <div class="qw" style="max-width:130px">
+            <button class="qbtn" onclick="pqAdjQty(${idx},-5)">â5</button>
+            <input class="qval" type="number" min="1" value="${item.printQty || item.suggestedQty || 10}"
+              oninput="pqSetQty(${idx},this.value)" style="width:52px">
+            <button class="qbtn" onclick="pqAdjQty(${idx},5)">+5</button>
+          </div>
+        </div>
+        <textarea class="pq-notes" placeholder="Notesâ¦" oninput="pqSetNotes(${idx},this.value)">${item.notes || ''}</textarea>
+      </div>
+      <div class="pq-actions">
+        <button class="pq-btn" onclick="pqMove(${idx},-1)" ${canMoveUp ? '' : 'disabled style="opacity:.3"'} title="Move up">â²</button>
+        <button class="pq-btn" onclick="pqMove(${idx},1)" ${canMoveDown ? '' : 'disabled style="opacity:.3"'} title="Move down">â¼</button>
+        <button class="pq-btn danger" onclick="pqRemove(${idx})" title="Remove">â</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ââ PRINT QUEUE MUTATIONS ââââââââââââââââââââââââââââââââââ
+function pqMove(idx, dir) {
+  const q = S.printQueue;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= q.length) return;
+  [q[idx], q[newIdx]] = [q[newIdx], q[idx]];
+  // Mark both as manual since user reordered
+  q[idx].isManual = true; q[newIdx].isManual = true;
+  savePrintQueue(); renderPrintQueue();
+}
+function pqRemove(idx) {
+  S.printQueue.splice(idx, 1);
+  savePrintQueue(); renderPrintQueue();
+}
+function pqSetQty(idx, v) {
+  if (!S.printQueue[idx]) return;
+  S.printQueue[idx].printQty = Math.max(1, parseInt(v) || 1);
+  savePrintQueue();
+}
+function pqAdjQty(idx, d) {
+  if (!S.printQueue[idx]) return;
+  S.printQueue[idx].printQty = Math.max(1, (S.printQueue[idx].printQty || 10) + d);
+  savePrintQueue(); renderPrintQueue();
+}
+function pqSetNotes(idx, v) {
+  if (!S.printQueue[idx]) return;
+  S.printQueue[idx].notes = v;
+  savePrintQueue();
+}
+
+// Drag-and-drop reorder
+let _pqDragIdx = null;
+function pqDragStart(e, idx) { _pqDragIdx = idx; e.dataTransfer.effectAllowed = 'move'; }
+function pqDragOver(e, idx) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; document.getElementById('pqi-'+idx)?.classList.add('drag-over'); }
+function pqDragLeave(e, idx) { document.getElementById('pqi-'+idx)?.classList.remove('drag-over'); }
+function pqDrop(e, idx) {
+  e.preventDefault();
+  document.getElementById('pqi-'+idx)?.classList.remove('drag-over');
+  if (_pqDragIdx === null || _pqDragIdx === idx) return;
+  const q = S.printQueue;
+  const [moved] = q.splice(_pqDragIdx, 1);
+  moved.isManual = true;
+  q.splice(idx, 0, moved);
+  _pqDragIdx = null;
+  savePrintQueue(); renderPrintQueue();
+}
+
+// Add to queue manually
+function openAddQueueItem() {
+  const sel = document.getElementById('aq-key');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">â Select component â</option>' +
+    Object.keys(S.inventory).sort((a, b) => getDisplayLabel(a).localeCompare(getDisplayLabel(b))).map(k =>
+      `<option value="${k}">${getDisplayLabel(k)}</option>`
+    ).join('');
+  document.getElementById('aq-qty').value = 10;
+  document.getElementById('aq-pos').value = 1;
+  document.getElementById('aq-notes').value = '';
+  document.getElementById('aqModalTitle').textContent = 'Add Item to Print Queue';
+  document.getElementById('addQueueModal').classList.add('open');
+}
+function onQueueItemChange() {
+  const key = document.getElementById('aq-key').value;
+  if (!key || !S.inventory[key]) return;
+  const inv = S.inventory[key];
+  const shortage = Math.max(0, inv.threshold - inv.qty);
+  document.getElementById('aq-qty').value = Math.max(10, shortage + 5);
+}
+function saveQueueItem() {
+  const key = document.getElementById('aq-key').value;
+  if (!key) { alert('Select a component.'); return; }
+  const printQty = parseInt(document.getElementById('aq-qty').value) || 10;
+  const pos = Math.max(1, parseInt(document.getElementById('aq-pos').value) || 1) - 1;
+  const notes = document.getElementById('aq-notes').value.trim();
+  const label = getDisplayLabel(key);
+  const packsUsing = Object.entries(S.packs)
+    .filter(([, p]) => p.composition && p.composition[key])
+    .map(([pk, p]) => ({ pk, name: p.name, qty: p.composition[key].qty }));
+  const item = { id: 'manual_' + Date.now(), itemKey: key, label, suggestedQty: printQty, printQty, isManual: true, notes, packCount: packsUsing.length, packsUsing };
+  // Remove any existing entry for this key
+  S.printQueue = S.printQueue.filter(q => q.itemKey !== key);
+  S.printQueue.splice(Math.min(pos, S.printQueue.length), 0, item);
+  savePrintQueue(); closeModal('addQueueModal'); renderPrintQueue();
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// SALES â LOG & DEDUCT
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+let _salePeriod = 7;
+function setSalePeriod(days) {
+  _salePeriod = days;
+  document.querySelectorAll('.sale-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.period) === days));
+  renderSales();
+}
+
+function openLogSale() {
+  // Populate pack dropdown
+  const packSel = document.getElementById('ls-pack');
+  packSel.innerHTML = Object.entries(S.packs).map(([pk, p]) =>
+    `<option value="${pk}">${p.emoji} ${p.name}</option>`
+  ).join('');
+  // Set default date to today
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('ls-date').value = today;
+  document.getElementById('ls-notes').value = '';
+  document.getElementById('ls-qty').value = 1;
+  onSalePackChange();
+  document.getElementById('logSaleModal').classList.add('open');
+}
+
+function onSalePackChange() {
+  const pk = document.getElementById('ls-pack').value;
+  const pack = S.packs[pk];
+  if (!pack) return;
+  const tierSel = document.getElementById('ls-tier');
+  tierSel.innerHTML = pack.tiers.map((t, i) =>
+    `<option value="${i}" data-price="${t.price}">${t.name} â $${t.price.toFixed(2)}</option>`
+  ).join('');
+  // Set price from first tier
+  if (pack.tiers.length) document.getElementById('ls-price').value = pack.tiers[0].price.toFixed(2);
+  updateSaleTotal();
+  updateSaleInvPreview();
+}
+function onSaleTierChange() {
+  const pk = document.getElementById('ls-pack').value;
+  const pack = S.packs[pk];
+  if (!pack) return;
+  const tierIdx = parseInt(document.getElementById('ls-tier').value) || 0;
+  const tier = pack.tiers[tierIdx];
+  if (tier) document.getElementById('ls-price').value = tier.price.toFixed(2);
+  updateSaleTotal();
+}
+
+function updateSaleTotal() {
+  const qty = parseInt(document.getElementById('ls-qty').value) || 0;
+  const price = parseFloat(document.getElementById('ls-price').value) || 0;
+  document.getElementById('ls-total').textContent = '$' + (qty * price).toFixed(2);
+  updateSaleInvPreview();
+}
+
+function updateSaleInvPreview() {
+  const pk = document.getElementById('ls-pack').value;
+  const pack = S.packs[pk];
+  const qty = parseInt(document.getElementById('ls-qty').value) || 0;
+  const preview = document.getElementById('ls-inv-preview');
+  const list = document.getElementById('ls-inv-list');
+  if (!pack || qty <= 0) { preview.style.display = 'none'; return; }
+  preview.style.display = '';
+  list.innerHTML = Object.entries(pack.composition).map(([k, v]) => {
+    const deduct = v.qty * qty;
+    const cur = (S.inventory[k] || { qty: 0 }).qty;
+    const after = Math.max(0, cur - deduct);
+    const color = after === 0 ? 'var(--c-alert)' : after < (S.inventory[k]?.threshold || 0) ? 'var(--c-warn)' : 'var(--c-dino)';
+    return `<div style="display:flex;justify-content:space-between;padding:2px 0">
+      <span>${v.label}</span>
+      <span style="font-weight:700;color:${color}">${cur} â ${after} <span style="color:var(--text-dim)">(â${deduct})</span></span>
+    </div>`;
+  }).join('');
+}
+
+function saveSale() {
+  const pk = document.getElementById('ls-pack').value;
+  const pack = S.packs[pk];
+  if (!pack) return;
+  const tierIdx = parseInt(document.getElementById('ls-tier').value) || 0;
+  const tier = pack.tiers[tierIdx] || pack.tiers[0];
+  const qty = parseInt(document.getElementById('ls-qty').value) || 0;
+  const price = parseFloat(document.getElementById('ls-price').value) || 0;
+  const dateStr = document.getElementById('ls-date').value;
+  const notes = document.getElementById('ls-notes').value.trim();
+
+  if (qty <= 0) { alert('Qty must be at least 1.'); return; }
+
+  // Check if we have enough inventory
+  const shortages = [];
+  for (const [k, v] of Object.entries(pack.composition)) {
+    const needed = v.qty * qty;
+    const have = (S.inventory[k] || { qty: 0 }).qty;
+    if (have < needed) shortages.push(`${v.label}: need ${needed}, have ${have}`);
+  }
+  if (shortages.length) {
+    const proceed = confirm(`â  Inventory Warning:\n\n${shortages.join('\n')}\n\nRecord this sale anyway? Inventory will go negative.`);
+    if (!proceed) return;
+  }
+
+  // Deduct inventory
+  for (const [k, v] of Object.entries(pack.composition)) {
+    if (S.inventory[k]) {
+      S.inventory[k].qty = Math.max(0, S.inventory[k].qty - v.qty * qty);
+      // Also deduct from variants proportionally (simple: reduce Misc first, then others)
+      if (S.inventory[k].variants && S.inventory[k].variants.length) {
+        let toDeduct = v.qty * qty;
+        // Deduct from Misc first, then from variants in reverse order
+        const vArr = S.inventory[k].variants;
+        for (let i = vArr.length - 1; i >= 0 && toDeduct > 0; i--) {
+          const take = Math.min(vArr[i].qty, toDeduct);
+          vArr[i].qty -= take;
+          toDeduct -= take;
+        }
+        S.inventory[k].qty = vArr.reduce((s, v) => s + v.qty, 0);
+      }
+    }
+  }
+
+  // Record sale
+  const timestamp = dateStr ? new Date(dateStr + 'T12:00:00').getTime() : Date.now();
+  const sale = {
+    id: S.nextSaleId++,
+    packKey: pk,
+    packName: pack.name,
+    packEmoji: pack.emoji,
+    tierId: tier.id,
+    tierName: tier.name,
+    qty,
+    price,
+    total: price * qty,
+    timestamp,
+    notes,
+    inventoryDeducted: true
+  };
+  S.sales.unshift(sale); // newest first
+  saveInventory(); saveSales(); saveMeta();
+  closeModal('logSaleModal');
+  refreshAll();
+  // Mark queue as stale
+  _pqLastInvSnapshot = '';
+  pqCheckStale();
+}
+
+function undoSale(saleId) {
+  const idx = S.sales.findIndex(s => s.id === saleId);
+  if (idx < 0) return;
+  const sale = S.sales[idx];
+  if (!confirm(`Undo sale of ${sale.qty}Ã ${sale.packName} on ${new Date(sale.timestamp).toLocaleDateString()}?\n\nThis will restore component inventory.`)) return;
+  // Restore inventory
+  const pack = S.packs[sale.packKey];
+  if (pack && sale.inventoryDeducted) {
+    for (const [k, v] of Object.entries(pack.composition)) {
+      if (S.inventory[k]) {
+        S.inventory[k].qty += v.qty * sale.qty;
+        // Add back to Misc variant if variants exist
+        if (S.inventory[k].variants && S.inventory[k].variants.length) {
+          const misc = S.inventory[k].variants.find(v => v.name === 'Misc');
+          if (misc) misc.qty += v.qty * sale.qty;
+          else S.inventory[k].variants.push({ name: 'Misc', color: '#4a5068', qty: v.qty * sale.qty, etsyId: '' });
+          S.inventory[k].qty = S.inventory[k].variants.reduce((s, v) => s + v.qty, 0);
+        }
+      }
+    }
+  }
+  S.sales.splice(idx, 1);
+  saveInventory(); saveSales();
+  refreshAll();
+  _pqLastInvSnapshot = '';
+  pqCheckStale();
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// SALES â RENDER
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function getSalesForPeriod(days) {
+  if (!days) return S.sales || [];
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return (S.sales || []).filter(s => s.timestamp >= cutoff);
+}
+
+function renderSales() {
+  const periodSales = getSalesForPeriod(_salePeriod);
+  renderSaleStats(periodSales);
+  renderSalePackBreakdown(periodSales);
+  renderSaleHistory(periodSales);
+}
+
+function renderSaleStats(sales) {
+  const grid = document.getElementById('saleStatsGrid');
+  if (!grid) return;
+  const totalPacks = sales.reduce((s, r) => s + r.qty, 0);
+  const totalRevenue = sales.reduce((s, r) => s + r.total, 0);
+  const avgPrice = totalPacks > 0 ? totalRevenue / totalPacks : 0;
+  // Best seller
+  const packCounts = {};
+  for (const s of sales) packCounts[s.packKey] = (packCounts[s.packKey] || 0) + s.qty;
+  const bestPk = Object.entries(packCounts).sort((a, b) => b[1] - a[1])[0];
+  const bestPackName = bestPk ? (S.packs[bestPk[0]]?.name || bestPk[0]) : 'â';
+  grid.innerHTML = `
+    <div class="sale-stat"><div class="sale-stat-val">${totalPacks}</div><div class="sale-stat-lbl">Packs Sold</div></div>
+    <div class="sale-stat"><div class="sale-stat-val green">$${totalRevenue.toFixed(0)}</div><div class="sale-stat-lbl">Revenue</div></div>
+    <div class="sale-stat"><div class="sale-stat-val" style="font-size:18px">$${avgPrice.toFixed(2)}</div><div class="sale-stat-lbl">Avg Price</div></div>
+    <div class="sale-stat"><div class="sale-stat-val" style="font-size:14px;padding-top:6px">${bestPackName}</div><div class="sale-stat-lbl">Best Seller</div></div>
+  `;
+}
+
+function renderSalePackBreakdown(sales) {
+  const el = document.getElementById('salePackBreakdown');
+  if (!el) return;
+  const packCounts = {};
+  const packRevenue = {};
+  for (const pk of Object.keys(S.packs)) { packCounts[pk] = 0; packRevenue[pk] = 0; }
+  for (const s of sales) {
+    packCounts[s.packKey] = (packCounts[s.packKey] || 0) + s.qty;
+    packRevenue[s.packKey] = (packRevenue[s.packKey] || 0) + s.total;
+  }
+  const maxCount = Math.max(1, ...Object.values(packCounts));
+  el.innerHTML = Object.entries(S.packs).map(([pk, pack]) => {
+    const cnt = packCounts[pk] || 0;
+    const rev = packRevenue[pk] || 0;
+    const pct = (cnt / maxCount) * 100;
+    return `<div class="sale-pack-row">
+      <div class="sale-pack-name">${pack.emoji} ${pack.name}</div>
+      <div class="sale-pack-bar-wrap"><div class="sale-pack-bar" style="width:${pct}%;background:${pack.color}"></div></div>
+      <div class="sale-pack-count" style="color:${pack.color}">${cnt}</div>
+      <div style="min-width:65px;text-align:right;font-size:12px;color:var(--text-muted)">$${rev.toFixed(0)}</div>
+    </div>`;
+  }).join('');
+  if (!Object.values(packCounts).some(v => v > 0)) {
+    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:13px">No sales recorded in this period.</div>`;
+  }
+}
+
+function renderSaleHistory(sales) {
+  const tbody = document.getElementById('saleHistBody');
+  const noData = document.getElementById('saleNoData');
+  const countEl = document.getElementById('saleHistCount');
+  if (!tbody) return;
+  if (!sales.length) {
+    tbody.innerHTML = '';
+    if (noData) noData.style.display = '';
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+  if (noData) noData.style.display = 'none';
+  if (countEl) countEl.textContent = `${sales.length} record${sales.length !== 1 ? 's' : ''}`;
+  tbody.innerHTML = sales.map(s => {
+    const d = new Date(s.timestamp);
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const pack = S.packs[s.packKey];
+    const packColor = pack ? pack.color : 'var(--c-dragon)';
+    return `<tr>
+      <td style="color:var(--text-muted);white-space:nowrap">${dateStr}</td>
+      <td><span style="color:${packColor};font-weight:700">${s.packEmoji || ''} ${s.packName}</span></td>
+      <td style="color:var(--text-muted);font-size:12px">${s.tierName || 'â'}</td>
+      <td style="font-family:'Exo 2',sans-serif;font-weight:700">${s.qty}</td>
+      <td style="color:var(--text-muted)">$${(s.price || 0).toFixed(2)}</td>
+      <td style="color:var(--c-dino);font-family:'Exo 2',sans-serif;font-weight:700">$${(s.total || 0).toFixed(2)}</td>
+      <td style="color:var(--text-dim);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.notes || ''}</td>
+      <td><button class="sale-undo-btn" onclick="undoSale(${s.id})">â© Undo</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ââ KICK OFF ââââââââââââââââââââââââââââââââââââââââââââââââââ
 initFirebase();
 </script>
 </body>
